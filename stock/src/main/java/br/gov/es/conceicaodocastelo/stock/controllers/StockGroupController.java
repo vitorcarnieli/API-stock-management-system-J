@@ -62,9 +62,9 @@ public class StockGroupController {
 
     @GetMapping(path = "/find/byName")
     @ResponseBody
-    public List<StockGroupModel> findByName(@RequestParam(value = "name") String name) {
+    public ResponseEntity<List<StockGroupModel>> findByName(@RequestParam(value = "name") String name) {
         if(stockGroupService.findByName(name).getBody() != null) {
-            return stockGroupService.findByName(name).getBody();
+            return ResponseEntity.status(HttpStatus.OK).body(stockGroupService.findByName(name).getBody());
         } else {
             throw new QueryException("not found");
         }
@@ -72,11 +72,16 @@ public class StockGroupController {
 
     @GetMapping(value = "/find/byId")
     @ResponseBody
-    public Optional<StockGroupModel> findById(@RequestParam(value = "id") UUID id) {
+    public ResponseEntity<Optional<StockGroupModel>> findById(@RequestParam(value = "id") UUID id) {
         if(id != null) {
-            return stockGroupService.findById(id);
+            Optional<StockGroupModel> stock = stockGroupService.findById(id);
+            if(stock.isPresent()) {
+                return ResponseEntity.status(HttpStatus.OK).body(stockGroupService.findById(id));
+            } else {
+                throw new QueryException("not found");
+            }
         } else {
-            throw new QueryException("not found");
+            throw new NullPointerException("ResponseEntity<Optional<StockGroupModel>> findById(@RequestParam(value = \"id\") UUID id == null)");
         }
     }
 
@@ -90,11 +95,12 @@ public class StockGroupController {
     @ResponseBody
     public List<ItemModel> getAllItemInStockGroup(@RequestParam(value = "idGroup") UUID id) {
         if(id != null) {
-            Optional<StockGroupModel> stock = findById(id);
-            if(stock.isEmpty()) {
+            Optional<StockGroupModel> stock = findById(id).getBody();
+            if(stock != null && stock.isPresent()) {
+                return ResponseEntity.status(HttpStatus.OK).body(stock.get().getItems()).getBody();
+            } else {
                 throw new QueryException("stock not found");
             }
-            return stock.get().getItems();
         }
         throw new NullPointerException("List<ItemModel> getAllItemInStockGroup(@RequestParam(value = \"idGroup\") UUID id == null)");
     }

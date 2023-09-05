@@ -22,4 +22,18 @@ public class ItemService {
         throw new NullPointerException("ItemModel save(ItemModel itemModel == null)");
     }
 
+    public void decrementAmountItem(Double amount, ItemModel itemModel) {
+        if(amount != null && itemModel != null) {
+            double currentAmount = itemModel.getAmount() - amount;
+            if(currentAmount >= 0) {
+                itemModel.setAmount(currentAmount);
+                this.save(itemModel);
+            } else {
+                throw new RuntimeException("itemModel.getAmount() - amount < 0");
+            }
+        } else {
+            throw new NullPointerException("amount or itemModel or both is null");
+        }
+    }
+
 }
