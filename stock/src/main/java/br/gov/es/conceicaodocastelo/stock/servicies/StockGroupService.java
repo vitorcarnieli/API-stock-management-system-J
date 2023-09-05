@@ -5,11 +5,13 @@ import br.gov.es.conceicaodocastelo.stock.models.StockGroupModel;
 import br.gov.es.conceicaodocastelo.stock.repositories.ItemRepository;
 import br.gov.es.conceicaodocastelo.stock.repositories.StockGroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.EmptyStackException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -34,6 +36,8 @@ public class StockGroupService {
         }
         throw new NullPointerException("StockGroupModel save(StockGroupModel stockGroupModel == null)");
     }
+
+
 
     public Optional<StockGroupModel> findById(@PathVariable UUID id) {
         if(id != null) {
@@ -65,11 +69,54 @@ public class StockGroupService {
         }
     }
 
+    public Optional<ItemModel> findItemInStockGroupById(StockGroupModel stockGroupModel, UUID id) {
+        if(stockGroupModel != null) {
+            Optional<ItemModel> item = this.findAllItemsInStockGroup(stockGroupModel).stream().filter(i -> i.getId().equals(id)).findFirst();
+            if(item.isPresent()) {
+                return item;
+            } else {
+                throw new RuntimeException("item not funded");
+            }
+        } else {
+            throw new NullPointerException("null arg");
+        }
+    }
+
+    public List<ItemModel> findAllItemsInStockGroup(StockGroupModel stockGroupModel) {
+        if(stockGroupModel != null) {
+            List<ItemModel> items = stockGroupModel.getItems();
+            if(items.isEmpty()) {
+                throw new RuntimeException("empty list");
+            } else {
+                return items;
+            }
+        } else {
+            throw new NullPointerException("null arg");
+        }
+    }
+
+
+
     public void deleteById(UUID id) {
         if(id != null) {
-            stockGroupRepository.deleteById(id);
+            Optional<StockGroupModel> stock = this.findById(id);
+            if(stock.isPresent()) {
+                stockGroupRepository.delete(stock.get());
+            } else {
+                throw new RuntimeException("not found by id");
+            }
         } else {
             throw new NullPointerException("public void deleteById(UUID id == null)");
         }
     }
+
+    public  void deleteItemInStockGroup(StockGroupModel stockGroupModel, ItemModel itemModel) {
+        if(stockGroupModel != null && itemModel != null) {
+            stockGroupModel.getItems().remove(itemModel);
+        } else {
+            throw new NullPointerException("null arg");
+        }
+    }
+
+
 }

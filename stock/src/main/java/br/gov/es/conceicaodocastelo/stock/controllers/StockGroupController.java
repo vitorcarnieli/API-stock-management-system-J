@@ -54,6 +54,41 @@ public class StockGroupController {
         return ResponseEntity.status(HttpStatus.OK).body(stockGroupService.save(stockM));
     }
 
+    @PostMapping(value = "/transfer")
+    public ResponseEntity<StockGroupModel> transferItemFromOneStockToAnother(@RequestParam UUID recipientId,@RequestParam UUID senderId,@RequestParam UUID transferredItem) {
+        if(recipientId != null && senderId != null && transferredItem != null) {
+
+            Optional<StockGroupModel> sender = stockGroupService.findById(senderId);
+            Optional<StockGroupModel> recipient = stockGroupService.findById(recipientId);
+
+            if(sender.isPresent() && recipient.isPresent()) {
+
+                StockGroupModel senderStock = sender.get();
+                StockGroupModel recipientStock = recipient.get();
+                Optional<ItemModel> item = stockGroupService.findItemInStockGroupById(senderStock, transferredItem);
+
+                if(item.isPresent()) {
+                    ItemModel itemModel = item.get();
+
+                    stockGroupService.deleteItemInStockGroup(senderStock, itemModel);
+                    stockGroupService.save(senderStock);
+
+                    recipientStock.addItems(itemModel);
+                    stockGroupService.save(recipientStock);
+
+                    return ResponseEntity.status(HttpStatus.OK).body(recipientStock);
+
+                } else {
+                    throw new RuntimeException("item not found");
+                }
+            } else {
+                throw new RuntimeException("sender of recipient not found");
+            }
+
+        } else {
+            throw new NullPointerException("Null params");
+        }
+    }
 
 
 
@@ -85,7 +120,7 @@ public class StockGroupController {
         }
     }
 
-    @GetMapping(value = "/find/all")
+    @GetMapping()
     @ResponseBody
     public List<StockGroupModel> findAll() {
         return stockGroupService.findAll();
@@ -103,6 +138,13 @@ public class StockGroupController {
             }
         }
         throw new NullPointerException("List<ItemModel> getAllItemInStockGroup(@RequestParam(value = \"idGroup\") UUID id == null)");
+    }
+
+    @DeleteMapping("/delete")
+    public void deleteStockGroupById(@RequestParam(value = "idGroup") UUID id) {
+        if(id != null) {
+            stockGroupService.deleteById(id);
+        }
     }
 
 }

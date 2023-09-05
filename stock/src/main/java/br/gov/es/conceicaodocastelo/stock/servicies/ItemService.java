@@ -5,6 +5,9 @@ import br.gov.es.conceicaodocastelo.stock.repositories.ItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+import java.util.UUID;
+
 @Service
 public class ItemService {
 
@@ -33,6 +36,15 @@ public class ItemService {
             }
         } else {
             throw new NullPointerException("amount or itemModel or both is null");
+        }
+    }
+
+    public void incrementAmountItem(Double amount, ItemModel itemModel) {
+        if(amount != null && amount >= 0.01 && itemModel != null) {
+            itemModel.setAmount(itemModel.getAmount() + amount);
+            this.save(itemModel);
+        } else {
+            throw new NullPointerException("amount or itemModel or both is null or amount < 0.01");
         }
     }
 

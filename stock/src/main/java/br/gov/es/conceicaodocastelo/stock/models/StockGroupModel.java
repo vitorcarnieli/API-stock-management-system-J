@@ -2,6 +2,7 @@ package br.gov.es.conceicaodocastelo.stock.models;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import org.hibernate.annotations.Cascade;
 import org.hibernate.validator.constraints.UniqueElements;
 
 import java.io.Serial;
@@ -28,6 +29,7 @@ public class StockGroupModel implements Serializable {
 
     @OneToMany(mappedBy = "stockGroup")
     @JsonManagedReference
+    @Cascade(value = org.hibernate.annotations.CascadeType.ALL)
     private List<ItemModel> items;
 
     public StockGroupModel() {
@@ -84,5 +86,9 @@ public class StockGroupModel implements Serializable {
         } else {
             throw new NullPointerException("addItems(List<ItemModel> items == null)");
         }
+    }
+
+    public void deleteItems() {
+        this.items.clear();
     }
 }
