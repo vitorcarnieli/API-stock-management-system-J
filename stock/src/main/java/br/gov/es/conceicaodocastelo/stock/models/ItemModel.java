@@ -21,6 +21,8 @@ public class ItemModel implements Serializable {
 
     private String name;
 
+    private String unitType;
+
     private String description;
 
     private Double amount;
@@ -73,5 +75,13 @@ public class ItemModel implements Serializable {
 
     public void setAmount(Double amount) {
         this.amount = amount;
+    }
+
+    public String getUnitType() {
+        return unitType;
+    }
+
+    public void setUnitType(String unitType) {
+        this.unitType = unitType;
     }
 }

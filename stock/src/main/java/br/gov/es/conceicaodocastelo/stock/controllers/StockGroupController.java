@@ -27,6 +27,8 @@ public class StockGroupController {
         this.stockGroupService = stockGroupService;
     }
 
+
+    //POST'S
     @PostMapping(value = "/create")
     public ResponseEntity<StockGroupModel> createStockGroup(@RequestBody @Valid StockGroupRecordDto stockGroupRecordDto ) {
         StockGroupModel stockGroup = new StockGroupModel();
@@ -48,7 +50,11 @@ public class StockGroupController {
         StockGroupModel stockM = stockO.get();
         stockM.addItems(item);
 
-        stockM.getItems().forEach(i -> System.out.println(i.getName()));
+        stockM.getItems().forEach(i -> {
+            if(i.getUnitType() == null) {
+                i.setUnitType("Unidade");
+            }
+        });
 
 
         return ResponseEntity.status(HttpStatus.OK).body(stockGroupService.save(stockM));
@@ -91,10 +97,7 @@ public class StockGroupController {
     }
 
 
-
-
-
-
+    //GETER'S
     @GetMapping(path = "/find/byName")
     @ResponseBody
     public ResponseEntity<List<StockGroupModel>> findByName(@RequestParam(value = "name") String name) {
@@ -140,11 +143,12 @@ public class StockGroupController {
         throw new NullPointerException("List<ItemModel> getAllItemInStockGroup(@RequestParam(value = \"idGroup\") UUID id == null)");
     }
 
+
+    //DESTROYERS
     @DeleteMapping("/delete")
     public void deleteStockGroupById(@RequestParam(value = "idGroup") UUID id) {
         if(id != null) {
             stockGroupService.deleteById(id);
         }
     }
-
 }
