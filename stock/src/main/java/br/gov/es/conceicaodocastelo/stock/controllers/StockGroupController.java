@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -123,7 +124,7 @@ public class StockGroupController {
         }
     }
 
-    @GetMapping()
+    @GetMapping(path = "/find/all")
     @ResponseBody
     public List<StockGroupModel> findAll() {
         return stockGroupService.findAll();
