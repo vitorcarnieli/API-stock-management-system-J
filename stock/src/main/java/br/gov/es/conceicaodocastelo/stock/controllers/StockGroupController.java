@@ -16,8 +16,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController
+@CrossOrigin("*")
 @RequestMapping(path = "/stock-group")
 public class StockGroupController {
 
@@ -28,10 +32,13 @@ public class StockGroupController {
         this.stockGroupService = stockGroupService;
     }
 
+    private List<StockGroupModel> stocks = new ArrayList<>();
+
 
     //POST'S
     @PostMapping(value = "/create")
     public ResponseEntity<StockGroupModel> createStockGroup(@RequestBody @Valid StockGroupRecordDto stockGroupRecordDto ) {
+        System.out.println("Recebendo solicitação POST em /stock-group/create");
         StockGroupModel stockGroup = new StockGroupModel();
         BeanUtils.copyProperties(stockGroupRecordDto,stockGroup);
         return ResponseEntity.status(HttpStatus.CREATED).body(stockGroupService.save(stockGroup));
@@ -127,7 +134,28 @@ public class StockGroupController {
     @GetMapping(path = "/find/all")
     @ResponseBody
     public List<StockGroupModel> findAll() {
-        return stockGroupService.findAll();
+        stocks.clear();
+        stocks = stockGroupService.findAll();
+        return stocks;
+    }
+
+    @GetMapping(path = "/getNames")
+    @ResponseBody
+    public List<String> getAllStockNamesAndDescription() {
+        List<String> l = new ArrayList<>();
+        l.clear();
+        findAll().forEach(s -> {
+            l.add(s.getName());
+            String d = s.getDescription();
+            if(d != null) {
+                l.add(s.getDescription());
+            } else {
+                l.add("");
+            }
+        });
+        System.out.println(l.toString());
+        return l;
+
     }
 
     @GetMapping(value = "/getAllItems")
@@ -152,4 +180,10 @@ public class StockGroupController {
             stockGroupService.deleteById(id);
         }
     }
+
+    @GetMapping(value="/delete")
+    public void deleteAllForGet() {
+        stockGroupService.deleteAll();
+    }
+    
 }

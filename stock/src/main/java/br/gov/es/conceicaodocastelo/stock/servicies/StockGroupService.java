@@ -2,16 +2,13 @@ package br.gov.es.conceicaodocastelo.stock.servicies;
 
 import br.gov.es.conceicaodocastelo.stock.models.ItemModel;
 import br.gov.es.conceicaodocastelo.stock.models.StockGroupModel;
-import br.gov.es.conceicaodocastelo.stock.repositories.ItemRepository;
 import br.gov.es.conceicaodocastelo.stock.repositories.StockGroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.EmptyStackException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -116,6 +113,10 @@ public class StockGroupService {
         } else {
             throw new NullPointerException("null arg");
         }
+    }
+
+    public void deleteAll() {
+        stockGroupRepository.deleteAll();
     }
 
 
