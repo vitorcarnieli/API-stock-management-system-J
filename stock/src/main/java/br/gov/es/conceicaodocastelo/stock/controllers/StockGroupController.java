@@ -34,6 +34,7 @@ public class StockGroupController {
 
     private List<StockGroupModel> stocks = new ArrayList<>();
 
+    StockGroupModel stockAwaitForReturn;
 
     //POST'S
     @PostMapping(value = "/create")
@@ -131,6 +132,8 @@ public class StockGroupController {
         }
     }
 
+
+
     @GetMapping(path = "/find/all")
     @ResponseBody
     public List<StockGroupModel> findAll() {
@@ -184,6 +187,20 @@ public class StockGroupController {
     @GetMapping(value="/delete")
     public void deleteAllForGet() {
         stockGroupService.deleteAll();
+    }
+
+    @GetMapping(value = "/revice")
+    public void reviceStockObject(@RequestParam(value = "id") UUID id) {
+        stockAwaitForReturn = findById(id).getBody().get();
+    }
+
+    @GetMapping(value = "/send")
+    public ResponseEntity<StockGroupModel> sendStockObject() {
+        if(stockAwaitForReturn != null) {
+            return ResponseEntity.status(HttpStatus.OK).body(stockAwaitForReturn);
+        } else {
+            return null;
+        }
     }
     
 }

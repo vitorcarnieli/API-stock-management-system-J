@@ -4,13 +4,12 @@ document.addEventListener("DOMContentLoaded", refresh());
 
 
 function isUpperCase(str) {
-    let strU = str.toUpperCase()
-    return str === strU;
+    return str === str.toUpperCase();
 }
 
 function refresh() {
     //TODO IMPLEMENTAR O LINK COLOCAR FIND ALL
-    fetch("http://127.0.0.1:8080/stock-group/getNames")
+    fetch("http://127.0.0.1:8080/stock-group/find/all")
     .then((response) => {
         if (!response.ok) {
             throw new Error("error no response" + response.status);
@@ -20,24 +19,20 @@ function refresh() {
         return response.json();
     })
     .then((data) => {
+        console.log(data)
         for (let i = 0; i < data.length; i++) {
-            console.log(i)
-            if (i >= data.length || i + 1 >= data.length || i % 2 != 0) {
-                // Verificar se os elementos existem antes de usá-los
-                continue;
-            }
-            console.log(data)
-            var title = data[i];
-            var description = data[i+1];
+            let object = data[i];
+
+            let title = object.name;
+            let description = object.description;
+            let itemsLenght = object.items.length;
 
             const aBtn = document.createElement("a")
             aBtn.className = "col-3 btn m-3 btn-success";
-            
+            aBtn.href = "http://127.0.0.1:8080/pages/stockGroup.html?id="+object.id;
 
             const h = document.createElement("h5");
             
-            console.log(title)
-            console.log(description)
             if(isUpperCase(title)) {
                 title = title.toLowerCase();
                 h.textContent = title;
@@ -46,24 +41,36 @@ function refresh() {
                 h.textContent = title;
             }
 
-            const p = document.createElement("p");
-            
+            const pDescription = document.createElement("p");
+
             if(isUpperCase(description)) {
-                description = description.toLowerCase();
-                p.textContent = description;
-                p.style.textTransform = "uppercase";
+                descriptione = description.toLowerCase();
+                pDescription.textContent = description;
+                pDescription.style.textTransform = "uppercase";
             } else {
-                p.textContent = description;
+                pDescription.textContent = description;
             }
-        
-            p.style.fontSize = "10px";
-            p.className = "text-start";
+
+            pDescription.className = "text-start";
+            pDescription.style.fontSize = "12px";
+
+            const pAmountItems = document.createElement("p");
+            pAmountItems.textContent = "Contém " + itemsLenght + " itens."
+            pAmountItems.className = "text-start fst-italic";
+
+
             aBtn.appendChild(h);
-            aBtn.appendChild(p);
+            aBtn.appendChild(pAmountItems);
+            aBtn.appendChild(pDescription)
             divForShowStockGroups.appendChild(aBtn);
-        }        
+
+        }
     })
     .catch((error) => {
         console.error('Erro ao fazer a solicitação:', error);
     });
+}
+
+function passToNextWindow() {
+    return 
 }

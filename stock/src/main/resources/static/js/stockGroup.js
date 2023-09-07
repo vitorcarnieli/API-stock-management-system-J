@@ -4,11 +4,14 @@ const stockName = document.getElementById("stock-group-name");
 const description = document.getElementById("stock-group-description");
 const tbody = document.getElementById("tbody")
 
+const urlParam = new URLSearchParams(window.location.search)
+console.log(urlParam)
+
 document.addEventListener("DOMContentLoaded", refresh())
 
 
 function refresh() {
-    fetch("http://127.0.0.1:8080/stock-group/find/all")
+    fetch("http://127.0.0.1:8080/stock-group/find/byId?id="+urlParam.get("id"))
     .then((response) => {
         if (!response.ok) {
             throw new Error("error no response" + response.status);
@@ -19,8 +22,7 @@ function refresh() {
     })
     .then((data) => {
         console.log(data)
-        for (let i = 0; i < data.length; i++) {
-            let object = data[i];
+            let object = data;
             title.textContent = object.name
             stockName.textContent = object.name
             description.textContent = object.description
@@ -57,9 +59,9 @@ function refresh() {
 
 
             
-        }
     })
     .catch((error) => {
         console.error('Erro ao fazer a solicitação:', error);
     });
 }
+
