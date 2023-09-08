@@ -1,17 +1,22 @@
 const form = document.getElementById("form");
 
-form.addEventListener("submit", function (event) {
+
+const urlParam = new URLSearchParams(window.location.search)
+console.log(urlParam);
+
+form.addEventListener("submit",  function (event) {
     event.preventDefault();
     createStockGroup();
+});
 
-})
 
 function createStockGroup() {
     const name = document.getElementById("name");
     const description = document.getElementById("description");
-    const c = document.getElementById("color");
+    const unitType = document.getElementById("unitType");
+    const amount = document.getElementById("amount");
 
-    fetch("http://127.0.0.1:8080/stock-group/create",
+    fetch("http://127.0.0.1:8080/stock-group/addItem/"+urlParam.get("id"),
         {
             headers: {
                 'Accept': 'application/json',
@@ -20,13 +25,15 @@ function createStockGroup() {
             method: "POST",
             body: JSON.stringify({
                 name: name.value,
+                unitType: unitType.value,
                 description: description.value,
+                amount: amount.value
             })
         })
         .then(function (res) {
             console.log(res);
-            alert(name.value + " Criado com sucesso!")
-            window.location.href = "http://127.0.0.1:8080/index.html";
+            alert(name.value + " Adicionado com sucesso!")
+            window.location.href = "http://127.0.0.1:8080/pages/stockGroup.html?id=" + urlParam.get("id") ;
         })
         .catch(function (res) { console.log(res) })
 

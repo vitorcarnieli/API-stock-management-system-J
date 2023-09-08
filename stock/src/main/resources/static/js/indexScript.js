@@ -7,8 +7,9 @@ function isUpperCase(str) {
     return str === str.toUpperCase();
 }
 
+//TODO: IMPLEMENTAR RELATÓRIO, PROVAVELMENTE UM GERAÇÃO DE PDF OU QUALQUER DOCUMENTO DO TIPO NO BACK
+
 function refresh() {
-    //TODO IMPLEMENTAR O LINK COLOCAR FIND ALL
     fetch("http://127.0.0.1:8080/stock-group/find/all")
     .then((response) => {
         if (!response.ok) {

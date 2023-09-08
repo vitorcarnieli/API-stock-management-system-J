@@ -60,7 +60,7 @@ public class StockGroupController {
         stockM.addItems(item);
 
         stockM.getItems().forEach(i -> {
-            if(i.getUnitType() == null) {
+            if(i.getUnitType() == null || i.getUnitType() == "") {
                 i.setUnitType("Unidade");
             }
         });
@@ -177,16 +177,12 @@ public class StockGroupController {
 
 
     //DESTROYERS
-    @DeleteMapping("/delete")
+    @GetMapping("/delete")
+    @ResponseBody
     public void deleteStockGroupById(@RequestParam(value = "idGroup") UUID id) {
         if(id != null) {
             stockGroupService.deleteById(id);
         }
-    }
-
-    @GetMapping(value="/delete")
-    public void deleteAllForGet() {
-        stockGroupService.deleteAll();
     }
 
     @GetMapping(value = "/revice")
