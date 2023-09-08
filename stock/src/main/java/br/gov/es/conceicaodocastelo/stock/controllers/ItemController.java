@@ -4,6 +4,7 @@ import br.gov.es.conceicaodocastelo.stock.models.ItemModel;
 import br.gov.es.conceicaodocastelo.stock.servicies.ItemService;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.hibernate.QueryException;
@@ -21,6 +22,7 @@ public class ItemController {
         this.itemService = itemService;
     }
 
+
         //GETER'S
     @GetMapping(path = "/find/byName")
     @ResponseBody
@@ -35,5 +37,41 @@ public class ItemController {
         }
     }
 
+    @GetMapping(path = "/find/byId")
+    @ResponseBody
+    public ResponseEntity<ItemModel> findById(@RequestParam(value = "id") String idd) {
+        UUID id = UUID.fromString(idd);
+        if(id != null) {
+            Optional<ItemModel> item = itemService.findById(id).getBody();
+            if(item.isPresent()) {
+                return ResponseEntity.status(HttpStatus.OK).body(item.get());
+            } else {
+                throw new RuntimeException("not found");
+            }
+        } else {
+            throw new QueryException("null pointer");
+        }
+    }
+
+
+    @PostMapping(path = "/add/changes")
+    @ResponseBody
+    public ResponseEntity<Object> addChanges(
+            @RequestParam(value = "idItem") String idGroup,
+            @RequestParam(value = "change") Integer change) {
+        if (idGroup != null && change != null) {
+            UUID id = UUID.fromString(idGroup);
+            ResponseEntity<ItemModel> response = itemService.addChanges(id, change);
+
+            if (response.getStatusCode() == HttpStatus.OK) {
+                return ResponseEntity.status(HttpStatus.OK).body(null);
+            } else {
+                throw new RuntimeException("erro de inserção");
+            }
+        } else {
+            throw new NullPointerException("null");
+        }
+    }
+    
 
 }

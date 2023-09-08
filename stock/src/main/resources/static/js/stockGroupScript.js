@@ -64,11 +64,11 @@ function createTdWithIcons(condition) {
 }
 
 function refresh(test, obj) {
-    if(test == true) {
+    if (test == true) {
         createTable(obj)
         return
     }
-    fetch("http://127.0.0.1:8080/stock-group/find/byId?id=" + urlParam.get("id"))
+    fetch("http://192.168.0.150:8080/stock-group/find/byId?id=" + urlParam.get("id"))
         .then((response) => {
             if (!response.ok) {
                 throw new Error("error no response" + response.status);
@@ -104,8 +104,8 @@ function refresh(test, obj) {
 
 function createTable(obj, orgToZA) {
     tbody.innerHTML = ""
-    if(orgToZA) {
-        alphaOrderSort(obj, false)        
+    if (orgToZA) {
+        alphaOrderSort(obj, false)
     } else {
         alphaOrderSort(obj, true)
     }
@@ -142,7 +142,7 @@ function createTable(obj, orgToZA) {
 }
 
 function destroy() {
-    fetch("http://127.0.0.1:8080/stock-group/delete?idGroup=" + urlParam.get("id"))
+    fetch("http://192.168.0.150:8080/stock-group/delete?idGroup=" + urlParam.get("id"))
         .then((response) => {
             if (!response.ok) {
                 throw new Error("error no response" + response.status);
@@ -155,13 +155,13 @@ function destroy() {
         .then((data) => {
         })
         .catch((error) => {
-            window.location.href = "http://127.0.0.1:8080/index.html";
+            window.location.href = "http://192.168.0.150:8080/index.html";
         });
 }
 
 function findByName() {
     console.log("entrou")
-    fetch("http://127.0.0.1:8080/item/find/byName?idGroup=" + urlParam.get("id") + "&name=" + searchByNameField.value)
+    fetch("http://192.168.0.150:8080/item/find/byName?idGroup=" + urlParam.get("id") + "&name=" + searchByNameField.value)
         .then((response) => {
             if (!response.ok) {
                 throw new Error("error no response" + response.status);
@@ -196,12 +196,12 @@ function toggleIcon() {
 }
 
 function alphaOrderSort(obj, boolArg) {
-    if(boolArg) {
-        obj.sort(function(a, b) {
+    if (boolArg) {
+        obj.sort(function (a, b) {
             return a.name.localeCompare(b.name);
         });
     } else {
-        obj.sort(function(a, b) {
+        obj.sort(function (a, b) {
             return b.name.localeCompare(a.name);
         });
     }

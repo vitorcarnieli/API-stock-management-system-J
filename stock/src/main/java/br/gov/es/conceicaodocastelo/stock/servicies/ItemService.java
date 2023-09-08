@@ -2,8 +2,11 @@ package br.gov.es.conceicaodocastelo.stock.servicies;
 
 import br.gov.es.conceicaodocastelo.stock.models.ItemModel;
 import br.gov.es.conceicaodocastelo.stock.repositories.ItemRepository;
+import jakarta.transaction.Transactional;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -55,6 +58,28 @@ public class ItemService {
             return new ResponseEntity<List<ItemModel>>(items, HttpStatus.OK);
         } else {
             throw new NullPointerException("ResponseEntity<List<ItemModel>> findByName(@RequestParam(value = \"name\") String name  == null)");
+        }
+    }
+
+    @Transactional
+    public ResponseEntity<ItemModel> addChanges(UUID id, Integer change) {
+        if(id != null & change != null) {
+            ItemModel item = itemRepository.findById(id).get();
+            item.addChanges(change);
+            itemRepository.save(item);
+            System.out.println("salvou");
+            return ResponseEntity.status(HttpStatus.OK).body(item);
+        } else {
+            throw new NullPointerException("null pointer");
+        }
+    }
+
+    public ResponseEntity<Optional<ItemModel>> findById(UUID id) {
+        if(id != null) {
+            Optional<ItemModel> optItemModel = itemRepository.findById(id);
+            return ResponseEntity.status(HttpStatus.OK).body(optItemModel);
+        } else {
+            throw new NullPointerException("null");
         }
     }
 

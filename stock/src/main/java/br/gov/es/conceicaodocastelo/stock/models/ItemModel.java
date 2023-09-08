@@ -5,6 +5,10 @@ import jakarta.persistence.*;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -26,64 +30,100 @@ public class ItemModel implements Serializable {
 
     private Double amount;
 
+    private List<List<String>> changes = new ArrayList<>();
+
+    
     @ManyToOne
     @JsonBackReference
     private StockGroupModel stockGroup;
-
+    
     public ItemModel() {
     }
-
+    
     public UUID getId() {
         return id;
     }
-
+    
     public void setId(UUID id) {
         this.id = id;
     }
-
+    
     public String getName() {
         return name;
     }
-
+    
     public void setName(String name) {
         this.name = name;
     }
-
+    
     public String getDescription() {
         return description;
     }
-
+    
     public void setDescription(String description) {
         this.description = description;
     }
-
+    
     public StockGroupModel getStockGroup() {
         return stockGroup;
     }
-
+    
     public void setStockGroup(StockGroupModel stockGroup) {
         if(stockGroup != null) {
             this.stockGroup = stockGroup;
         }
-
+        
     }
-
+    
     public Double getAmount() {
         return amount;
     }
-
+    
     public void setAmount(Double amount) {
         this.amount = amount;
+        if(changes.isEmpty()) {
+            Date dataNow = new Date();
+            SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy 'T' HH:mm");
+            String dataFormated = format.format(dataNow);
+            String c = "c" + getAmount(); 
+            List<String> create = new ArrayList<>();
+            create.add(c);
+            create.add(dataFormated);
+            this.changes.add(create);
+        }
     }
-
+    
     public String getUnitType() {
         return unitType;
     }
-
+    
     public void setUnitType(String unitType) {
         this.unitType = unitType;
     }
 
+    public List<List<String>> getChanges() {
+        return changes;
+    }
+
+    public void setChanges(List<List<String>> changes) {
+        this.changes = changes;
+    }
+
+    public void addChanges(Integer change) {
+        if (change != null) {
+            List<String> changeAdd = new ArrayList<>();
+            Date dataNow = new Date();
+            SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy 'T' HH:mm");
+            String dataFormated = format.format(dataNow);
+            changeAdd.add(change.toString());
+            changeAdd.add(dataFormated);
+            System.out.println(changeAdd);
+            changes.add(changeAdd);
+        } else {
+            System.out.println("deu ruim");
+        }
+    }
+    
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -96,48 +136,49 @@ public class ItemModel implements Serializable {
         result = prime * result + ((stockGroup == null) ? 0 : stockGroup.hashCode());
         return result;
     }
-
+    
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
-            return true;
+        return true;
         if (obj == null)
-            return false;
+        return false;
         if (getClass() != obj.getClass())
-            return false;
+        return false;
         ItemModel other = (ItemModel) obj;
         if (id == null) {
             if (other.id != null)
-                return false;
-        } else if (!id.equals(other.id))
             return false;
+        } else if (!id.equals(other.id))
+        return false;
         if (name == null) {
             if (other.name != null)
-                return false;
-        } else if (!name.equals(other.name))
             return false;
+        } else if (!name.equals(other.name))
+        return false;
         if (unitType == null) {
             if (other.unitType != null)
-                return false;
-        } else if (!unitType.equals(other.unitType))
             return false;
+        } else if (!unitType.equals(other.unitType))
+        return false;
         if (description == null) {
             if (other.description != null)
-                return false;
-        } else if (!description.equals(other.description))
             return false;
+        } else if (!description.equals(other.description))
+        return false;
         if (amount == null) {
             if (other.amount != null)
-                return false;
-        } else if (!amount.equals(other.amount))
             return false;
+        } else if (!amount.equals(other.amount))
+        return false;
         if (stockGroup == null) {
             if (other.stockGroup != null)
-                return false;
+            return false;
         } else if (!stockGroup.equals(other.stockGroup))
             return false;
-        return true;
+            return true;
+        }
+        
+        
     }
-
     
-}
