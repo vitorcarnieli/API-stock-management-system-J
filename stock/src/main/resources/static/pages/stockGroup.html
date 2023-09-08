@@ -26,6 +26,27 @@
             </div>
         </div>
     </div>
+    <div class="modal" id="confirmacaoModal">
+        <div class="modal-dialog">
+          <div class="modal-content">
+      
+            <div class="modal-header">
+              <h4 class="modal-title">Confirmação de Exclusão</h4>
+            </div>
+      
+            <div class="modal-body">
+              Tem certeza que deseja apagar este estoque? Tanto o estoque quanto os items que estão nele serão deletados permanentemente.
+            </div>
+      
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal" id="cancel">Cancelar</button>
+              <button type="button" class="btn btn-danger" id="delete">Apagar</button>
+            </div>
+      
+          </div>
+        </div>
+      </div>
+      
 
     <div class="container-fluid p-3">
         <div class="row">
@@ -33,10 +54,16 @@
                 <div class="row container-fluid">
                     <div class="row container-fluid">
                         
-                        <div class="col-2 row ">
-                            <a href="" class="col-2 bg-success rounded d-flex align-items-center justify-content-center p-1  h5 underline text-decoration-none text-light col-12 fw-bold" id="addItem">+ Adicionar item</a>
-                            <a href="" class="col-2 bg-danger rounded d-flex align-items-center justify-content-center p-1  h5 underline text-decoration-none text-light col-12 fw-bold" id="deleteStock">Apagar Estoque</a>
-                            <a href="" class="col-2 bg-primary rounded d-flex align-items-center justify-content-center p-1  h5 underline text-decoration-none text-light col-12 fw-bold" id="">Editar</a>
+                        <div class="col-2 row">
+                            <a href="" class="bg-success rounded d-flex align-items-center justify-content-center p-1  h5 underline text-decoration-none text-light col-12 fw-bold" id="addItem">+ Adicionar item</a>
+                            <a href="" class="bg-danger rounded d-flex align-items-center justify-content-center p-1  h5 underline text-decoration-none text-light col-12 fw-bold" id="deleteStock">Apagar Estoque</a>
+
+                            <div class="input-group d-flex col-12 m-0 p-0" >
+                                <input type="text" class="form-control rounded-start border border-primary" placeholder="Pesquisar item por nome" id="searchByNameField">
+                                <button class="btn btn-outline-secondary bg-primary border border-primary" type="submit" id="searchByName"><i class="bi bi-search text-white"></i></button>
+                            </div>
+                              
+
                         </div>
 
                         <div class="col-8 text-center container row mx-2">
@@ -59,8 +86,12 @@
                     <div class="col-12">
                         <table class="table table-bordered">
                             <thead class="table-dark">
-                                <tr class="text-center">
-                                    <th class="col-5">Nome</th>
+                                <tr class="">
+                                    <th class="col-5 text-center m-0">Nome
+                                        <button class="btn p-0" id="alphaSort">
+                                            <i class="bi bi-sort-alpha-down text-white" id="sortIcon"></i>
+                                        </button>
+                                    </th>
                                     <th class="col-1">Tipo de Unidade</th>
                                     <th class="col-1">Quantidade</th>
                                     <th class="col-1">Adicionar</th>

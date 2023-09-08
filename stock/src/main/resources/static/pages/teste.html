@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<!-- Botão que aciona a modal -->
+<button type="button" class="btn btn-danger" data-toggle="modal" data-target="#confirmacaoModal">
+  Apagar Estoque
+</button>
+
+<!-- Modal de confirmação -->
+<div class="modal" id="confirmacaoModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Cabeçalho da modal -->
+      <div class="modal-header">
+        <h4 class="modal-title">Confirmação de Exclusão</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <!-- Corpo da modal -->
+      <div class="modal-body">
+        Tem certeza que deseja apagar este estoque?
+      </div>
+
+      <!-- Rodapé da modal -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-danger" onclick="apagarEstoque()">Apagar</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+function apagarEstoque() {
+  // Coloque aqui o código para apagar o estoque
+  alert('Estoque apagado com sucesso!');
+  $('#confirmacaoModal').modal('hide');
+}
+</script>
+
+</body>
+</html>
