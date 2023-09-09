@@ -38,7 +38,7 @@ deleteStock.addEventListener("click", function (event) {
 //TODO: IMPLEMENTAR QUANDO APERTAR NO BOTÃO ENTRAR, ENTRAR NA PAGINA ESPECIFICA DE UM ITEM, USAR A GERAÇÃO DE ITENS NO INDEX COMO BASE
 //TODO: IMPLEMENTAR ALGORITMO PARA QUE TODA VEZ QUE AJA UMA MODIFICAÇÃO NA QUANTIDADE FIQUE REGISTRADO NA PÁGINA PRINCIPAL DO ITEM
 
-function createTdWithIcons(condition) {
+function createTdWithIcons(condition, idItem) {
     let btn = document.createElement("button");
     let icon = document.createElement("i")
     switch (condition) {
@@ -58,6 +58,7 @@ function createTdWithIcons(condition) {
             let a = document.createElement("a");
             a.className = "btn btn-primary rounded-5";
             icon.className = "bi bi-box-arrow-in-right text-light";
+            a.href = "http://192.168.0.150:8080/pages/item.html?id=" + idItem;
             a.appendChild(icon);
             return a;
     }
@@ -129,7 +130,7 @@ function createTable(obj, orgToZA) {
         tdAmount.textContent = item.amount;
         tdMore.appendChild(createTdWithIcons("+"));
         tdMinus.appendChild(createTdWithIcons("-"));
-        tdEnter.appendChild(createTdWithIcons("ENTER"));
+        tdEnter.appendChild(createTdWithIcons("ENTER", item.id));
         tr.appendChild(tdName);
         tr.appendChild(tdUnitType);
         tr.appendChild(tdAmount);
