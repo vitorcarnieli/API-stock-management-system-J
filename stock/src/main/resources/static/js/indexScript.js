@@ -10,7 +10,7 @@ function isUpperCase(str) {
 //TODO: IMPLEMENTAR RELATÓRIO, PROVAVELMENTE UM GERAÇÃO DE PDF OU QUALQUER DOCUMENTO DO TIPO NO BACK
 
 function refresh() {
-    fetch("http://192.168.0.150:8080/stock-group/find/all")
+    fetch("http://127.0.0.1:8080/stock-group/find/all")
         .then((response) => {
             if (!response.ok) {
                 throw new Error("error no response" + response.status);
@@ -30,7 +30,7 @@ function refresh() {
 
                 const aBtn = document.createElement("a")
                 aBtn.className = "col-3 btn m-3 btn-success";
-                aBtn.href = "http://192.168.0.150:8080/pages/stockGroup.html?id=" + object.id;
+                aBtn.href = "http://127.0.0.1:8080/pages/stockGroup.html?id=" + object.id;
 
                 const h = document.createElement("h5");
 

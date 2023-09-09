@@ -18,7 +18,7 @@ form.addEventListener("submit", function(e) {
 })
 
 function createPage() {
-    fetch("http://192.168.0.150:8080/item/find/byId?id=" + urlParam.get("id"))
+    fetch("http://127.0.0.1:8080/item/find/byId?id=" + urlParam.get("id"))
         .then((response) => {
             if (!response.ok) {
                 throw new Error("error no response" + response.status);

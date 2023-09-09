@@ -58,7 +58,7 @@ function createTdWithIcons(condition, idItem) {
             let a = document.createElement("a");
             a.className = "btn btn-primary rounded-5";
             icon.className = "bi bi-box-arrow-in-right text-light";
-            a.href = "http://192.168.0.150:8080/pages/item.html?id=" + idItem;
+            a.href = "http://127.0.0.1:8080/pages/item.html?id=" + idItem;
             a.appendChild(icon);
             return a;
     }
@@ -69,7 +69,7 @@ function refresh(test, obj) {
         createTable(obj)
         return
     }
-    fetch("http://192.168.0.150:8080/stock-group/find/byId?id=" + urlParam.get("id"))
+    fetch("http://127.0.0.1:8080/stock-group/find/byId?id=" + urlParam.get("id"))
         .then((response) => {
             if (!response.ok) {
                 throw new Error("error no response" + response.status);
@@ -143,7 +143,7 @@ function createTable(obj, orgToZA) {
 }
 
 function destroy() {
-    fetch("http://192.168.0.150:8080/stock-group/delete?idGroup=" + urlParam.get("id"))
+    fetch("http://127.0.0.1:8080/stock-group/delete?idGroup=" + urlParam.get("id"))
         .then((response) => {
             if (!response.ok) {
                 throw new Error("error no response" + response.status);
@@ -156,13 +156,13 @@ function destroy() {
         .then((data) => {
         })
         .catch((error) => {
-            window.location.href = "http://192.168.0.150:8080/index.html";
+            window.location.href = "http://127.0.0.1:8080/index.html";
         });
 }
 
 function findByName() {
     console.log("entrou")
-    fetch("http://192.168.0.150:8080/item/find/byName?idGroup=" + urlParam.get("id") + "&name=" + searchByNameField.value)
+    fetch("http://127.0.0.1:8080/item/find/byName?idGroup=" + urlParam.get("id") + "&name=" + searchByNameField.value)
         .then((response) => {
             if (!response.ok) {
                 throw new Error("error no response" + response.status);

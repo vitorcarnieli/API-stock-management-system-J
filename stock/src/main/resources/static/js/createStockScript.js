@@ -11,7 +11,7 @@ function createStockGroup() {
     const description = document.getElementById("description");
     const c = document.getElementById("color");
 
-    fetch("http://192.168.0.150:8080/stock-group/create",
+    fetch("http://127.0.0.1:8080/stock-group/create",
         {
             headers: {
                 'Accept': 'application/json',
@@ -26,7 +26,7 @@ function createStockGroup() {
         .then(function (res) {
             console.log(res);
             alert(name.value + " Criado com sucesso!")
-            window.location.href = "http://192.168.0.150:8080/index.html";
+            window.location.href = "http://127.0.0.1:8080/index.html";
         })
         .catch(function (res) { console.log(res) })
 
