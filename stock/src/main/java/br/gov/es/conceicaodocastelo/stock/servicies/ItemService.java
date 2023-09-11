@@ -2,7 +2,6 @@ package br.gov.es.conceicaodocastelo.stock.servicies;
 
 import br.gov.es.conceicaodocastelo.stock.models.ItemModel;
 import br.gov.es.conceicaodocastelo.stock.repositories.ItemRepository;
-import jakarta.transaction.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -29,9 +28,9 @@ public class ItemService {
         throw new NullPointerException("ItemModel save(ItemModel itemModel == null)");
     }
 
-    public void decrementAmountItem(Double amount, ItemModel itemModel) {
+    public void decrementAmountItem(Integer amount, ItemModel itemModel) {
         if (amount != null && itemModel != null) {
-            double currentAmount = itemModel.getAmount() - amount;
+            int currentAmount = itemModel.getAmount() - amount;
             if (currentAmount >= 0) {
                 itemModel.setAmount(currentAmount);
                 this.save(itemModel);
@@ -43,12 +42,22 @@ public class ItemService {
         }
     }
 
-    public void incrementAmountItem(Double amount, ItemModel itemModel) {
+    public void incrementAmountItem(Integer amount, ItemModel itemModel) {
         if (amount != null && amount >= 0.01 && itemModel != null) {
             itemModel.setAmount(itemModel.getAmount() + amount);
             this.save(itemModel);
         } else {
             throw new NullPointerException("amount or itemModel or both is null or amount < 0.01");
+        }
+    }
+
+    public ResponseEntity<ItemModel> changeAmountItem(Integer amount, ItemModel itemModel) {
+        if(amount != null && amount > 0) {
+            itemModel.setAmount(amount);
+            this.save(itemModel);
+            return ResponseEntity.status(HttpStatus.OK).body(itemModel);
+        } else {
+            throw new NullPointerException("Invalid argument for amount or itemModel");
         }
     }
 
@@ -61,13 +70,11 @@ public class ItemService {
         }
     }
 
-    @Transactional
-    public ResponseEntity<ItemModel> addChanges(UUID id, Integer change) {
-        if(id != null & change != null) {
+    public ResponseEntity<ItemModel> addChanges(UUID id, Integer amount) {
+        if(id != null & amount != null) {
             ItemModel item = itemRepository.findById(id).get();
-            item.addChanges(change);
+            item.increaseOrDecreaseAmount(amount);
             itemRepository.save(item);
-            System.out.println("salvou");
             return ResponseEntity.status(HttpStatus.OK).body(item);
         } else {
             throw new NullPointerException("null pointer");

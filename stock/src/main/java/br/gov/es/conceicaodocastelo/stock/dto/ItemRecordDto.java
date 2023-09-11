@@ -8,6 +8,6 @@ public record ItemRecordDto(
         @Length(min = 1, max = 255) String name,
         @Nullable String unitType,
         @Nullable String description,
-        @Min(1) Double amount
+        @Min(1) Integer amount
         ) {
 }

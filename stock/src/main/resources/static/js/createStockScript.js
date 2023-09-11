@@ -9,7 +9,6 @@ form.addEventListener("submit", function (event) {
 function createStockGroup() {
     const name = document.getElementById("name");
     const description = document.getElementById("description");
-    const c = document.getElementById("color");
 
     fetch("http://127.0.0.1:8080/stock-group/create",
         {

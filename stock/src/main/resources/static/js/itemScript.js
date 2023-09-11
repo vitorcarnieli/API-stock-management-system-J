@@ -5,16 +5,19 @@ const unitType = document.getElementById("unitType");
 const amount = document.getElementById("amount");
 const form = document.getElementById("form");
 const tbody = document.getElementById("tbody");
-var object;
+const title = document.getElementById("title");
+var object
+var amountValue
 
 document.addEventListener("DOMContentLoaded", createPage());
 
-
-console.log("test")
-
 form.addEventListener("submit", function(e) {
     e.preventDefault();
-    submit();
+    if(amount.value < 0) {
+        alert("QUANTIDADE MENOR QUE 0");
+    } else {
+        submit();
+    }
 })
 
 function createPage() {
@@ -23,14 +26,13 @@ function createPage() {
             if (!response.ok) {
                 throw new Error("error no response" + response.status);
             }
-            console.log(response)
-            console.log(response.json)
             return response.json();
         })
         .then((data) => {
-            console.log(data)
             object = data;
+            amountValue = object.amount;
             
+            title.textContent = object.name;
             itemName.textContent = object.name;
             description.textContent = object.description;
             unitType.textContent = object.unitType;
@@ -44,6 +46,7 @@ function createPage() {
 }
  
 function createTable() {
+    console.log(object)
     tbody.innerHTML = ""
     for (let i = 0; i < object.changes.length; i++) {
         let change = object.changes[i];
@@ -53,11 +56,11 @@ function createTable() {
         let tdChange = document.createElement("td");
         let tdDate = document.createElement("td");
         let tdHour = document.createElement("td");
+        
+        let valuesChanges = change.amount;
 
-        let valuesChanges = change[0]
         if(valuesChanges[0] == "c") {
-            valuesChanges = "Criou com " + valuesChanges.replace(/[c.0]/g, "");
-            tdChange.textContent = valuesChanges;
+            tdChange.textContent = "Criou com " + valuesChanges.replace("c","");
             tdChange.className = "text-primary";
         } else if(parseInt(valuesChanges) > 0) {
             valuesChanges = "Adicionou +" + valuesChanges;
@@ -71,7 +74,7 @@ function createTable() {
 
 
 
-        let dateHour = change[1].split(" T ");
+        let dateHour = change.date.split(" T ");
 
         tdDate.textContent = dateHour[0];
         tdHour.textContent = dateHour[1];
@@ -86,5 +89,39 @@ function createTable() {
 }
 
 function submit() {
+    console.log(urlParam.get("id"))
+    let value;
+    if(amount.value < amountValue) {
+        value = -(amountValue - amount.value);
+    } else {
+        value = amount.value - amountValue;
+    }
 
+    object.changes.forEach((change) => {
+        change.amount = parseInt(change.amount);
+    });
+
+    console.log("http://127.0.0.1:8080/item/add/changes?idItem=" + urlParam.get("id") +"&change="+value)
+    console.log(object.changes.length)
+    fetch("http://127.0.0.1:8080/item/add/changes?idItem=" + urlParam.get("id") +"&change="+value,
+        {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(object),
+            method: "POST",
+        })
+        .then(function (res) {
+            createTable();
+            if (!res.ok) {
+                throw new Error("Erro na solicitação POST: " + res.status);
+            }
+            return res.json();
+        })
+        .catch(function (res) { 
+            createTable();
+            console.log(object.changes.length)
+ 
+        })
 }

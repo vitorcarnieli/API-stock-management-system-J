@@ -1,3 +1,7 @@
+const name = document.getElementById("name");
+const description = document.getElementById("description");
+const unitType = document.getElementById("unitType");
+const amount = document.getElementById("amount");
 const form = document.getElementById("form");
 
 
@@ -6,15 +10,11 @@ console.log(urlParam);
 
 form.addEventListener("submit", function (event) {
     event.preventDefault();
-    createStockGroup();
+    createItem();
 });
 
 
-function createStockGroup() {
-    const name = document.getElementById("name");
-    const description = document.getElementById("description");
-    const unitType = document.getElementById("unitType");
-    const amount = document.getElementById("amount");
+function createItem() {
 
     fetch("http://127.0.0.1:8080/stock-group/addItem/" + urlParam.get("id"),
         {
@@ -27,7 +27,7 @@ function createStockGroup() {
                 name: name.value,
                 unitType: unitType.value,
                 description: description.value,
-                amount: amount.value
+                amount: parseInt(amount.value)
             })
         })
         .then(function (res) {

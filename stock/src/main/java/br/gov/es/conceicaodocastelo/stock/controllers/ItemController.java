@@ -53,15 +53,12 @@ public class ItemController {
         }
     }
 
-
+    
     @PostMapping(path = "/add/changes")
     @ResponseBody
-    public ResponseEntity<Object> addChanges(
-            @RequestParam(value = "idItem") String idGroup,
-            @RequestParam(value = "change") Integer change) {
-        if (idGroup != null && change != null) {
-            UUID id = UUID.fromString(idGroup);
-            ResponseEntity<ItemModel> response = itemService.addChanges(id, change);
+    public ResponseEntity<Object> addChanges(@RequestParam(value = "idItem") String idItem, @RequestParam(value = "change") Integer change) {
+        if (idItem != null && change != null) {
+            ResponseEntity<ItemModel> response = itemService.addChanges(UUID.fromString(idItem), change);
 
             if (response.getStatusCode() == HttpStatus.OK) {
                 return ResponseEntity.status(HttpStatus.OK).body(null);

@@ -1,15 +1,17 @@
 package br.gov.es.conceicaodocastelo.stock.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.*;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+
+import org.hibernate.annotations.Cascade;
 
 @Entity
 @Table(name = "TB_ITEMS")
@@ -28,9 +30,13 @@ public class ItemModel implements Serializable {
 
     private String description;
 
-    private Double amount;
+    private Integer amount;
 
-    private List<List<String>> changes = new ArrayList<>();
+    
+    @OneToMany(mappedBy = "itemModel")
+    @JsonManagedReference
+    @Cascade(value = org.hibernate.annotations.CascadeType.ALL)
+    private List<Records> changes = new ArrayList<>();
 
     
     @ManyToOne
@@ -75,21 +81,31 @@ public class ItemModel implements Serializable {
         
     }
     
-    public Double getAmount() {
+    public Integer getAmount() {
         return amount;
     }
     
-    public void setAmount(Double amount) {
-        this.amount = amount;
-        if(changes.isEmpty()) {
-            Date dataNow = new Date();
-            SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy 'T' HH:mm");
-            String dataFormated = format.format(dataNow);
-            String c = "c" + getAmount(); 
-            List<String> create = new ArrayList<>();
-            create.add(c);
-            create.add(dataFormated);
-            this.changes.add(create);
+    public void setAmount(Integer amount) {
+        if(amount != null) {
+            if(this.amount == null) {
+                addChanges(amount);
+            }
+            this.amount = amount;
+            
+        }
+    }
+    
+    public void increaseOrDecreaseAmount(Integer valueToIncreaseOrDecrease) {
+        //para incrementar mande um numero positivo, para decrementar mande um negativo
+        if(valueToIncreaseOrDecrease != null) {
+            if(valueToIncreaseOrDecrease > 0) {
+                this.setAmount(valueToIncreaseOrDecrease + this.getAmount());
+            } else {
+                this.setAmount(this.getAmount() - (valueToIncreaseOrDecrease * -1));
+            }
+            addChanges(valueToIncreaseOrDecrease);
+        } else {
+            throw new NullPointerException("valueToIncreaseOrDecrease == null");
         }
     }
     
@@ -101,26 +117,26 @@ public class ItemModel implements Serializable {
         this.unitType = unitType;
     }
 
-    public List<List<String>> getChanges() {
+    public List<Records> getChanges() {
         return changes;
     }
 
-    public void setChanges(List<List<String>> changes) {
+    public void setChanges(List<Records> changes) {
         this.changes = changes;
     }
 
-    public void addChanges(Integer change) {
-        if (change != null) {
-            List<String> changeAdd = new ArrayList<>();
-            Date dataNow = new Date();
-            SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy 'T' HH:mm");
-            String dataFormated = format.format(dataNow);
-            changeAdd.add(change.toString());
-            changeAdd.add(dataFormated);
-            System.out.println(changeAdd);
-            changes.add(changeAdd);
+    public void addChanges(Integer changedValue) {
+        System.out.println("entrou aqui");
+        System.out.println(changes.isEmpty());
+        Records record = new Records(this);
+        if(changes.isEmpty()) {
+            System.out.println("entrou aqui");
+            record.setAmount("c" + changedValue);
+            changes.add(0, record);
+            System.out.println(changes.get(0).toString());
         } else {
-            System.out.println("deu ruim");
+            record.setAmount(changedValue.toString());
+            this.changes.add(0, record);
         }
     }
     
