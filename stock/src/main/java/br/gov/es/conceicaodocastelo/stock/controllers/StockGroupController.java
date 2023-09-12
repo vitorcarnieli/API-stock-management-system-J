@@ -12,12 +12,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import com.itextpdf.text.Document;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfWriter;
 
 
 @RestController
@@ -150,6 +157,25 @@ public class StockGroupController {
         }
     }
 
+
+    @GetMapping(value="/report")
+    public void createReport() {
+        Document document = new Document();
+        try {
+            PdfWriter.getInstance(document, new FileOutputStream("C:\\Users\\usuario\\test.pdf"));
+            document.open();
+            document.setPageSize(PageSize.A4);
+
+            document.newPage();
+
+            document.add(new Paragraph("Relatório gerado no dia " + new Date()));
+            System.out.println("criado");
+        } catch (Exception e) {
+            System.out.println(e);
+            document.close();
+        }
+    }
+    
     
     
 }
