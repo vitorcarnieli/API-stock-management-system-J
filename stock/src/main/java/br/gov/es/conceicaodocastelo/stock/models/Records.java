@@ -38,7 +38,7 @@ public class Records {
         setItemModel(itemModel);
         LocalDateTime now = LocalDateTime.now();
         
-        DateTimeFormatter pattern = DateTimeFormatter.ofPattern("dd/MM/yyyy'T'HH:mm");
+        DateTimeFormatter pattern = DateTimeFormatter.ofPattern("dd-MM-yyyy'T'HH:mm:ss");
         date = now.format(pattern);
     }
 

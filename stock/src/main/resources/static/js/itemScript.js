@@ -9,7 +9,9 @@ const title = document.getElementById("title");
 var deleteButton = document.getElementById("delete");
 const destroyButton = document.getElementById("deleteItem");
 var cancelButton = document.getElementById("cancel");
-
+var sortIcon = document.getElementById("sortIcon");
+var on = true
+var records;
 var amountValue
 
 //TODO: IMPLEMENTAR ADD ITEM NA PAGINA DE ESTOQUE
@@ -30,6 +32,8 @@ function updateObject() {
             console.error('Erro ao fazer a solicitação:', error);
         });
 }
+
+sortIcon.addEventListener("click", toggleIcon)
 
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -76,7 +80,7 @@ function createPage() {
             unitType.textContent = object.unitType;
             amount.value = object.amount;
             changesList = object.changes;
-            createTable(data)
+            createTable(data, on)
         })
         .catch((error) => {
             console.error('Erro ao fazer a solicitação:', error);
@@ -94,7 +98,7 @@ form.addEventListener("submit", function (e) {
     }
 })
 
-function createTable(data) {
+function createTable(data, trueToAltSortC) {
 
     while (tbody.firstChild) {
         tbody.removeChild(tbody.firstChild);
@@ -102,16 +106,12 @@ function createTable(data) {
 
     var rowArray = [];
 
-    console.log(data.changes)
-
     for (let i = 0; i < data.changes.length; i++) {
         let change = data.changes[i];
         let tr = document.createElement("tr");
         tr.className = "text-center";
         
         let tdChange = document.createElement("td");
-        let tdDate = document.createElement("td");
-        let tdHour = document.createElement("td");
         let valuesChanges = change.amount;
         let dateHour = change.date.split(" T ");
         
@@ -131,23 +131,47 @@ function createTable(data) {
         
         var row = {
             textContent: tdChange,
-            date: dateHour
+            date: dateHour[0]
         };
-
         rowArray.push(row);
+    }
+    
+    if(trueToAltSortC) {
+        rowArray.sort(function(a, b) {
+            var dateA = a.date;
+            var dateB = b.date;
+            return dateA.localeCompare(dateB);
+          });
+    } else {
+        rowArray.sort(function(a, b) {
+            var dateA = a.date;
+            var dateB = b.date;
+            return dateB.localeCompare(dateA);
+          });
+    }
 
-        tdDate.textContent = dateHour[0];
-        tdHour.textContent = dateHour[1];
+    for (let i = 0; i < rowArray.length; i++) {
+        let row = rowArray[i];
+        console.log(row)
+        let dateTime = row.date.split("T");
 
+        let date = dateTime[0];
+        date = date.replace(/-/g,"/");
+        let time = dateTime[1];
 
-        console.log(rowArray)
+        let tdDate = document.createElement("td");
+        let tdHour = document.createElement("td");
 
-        tr.appendChild(tdChange);
+        tdDate.textContent = date;
+        tdHour.textContent = time
+        
+        let tr = document.createElement("tr");
+        console.log("foi")
+        tr.appendChild(row.textContent);
         tr.appendChild(tdDate);
         tr.appendChild(tdHour);
 
         tbody.appendChild(tr);
-
     }
 
 
@@ -208,4 +232,23 @@ function destroy() {
         })
         .catch((error) => {
         });
+}
+
+function toggleIcon() {
+    if(on) {
+        on = false;
+    } else {
+        on = true;
+    }
+    let icon = document.getElementById("sortIcon");
+
+
+    if (icon.classList.contains("bi-sort-down")) {
+        icon.classList.remove("bi-sort-down");
+        icon.classList.add("bi-sort-down-alt");
+    } else {
+        icon.classList.remove("bi-sort-down-alt");
+        icon.classList.add("bi-sort-down");
+    }
+    createPage();
 }

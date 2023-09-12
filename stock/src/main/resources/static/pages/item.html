@@ -9,6 +9,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
         crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <link rel="icon" type="image/x-icon" href="../assets/img/x-icon.png">
     <script src="../js/itemScript.js" defer></script>
     <title id="title">Criação de Novo Grupo de Estoque</title>
@@ -108,7 +109,12 @@
                     <table class="table table-bordered">
                         <thead class="table-dark">
                             <tr class="">
-                                <th class="col-5 text-center m-0">Alteração</th>
+                                <th class="col-5 text-center m-0">Alteração
+                                    
+                                    <button class="btn p-0" id="alphaSort">
+                                        <i class="bi bi-sort-down text-white" id="sortIcon"></i>
+                                    </button>
+                                </th>
                                 <th class="col-1">Data</th>
                                 <th class="col-1">Hora</th>
                             </tr>
