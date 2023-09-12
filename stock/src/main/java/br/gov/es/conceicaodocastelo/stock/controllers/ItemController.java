@@ -1,6 +1,7 @@
 package br.gov.es.conceicaodocastelo.stock.controllers;
 
 import br.gov.es.conceicaodocastelo.stock.models.ItemModel;
+import br.gov.es.conceicaodocastelo.stock.models.StockGroupModel;
 import br.gov.es.conceicaodocastelo.stock.servicies.ItemService;
 
 import java.util.List;
@@ -68,6 +69,14 @@ public class ItemController {
         } else {
             throw new NullPointerException("null");
         }
+    }
+
+    @DeleteMapping(path = "/delete")
+    @ResponseBody
+    public ResponseEntity<StockGroupModel> delete(@RequestParam(value = "idItem") String idItem) {
+        StockGroupModel stock = itemService.deleteById(UUID.fromString(idItem));
+        return ResponseEntity.status(HttpStatus.OK).body(stock);
+        
     }
     
 

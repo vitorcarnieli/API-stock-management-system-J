@@ -1,6 +1,7 @@
 package br.gov.es.conceicaodocastelo.stock.servicies;
 
 import br.gov.es.conceicaodocastelo.stock.models.ItemModel;
+import br.gov.es.conceicaodocastelo.stock.models.StockGroupModel;
 import br.gov.es.conceicaodocastelo.stock.repositories.ItemRepository;
 
 import java.util.List;
@@ -88,6 +89,12 @@ public class ItemService {
         } else {
             throw new NullPointerException("null");
         }
+    }
+
+    public StockGroupModel deleteById(UUID id) {
+        ItemModel item = this.findById(id).getBody().get();
+        itemRepository.delete(item);
+        return item.getStockGroup();
     }
 
 }

@@ -86,6 +86,10 @@ public class StockGroupModel implements Serializable {
         }
     }
 
+    public void deleteItem(ItemModel item) {
+        this.items.remove(item);
+    }
+
     public void deleteItems() {
         this.items.clear();
     }

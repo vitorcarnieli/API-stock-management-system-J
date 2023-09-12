@@ -6,8 +6,10 @@ const amount = document.getElementById("amount");
 const form = document.getElementById("form");
 const tbody = document.getElementById("tbody");
 const title = document.getElementById("title");
-const deleteButton = document.getElementById("delete");
+var deleteButton = document.getElementById("delete");
 const destroyButton = document.getElementById("deleteItem");
+var cancelButton = document.getElementById("cancel");
+
 var amountValue
 
 //TODO: IMPLEMENTAR ADD ITEM NA PAGINA DE ESTOQUE
@@ -34,13 +36,27 @@ document.addEventListener("DOMContentLoaded", function () {
     createPage();
 });
 
-destroyButton.addEventListener("click", function () {
+destroyButton.addEventListener("click", function (event) {
+    event.preventDefault();
+    var confirmacaoModal = document.getElementById("confirmacaoModal");
+    confirmacaoModal.style.display = "block";
+});
 
+deleteButton.addEventListener("click", function () {
     //TODO: IMPLEMENTAR DELETAR ITEM
     var confirmacaoModal = document.getElementById("confirmacaoModal");
     confirmacaoModal.style.display = "none";
     destroy();
 });
+
+
+cancelButton.addEventListener("click", function () {
+    var confirmacaoModal = document.getElementById("confirmacaoModal");
+    confirmacaoModal.style.display = "none";
+});
+
+
+
 
 function createPage() {
     fetch("http://127.0.0.1:8080/item/find/byId?id=" + urlParam.get("id"))
@@ -161,7 +177,7 @@ function submit() {
 
 function destroy() {
     console.log("oi")
-    fetch("http://127.0.0.1:8080/stock-group/delete/item?idItem=" + urlParam.get("id"), 
+    fetch("http://127.0.0.1:8080/item/delete?idItem=" + urlParam.get("id"), 
     {
         headers: {
             'Accept': 'application/json',
@@ -176,7 +192,7 @@ function destroy() {
             return response.json();
         })
         .then((data) => {
-            console.log(data)
+            window.location.href = "http://127.0.0.1:8080/pages/stockGroup.html?id=" + data.id;
         })
         .catch((error) => {
         });

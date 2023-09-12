@@ -3,6 +3,7 @@ package br.gov.es.conceicaodocastelo.stock.servicies;
 import br.gov.es.conceicaodocastelo.stock.models.ItemModel;
 import br.gov.es.conceicaodocastelo.stock.models.StockGroupModel;
 import br.gov.es.conceicaodocastelo.stock.repositories.StockGroupRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -108,14 +109,6 @@ public class StockGroupService {
             }
         } else {
             throw new NullPointerException("public void deleteById(UUID id == null)");
-        }
-    }
-
-    public  void deleteItemInStockGroup(StockGroupModel stockGroupModel, ItemModel itemModel) {
-        if(stockGroupModel != null && itemModel != null) {
-            stockGroupModel.getItems().remove(itemModel);
-        } else {
-            throw new NullPointerException("null arg");
         }
     }
 
