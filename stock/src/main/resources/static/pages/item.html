@@ -1,13 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+        crossorigin="anonymous"></script>
     <link rel="icon" type="image/x-icon" href="../assets/img/x-icon.png">
     <script src="../js/itemScript.js" defer></script>
     <title id="title">Criação de Novo Grupo de Estoque</title>
+    <style>
+        .table-container {
+            max-height: 300px;
+            /* Defina a altura máxima desejada */
+            overflow-y: auto;
+            /* Adiciona uma barra de rolagem vertical quando necessário */
+            /* Opcional: Adicione uma borda à área de rolagem */
+        }
+        .tbody {
+            max-height: 300px; overflow-y: auto;
+        }
+    </style>
 </head>
 <body>
     <div class="container-fluid text-center p-3 bg-light border-bottom">
@@ -20,6 +36,30 @@
             </div>
         </div>
     </div>
+
+    
+    <div class="modal" id="confirmacaoModal">
+        <div class="modal-dialog">
+          <div class="modal-content">
+      
+            <div class="modal-header">
+              <h4 class="modal-title">Confirmação de Exclusão</h4>
+            </div>
+      
+            <div class="modal-body">
+              Tem certeza que deseja apagar este Item? Este item será deletado permanentemente.
+            </div>
+      
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal" id="cancel">Cancelar</button>
+              <button type="button" class="btn btn-danger" id="delete">Apagar</button>
+            </div>
+      
+          </div>
+        </div>
+    </div>
+
+
 
     <div class="row">
         <span class="col-4"></span>
@@ -50,7 +90,12 @@
                 <span class="col-4"></span>
 
                 <span class="col-5"></span>
-                <button type="submit" class="btn btn-primary col m-3" id="invite">Salvar</button>
+                <button type="submit" class="btn btn-primary col mt-3" id="invite">Salvar</button>
+                <span class="col-5"></span>
+
+                
+                <span class="col-5"></span>
+                <button type="submit" class="btn btn-danger col mt-2" id="deleteItem">Apagar Item</button>
                 <span class="col-5"></span>
             </form>
         </div>
@@ -59,7 +104,7 @@
         <div class="row">
             <div class="row p-3">
                 <span class="col-4"></span>
-                <div class="col-4">
+                <div class="col-4 table-container table-responsive">
                     <table class="table table-bordered">
                         <thead class="table-dark">
                             <tr class="">

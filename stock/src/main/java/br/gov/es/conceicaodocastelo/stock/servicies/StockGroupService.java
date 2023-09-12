@@ -79,6 +79,10 @@ public class StockGroupService {
         }
     }
 
+    public  StockGroupModel findStockGroupByItem(UUID itemId) {
+        return itemService.findById(itemId).getBody().get().getStockGroup();
+    }
+
     public List<ItemModel> findAllItemsInStockGroup(StockGroupModel stockGroupModel) {
         if(stockGroupModel != null) {
             List<ItemModel> items = stockGroupModel.getItems();

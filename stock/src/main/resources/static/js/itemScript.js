@@ -6,19 +6,41 @@ const amount = document.getElementById("amount");
 const form = document.getElementById("form");
 const tbody = document.getElementById("tbody");
 const title = document.getElementById("title");
-var object
+const deleteButton = document.getElementById("delete");
+const destroyButton = document.getElementById("deleteItem");
 var amountValue
 
-document.addEventListener("DOMContentLoaded", createPage());
+//TODO: IMPLEMENTAR ADD ITEM NA PAGINA DE ESTOQUE
 
-form.addEventListener("submit", function(e) {
-    e.preventDefault();
-    if(amount.value < 0) {
-        alert("QUANTIDADE MENOR QUE 0");
-    } else {
-        submit();
-    }
-})
+function updateObject() {
+    return fetch("http://127.0.0.1:8080/item/find/byId?id=" + urlParam.get("id"))
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error("error no response" + response.status);
+            }
+            return response.json()
+        })
+        .then(data => {
+            return data;
+
+        })
+        .catch((error) => {
+            console.error('Erro ao fazer a solicitação:', error);
+        });
+}
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    createPage();
+});
+
+destroyButton.addEventListener("click", function () {
+
+    //TODO: IMPLEMENTAR DELETAR ITEM
+    var confirmacaoModal = document.getElementById("confirmacaoModal");
+    confirmacaoModal.style.display = "none";
+    destroy();
+});
 
 function createPage() {
     fetch("http://127.0.0.1:8080/item/find/byId?id=" + urlParam.get("id"))
@@ -38,31 +60,44 @@ function createPage() {
             unitType.textContent = object.unitType;
             amount.value = object.amount;
             changesList = object.changes;
-            createTable()
+            createTable(data)
         })
         .catch((error) => {
             console.error('Erro ao fazer a solicitação:', error);
         });
 }
- 
-function createTable() {
-    console.log(object)
-    tbody.innerHTML = ""
-    for (let i = 0; i < object.changes.length; i++) {
-        let change = object.changes[i];
+
+
+
+form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    if (amount.value < 0) {
+        alert("QUANTIDADE MENOR QUE 0");
+    } else {
+        submit();
+    }
+})
+
+function createTable(data) {
+
+    while (tbody.firstChild) {
+        tbody.removeChild(tbody.firstChild);
+    }
+
+    for (let i = 0; i < data.changes.length; i++) {
+        let change = data.changes[i];
         let tr = document.createElement("tr");
         tr.className = "text-center";
 
         let tdChange = document.createElement("td");
         let tdDate = document.createElement("td");
         let tdHour = document.createElement("td");
-        
         let valuesChanges = change.amount;
 
-        if(valuesChanges[0] == "c") {
-            tdChange.textContent = "Criou com " + valuesChanges.replace("c","");
+        if (valuesChanges[0] == "c") {
+            tdChange.textContent = "Criou com " + valuesChanges.replace("c", "");
             tdChange.className = "text-primary";
-        } else if(parseInt(valuesChanges) > 0) {
+        } else if (parseInt(valuesChanges) > 0) {
             valuesChanges = "Adicionou +" + valuesChanges;
             tdChange.textContent = valuesChanges;
             tdChange.className = "text-success";
@@ -86,42 +121,63 @@ function createTable() {
         tbody.appendChild(tr);
 
     }
+
+
 }
 
 function submit() {
-    console.log(urlParam.get("id"))
-    let value;
-    if(amount.value < amountValue) {
-        value = -(amountValue - amount.value);
-    } else {
-        value = amount.value - amountValue;
-    }
+    updateObject().then((data) => {
+        let value;
+        if (amount.value < amountValue) {
+            value = -(amountValue - amount.value);
+        } else {
+            value = amount.value - amountValue;
+        }
+        if (value == 0 || value == parseInt(amount.value)) {
+            console.log("retornou")
+            return;
+        }
 
-    object.changes.forEach((change) => {
-        change.amount = parseInt(change.amount);
-    });
 
-    console.log("http://127.0.0.1:8080/item/add/changes?idItem=" + urlParam.get("id") +"&change="+value)
-    console.log(object.changes.length)
-    fetch("http://127.0.0.1:8080/item/add/changes?idItem=" + urlParam.get("id") +"&change="+value,
-        {
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(object),
-            method: "POST",
-        })
-        .then(function (res) {
-            createTable();
-            if (!res.ok) {
-                throw new Error("Erro na solicitação POST: " + res.status);
+        fetch("http://127.0.0.1:8080/item/add/changes?idItem=" + urlParam.get("id") + "&change=" + value,
+            {
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data),
+                method: "POST",
+            })
+            .then(function (res) {
+                return res.json()
+            })  
+            .catch(function (res) {
+
+                createPage();
+            })
+
+    })
+}
+
+function destroy() {
+    console.log("oi")
+    fetch("http://127.0.0.1:8080/stock-group/delete/item?idItem=" + urlParam.get("id"), 
+    {
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        method: "DELETE",
+    })
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error("error no response" + response.status);
             }
-            return res.json();
+            return response.json();
         })
-        .catch(function (res) { 
-            createTable();
-            console.log(object.changes.length)
- 
+        .then((data) => {
+            console.log(data)
         })
+        .catch((error) => {
+        });
 }

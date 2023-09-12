@@ -126,14 +126,12 @@ public class ItemModel implements Serializable {
     }
 
     public void addChanges(Integer changedValue) {
-        System.out.println("entrou aqui");
-        System.out.println(changes.isEmpty());
         Records record = new Records(this);
+        if(amount == null) {
+            record.setAmount("c"+changedValue);
+        }
         if(changes.isEmpty()) {
-            System.out.println("entrou aqui");
-            record.setAmount("c" + changedValue);
             changes.add(0, record);
-            System.out.println(changes.get(0).toString());
         } else {
             record.setAmount(changedValue.toString());
             this.changes.add(0, record);

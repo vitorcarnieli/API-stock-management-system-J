@@ -48,6 +48,7 @@ public class StockGroupController {
     @PostMapping(value = "/addItem/{idGroup}")
     public ResponseEntity<StockGroupModel> addItemToStockGroup(@PathVariable(value = "idGroup") UUID idGroup, @RequestBody @Valid ItemRecordDto itemRecordDto) {
         ItemModel item = new ItemModel();
+
         BeanUtils.copyProperties(itemRecordDto, item);
 
         Optional<StockGroupModel> stockO = stockGroupService.findById(idGroup);
@@ -185,6 +186,19 @@ public class StockGroupController {
         }
     }
 
+    @DeleteMapping("/delete/item")
+    @ResponseBody
+    public StockGroupModel deleteItem(@RequestParam(value = "idItem") UUID itemId) {
+        if(itemId != null) {
+            StockGroupModel stockGroup = stockGroupService.findStockGroupByItem(itemId);
+            ItemModel item = stockGroupService.findItemInStockGroupById(stockGroup, itemId).get();
+            stockGroupService.deleteItemInStockGroup(stockGroup, item);
+            return stockGroup;
+        } else {
+            throw new NullPointerException("null");
+        }
+    }
+
     @GetMapping(value = "/revice")
     public void reviceStockObject(@RequestParam(value = "id") UUID id) {
         stockAwaitForReturn = findById(id).getBody().get();
@@ -198,5 +212,7 @@ public class StockGroupController {
             return null;
         }
     }
+
+    
     
 }
