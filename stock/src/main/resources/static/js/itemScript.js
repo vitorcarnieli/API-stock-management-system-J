@@ -100,16 +100,22 @@ function createTable(data) {
         tbody.removeChild(tbody.firstChild);
     }
 
+    var rowArray = [];
+
+    console.log(data.changes)
+
     for (let i = 0; i < data.changes.length; i++) {
         let change = data.changes[i];
         let tr = document.createElement("tr");
         tr.className = "text-center";
-
+        
         let tdChange = document.createElement("td");
         let tdDate = document.createElement("td");
         let tdHour = document.createElement("td");
         let valuesChanges = change.amount;
-
+        let dateHour = change.date.split(" T ");
+        
+        
         if (valuesChanges[0] == "c") {
             tdChange.textContent = "Criou com " + valuesChanges.replace("c", "");
             tdChange.className = "text-primary";
@@ -122,13 +128,19 @@ function createTable(data) {
             tdChange.textContent = valuesChanges;
             tdChange.className = "text-danger";
         }
+        
+        var row = {
+            textContent: tdChange,
+            date: dateHour
+        };
 
-
-
-        let dateHour = change.date.split(" T ");
+        rowArray.push(row);
 
         tdDate.textContent = dateHour[0];
         tdHour.textContent = dateHour[1];
+
+
+        console.log(rowArray)
 
         tr.appendChild(tdChange);
         tr.appendChild(tdDate);

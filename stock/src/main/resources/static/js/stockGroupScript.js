@@ -42,18 +42,6 @@ function createTdWithIcons(condition, idItem) {
     let btn = document.createElement("button");
     let icon = document.createElement("i")
     switch (condition) {
-        case "+":
-            btn.id = "addBtn";
-            btn.className = "btn btn-success rounded-5";
-            icon.className = "bi bi-plus-lg"
-            btn.appendChild(icon);
-            return btn;
-        case "-":
-            btn.id = "subsBtn";
-            btn.className = "btn btn-danger rounded-5"
-            icon.className = "bi bi-dash-lg"
-            btn.appendChild(icon);
-            return btn;
         case "ENTER":
             let a = document.createElement("a");
             a.className = "btn btn-primary rounded-5";
@@ -116,26 +104,18 @@ function createTable(obj, orgToZA) {
         let tdName = document.createElement("td");
         let tdUnitType = document.createElement("td");
         let tdAmount = document.createElement("td");
-        let tdMore = document.createElement("td");
-        let tdMinus = document.createElement("td");
         let tdEnter = document.createElement("td")
 
-        tdMore.className = "text-center";
-        tdMinus.className = "text-center";
         tdEnter.className = "text-center";
 
         let item = obj[i];
         tdName.textContent = item.name;
         tdUnitType.textContent = item.unitType;
         tdAmount.textContent = item.amount;
-        tdMore.appendChild(createTdWithIcons("+"));
-        tdMinus.appendChild(createTdWithIcons("-"));
         tdEnter.appendChild(createTdWithIcons("ENTER", item.id));
         tr.appendChild(tdName);
         tr.appendChild(tdUnitType);
         tr.appendChild(tdAmount);
-        tr.appendChild(tdMore);
-        tr.appendChild(tdMinus);
         tr.appendChild(tdEnter)
 
         tbody.appendChild(tr);
