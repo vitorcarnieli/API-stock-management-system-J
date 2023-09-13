@@ -172,7 +172,7 @@ public class StockGroupController {
 
 
         try {
-            PdfWriter.getInstance(document, new FileOutputStream("/home/vitor/Documents/test.pdf"));
+            PdfWriter.getInstance(document, new FileOutputStream("C:\\Users\\usuario\\Documents\\stock\\stock\\src\\main\\resources\\static\\assets\\reports\\report" + new Date().getTime() + ".pdf"));
             document.open();
             document.setPageSize(PageSize.A4);
 
@@ -186,9 +186,19 @@ public class StockGroupController {
                 PdfPTable table = new PdfPTable(3);
                 table.setWidthPercentage(100);
                 
-                table.addCell(new PdfPCell(new Paragraph("Nome do item")));
-                table.addCell(new PdfPCell(new Paragraph("Tipo de unidade do item")));
-                table.addCell(new PdfPCell(new Paragraph("Quantidade do item")));
+                Font fontSubTitleTableProperties = new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD);
+                Paragraph name = new Paragraph("Nome do item", fontSubTitleTableProperties);
+                Paragraph unitType = new Paragraph("Tipo de unidade do item", fontSubTitleTableProperties);
+                Paragraph amount = new Paragraph("Quantidade do item", fontSubTitleTableProperties);
+                name.setAlignment(Element.ALIGN_CENTER);
+                unitType.setAlignment(Element.ALIGN_CENTER);
+                amount.setAlignment(Element.ALIGN_CENTER);
+
+
+
+                table.addCell(new PdfPCell(name));
+                table.addCell(new PdfPCell(unitType));
+                table.addCell(new PdfPCell(amount));
                 
                 for (ItemModel item : stock.getItems()) {
                     table.addCell(new PdfPCell(new Paragraph(item.getName())));
