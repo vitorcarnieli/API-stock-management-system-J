@@ -13,17 +13,22 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
+import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
 
@@ -161,14 +166,56 @@ public class StockGroupController {
     @GetMapping(value="/report")
     public void createReport() {
         Document document = new Document();
+
+        List<StockGroupModel> list = this.findAll();
+
+
+
         try {
-            PdfWriter.getInstance(document, new FileOutputStream("C:\\Users\\usuario\\test.pdf"));
+            PdfWriter.getInstance(document, new FileOutputStream("/home/vitor/Documents/test.pdf"));
             document.open();
             document.setPageSize(PageSize.A4);
 
-            document.newPage();
+            //title
+            Font fontTitle = new Font(Font.FontFamily.HELVETICA, 18, Font.BOLD);
+            Paragraph title = new Paragraph("Relatório de estoque", fontTitle);
+            title.setAlignment(Element.ALIGN_CENTER);
+            title.setSpacingAfter(20f); 
+            document.add(title);
+            for (StockGroupModel stock : list) {
+                PdfPTable table = new PdfPTable(3);
+                table.setWidthPercentage(100);
+                
+                table.addCell(new PdfPCell(new Paragraph("Nome do item")));
+                table.addCell(new PdfPCell(new Paragraph("Tipo de unidade do item")));
+                table.addCell(new PdfPCell(new Paragraph("Quantidade do item")));
+                
+                for (ItemModel item : stock.getItems()) {
+                    table.addCell(new PdfPCell(new Paragraph(item.getName())));
+                    table.addCell(new PdfPCell(new Paragraph(item.getUnitType())));
+                    table.addCell(new PdfPCell(new Paragraph(item.getAmount().toString()))); 
+                    
+                }
+                // Table Title (também com 3 colunas)
+                PdfPTable tituloTable = new PdfPTable(3);
+                tituloTable.setWidthPercentage(100);
+                PdfPCell tituloCell = new PdfPCell(new Phrase("Grupo de estoque: " + stock.getName(), new Font(Font.FontFamily.HELVETICA, 16, Font.BOLD)));
+                tituloCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+                tituloCell.setBackgroundColor(BaseColor.LIGHT_GRAY);
+                tituloCell.setPadding(10);
+                tituloCell.setColspan(3); // Defina o número de colunas para corresponder à tabela de dados
+                tituloTable.addCell(tituloCell);
+    
+                document.add(tituloTable);
+                document.add(table);
 
-            document.add(new Paragraph("Relatório gerado no dia " + new Date()));
+                document.add(new Paragraph("\n\n\n"));
+                
+            }
+            SimpleDateFormat formatoData = new SimpleDateFormat("dd/MM/yyyy - EEEE - HH:mm");
+            String data = formatoData.format(new Date());
+            document.add(new Paragraph("\n\nRelatório gerado no dia " + data));
+            document.close();
             System.out.println("criado");
         } catch (Exception e) {
             System.out.println(e);
