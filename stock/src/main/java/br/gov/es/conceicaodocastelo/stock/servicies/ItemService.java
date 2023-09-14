@@ -1,7 +1,7 @@
 package br.gov.es.conceicaodocastelo.stock.servicies;
 
-import br.gov.es.conceicaodocastelo.stock.models.ItemModel;
-import br.gov.es.conceicaodocastelo.stock.models.StockGroupModel;
+import br.gov.es.conceicaodocastelo.stock.models.Item;
+import br.gov.es.conceicaodocastelo.stock.models.StockGroup;
 import br.gov.es.conceicaodocastelo.stock.repositories.ItemRepository;
 
 import java.util.List;
@@ -22,14 +22,14 @@ public class ItemService {
         this.itemRepository = itemRepository;
     }
 
-    public ItemModel save(ItemModel itemModel) {
+    public Item save(Item itemModel) {
         if (itemModel != null) {
             return itemRepository.save(itemModel);
         }
         throw new NullPointerException("ItemModel save(ItemModel itemModel == null)");
     }
 
-    public void decrementAmountItem(Integer amount, ItemModel itemModel) {
+    public void decrementAmountItem(Integer amount, Item itemModel) {
         if (amount != null && itemModel != null) {
             int currentAmount = itemModel.getAmount() - amount;
             if (currentAmount >= 0) {
@@ -43,7 +43,7 @@ public class ItemService {
         }
     }
 
-    public void incrementAmountItem(Integer amount, ItemModel itemModel) {
+    public void incrementAmountItem(Integer amount, Item itemModel) {
         if (amount != null && amount >= 0.01 && itemModel != null) {
             itemModel.setAmount(itemModel.getAmount() + amount);
             this.save(itemModel);
@@ -52,7 +52,7 @@ public class ItemService {
         }
     }
 
-    public ResponseEntity<ItemModel> changeAmountItem(Integer amount, ItemModel itemModel) {
+    public ResponseEntity<Item> changeAmountItem(Integer amount, Item itemModel) {
         if(amount != null && amount > 0) {
             itemModel.setAmount(amount);
             this.save(itemModel);
@@ -62,18 +62,18 @@ public class ItemService {
         }
     }
 
-    public ResponseEntity<List<ItemModel>> findByName(@RequestParam(value = "name") String name) {
+    public ResponseEntity<List<Item>> findByName(@RequestParam(value = "name") String name) {
         if (name != null) {
-            List<ItemModel> items = itemRepository.findByNome(name);
-            return new ResponseEntity<List<ItemModel>>(items, HttpStatus.OK);
+            List<Item> items = itemRepository.findByNome(name);
+            return new ResponseEntity<List<Item>>(items, HttpStatus.OK);
         } else {
             throw new NullPointerException("ResponseEntity<List<ItemModel>> findByName(@RequestParam(value = \"name\") String name  == null)");
         }
     }
 
-    public ResponseEntity<ItemModel> addChanges(UUID id, Integer amount) {
+    public ResponseEntity<Item> addChanges(UUID id, Integer amount) {
         if(id != null & amount != null) {
-            ItemModel item = itemRepository.findById(id).get();
+            Item item = itemRepository.findById(id).get();
             item.increaseOrDecreaseAmount(amount);
             itemRepository.save(item);
             return ResponseEntity.status(HttpStatus.OK).body(item);
@@ -82,17 +82,17 @@ public class ItemService {
         }
     }
 
-    public ResponseEntity<Optional<ItemModel>> findById(UUID id) {
+    public ResponseEntity<Optional<Item>> findById(UUID id) {
         if(id != null) {
-            Optional<ItemModel> optItemModel = itemRepository.findById(id);
+            Optional<Item> optItemModel = itemRepository.findById(id);
             return ResponseEntity.status(HttpStatus.OK).body(optItemModel);
         } else {
             throw new NullPointerException("null");
         }
     }
 
-    public StockGroupModel deleteById(UUID id) {
-        ItemModel item = this.findById(id).getBody().get();
+    public StockGroup deleteById(UUID id) {
+        Item item = this.findById(id).getBody().get();
         itemRepository.delete(item);
         return item.getStockGroup();
     }

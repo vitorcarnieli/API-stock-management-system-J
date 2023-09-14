@@ -1,7 +1,7 @@
 package br.gov.es.conceicaodocastelo.stock.controllers;
 
-import br.gov.es.conceicaodocastelo.stock.models.ItemModel;
-import br.gov.es.conceicaodocastelo.stock.models.StockGroupModel;
+import br.gov.es.conceicaodocastelo.stock.models.Item;
+import br.gov.es.conceicaodocastelo.stock.models.StockGroup;
 import br.gov.es.conceicaodocastelo.stock.servicies.ItemService;
 
 import java.util.List;
@@ -27,10 +27,10 @@ public class ItemController {
         //GETER'S
     @GetMapping(path = "/find/byName")
     @ResponseBody
-    public ResponseEntity<List<ItemModel>> findByName(@RequestParam(value = "idGroup") String idGroup,@RequestParam(value = "name") String name) {
+    public ResponseEntity<List<Item>> findByName(@RequestParam(value = "idGroup") String idGroup,@RequestParam(value = "name") String name) {
         UUID id = UUID.fromString(idGroup);
         if(itemService.findByName(name).getBody() != null) {
-            List<ItemModel> items = itemService.findByName(name).getBody();
+            List<Item> items = itemService.findByName(name).getBody();
             items.removeIf(i -> !i.getStockGroup().getId().equals(id));
             return ResponseEntity.status(HttpStatus.OK).body(items);
         } else {
@@ -40,10 +40,10 @@ public class ItemController {
 
     @GetMapping(path = "/find/byId")
     @ResponseBody
-    public ResponseEntity<ItemModel> findById(@RequestParam(value = "id") String idd) {
+    public ResponseEntity<Item> findById(@RequestParam(value = "id") String idd) {
         UUID id = UUID.fromString(idd);
         if(id != null) {
-            Optional<ItemModel> item = itemService.findById(id).getBody();
+            Optional<Item> item = itemService.findById(id).getBody();
             if(item.isPresent()) {
                 return ResponseEntity.status(HttpStatus.OK).body(item.get());
             } else {
@@ -59,7 +59,7 @@ public class ItemController {
     @ResponseBody
     public ResponseEntity<Object> addChanges(@RequestParam(value = "idItem") String idItem, @RequestParam(value = "change") Integer change) {
         if (idItem != null && change != null) {
-            ResponseEntity<ItemModel> response = itemService.addChanges(UUID.fromString(idItem), change);
+            ResponseEntity<Item> response = itemService.addChanges(UUID.fromString(idItem), change);
 
             if (response.getStatusCode() == HttpStatus.OK) {
                 return ResponseEntity.status(HttpStatus.OK).body(null);
@@ -73,8 +73,8 @@ public class ItemController {
 
     @DeleteMapping(path = "/delete")
     @ResponseBody
-    public ResponseEntity<StockGroupModel> delete(@RequestParam(value = "idItem") String idItem) {
-        StockGroupModel stock = itemService.deleteById(UUID.fromString(idItem));
+    public ResponseEntity<StockGroup> delete(@RequestParam(value = "idItem") String idItem) {
+        StockGroup stock = itemService.deleteById(UUID.fromString(idItem));
         return ResponseEntity.status(HttpStatus.OK).body(stock);
         
     }

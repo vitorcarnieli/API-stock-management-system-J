@@ -11,7 +11,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "TB_STOCK_GROUPS")
-public class StockGroupModel implements Serializable {
+public class StockGroup implements Serializable {
 
     @Serial
     private static final long serialVersionUID = -4834257346219938057L;
@@ -28,9 +28,9 @@ public class StockGroupModel implements Serializable {
     @OneToMany(mappedBy = "stockGroup")
     @JsonManagedReference
     @Cascade(value = org.hibernate.annotations.CascadeType.ALL)
-    private List<ItemModel> items;
+    private List<Item> items;
 
-    public StockGroupModel() {
+    public StockGroup() {
     }
 
 
@@ -58,15 +58,15 @@ public class StockGroupModel implements Serializable {
         this.description = description;
     }
 
-    public List<ItemModel> getItems() {
+    public List<Item> getItems() {
         return items;
     }
 
-    public void setItems(List<ItemModel> items) {
+    public void setItems(List<Item> items) {
         this.items = items;
     }
 
-    public void addItems(ItemModel item) {
+    public void addItems(Item item) {
         if(item != null) {
             this.items.add(item);
             item.setStockGroup(this);
@@ -75,7 +75,7 @@ public class StockGroupModel implements Serializable {
         }
     }
 
-    public void addItems(List<ItemModel> items) {
+    public void addItems(List<Item> items) {
         if(items != null) {
             items.forEach(item -> {
                 this.items.add(item);
@@ -86,7 +86,7 @@ public class StockGroupModel implements Serializable {
         }
     }
 
-    public void deleteItem(ItemModel item) {
+    public void deleteItem(Item item) {
         this.items.remove(item);
     }
 
@@ -122,7 +122,7 @@ public class StockGroupModel implements Serializable {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        StockGroupModel other = (StockGroupModel) obj;
+        StockGroup other = (StockGroup) obj;
         if (id == null) {
             if (other.id != null)
                 return false;

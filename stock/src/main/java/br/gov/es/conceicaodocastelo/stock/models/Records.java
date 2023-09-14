@@ -27,14 +27,14 @@ public class Records {
     @ManyToOne
     @JsonBackReference
     @Cascade(value = org.hibernate.annotations.CascadeType.ALL)
-    private ItemModel itemModel;
+    private Item itemModel;
 
     
     
     public Records() {
     }
 
-    public Records(ItemModel itemModel) {
+    public Records(Item itemModel) {
         setItemModel(itemModel);
         LocalDateTime now = LocalDateTime.now();
         
@@ -58,11 +58,11 @@ public class Records {
         this.amount = amount;
     }
 
-    public ItemModel getItemModel() {
+    public Item getItemModel() {
         return itemModel;
     }
 
-    public void setItemModel(ItemModel itemModel) {
+    public void setItemModel(Item itemModel) {
         this.itemModel = itemModel;
     }
 

@@ -1,7 +1,7 @@
 package br.gov.es.conceicaodocastelo.stock.servicies;
 
-import br.gov.es.conceicaodocastelo.stock.models.ItemModel;
-import br.gov.es.conceicaodocastelo.stock.models.StockGroupModel;
+import br.gov.es.conceicaodocastelo.stock.models.Item;
+import br.gov.es.conceicaodocastelo.stock.models.StockGroup;
 import br.gov.es.conceicaodocastelo.stock.repositories.StockGroupRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,7 @@ public class StockGroupService {
     @Autowired
     ItemService itemService;
 
-    public StockGroupModel save(StockGroupModel stockGroupModel) {
+    public StockGroup save(StockGroup stockGroupModel) {
         if(stockGroupModel != null) {
             if(stockGroupModel.getItems() != null) {
                 stockGroupModel.getItems().forEach(item -> {
@@ -37,7 +37,7 @@ public class StockGroupService {
 
 
 
-    public Optional<StockGroupModel> findById(@PathVariable UUID id) {
+    public Optional<StockGroup> findById(@PathVariable UUID id) {
         if(id != null) {
             return stockGroupRepository.findById(id);
         } else {
@@ -45,21 +45,21 @@ public class StockGroupService {
         }
     }
 
-    public ResponseEntity<List<StockGroupModel>> findByName(@RequestParam(value = "name") String name) {
+    public ResponseEntity<List<StockGroup>> findByName(@RequestParam(value = "name") String name) {
         if(name != null) {
-            List<StockGroupModel> stocks = stockGroupRepository.findByNome(name);
-            return new ResponseEntity<List<StockGroupModel>>(stocks, HttpStatus.OK);
+            List<StockGroup> stocks = stockGroupRepository.findByNome(name);
+            return new ResponseEntity<List<StockGroup>>(stocks, HttpStatus.OK);
         } else {
             throw new NullPointerException("ResponseEntity<List<StockGroupModel>> findByName(@PathVariable String name == null)");
         }
     }
 
 
-    public List<StockGroupModel> findAll() {
+    public List<StockGroup> findAll() {
         return stockGroupRepository.findAll();
     }
 
-    public void delete(StockGroupModel stockGroupModel) {
+    public void delete(StockGroup stockGroupModel) {
         if(stockGroupModel != null) {
             stockGroupRepository.delete(stockGroupModel);
         } else {
@@ -67,9 +67,9 @@ public class StockGroupService {
         }
     }
 
-    public Optional<ItemModel> findItemInStockGroupById(StockGroupModel stockGroupModel, UUID id) {
+    public Optional<Item> findItemInStockGroupById(StockGroup stockGroupModel, UUID id) {
         if(stockGroupModel != null) {
-            Optional<ItemModel> item = this.findAllItemsInStockGroup(stockGroupModel).stream().filter(i -> i.getId().equals(id)).findFirst();
+            Optional<Item> item = this.findAllItemsInStockGroup(stockGroupModel).stream().filter(i -> i.getId().equals(id)).findFirst();
             if(item.isPresent()) {
                 return item;
             } else {
@@ -80,13 +80,13 @@ public class StockGroupService {
         }
     }
 
-    public  StockGroupModel findStockGroupByItem(UUID itemId) {
+    public  StockGroup findStockGroupByItem(UUID itemId) {
         return itemService.findById(itemId).getBody().get().getStockGroup();
     }
 
-    public List<ItemModel> findAllItemsInStockGroup(StockGroupModel stockGroupModel) {
+    public List<Item> findAllItemsInStockGroup(StockGroup stockGroupModel) {
         if(stockGroupModel != null) {
-            List<ItemModel> items = stockGroupModel.getItems();
+            List<Item> items = stockGroupModel.getItems();
             if(items.isEmpty()) {
                 throw new RuntimeException("empty list");
             } else {
@@ -101,7 +101,7 @@ public class StockGroupService {
 
     public void deleteById(UUID id) {
         if(id != null) {
-            Optional<StockGroupModel> stock = this.findById(id);
+            Optional<StockGroup> stock = this.findById(id);
             if(stock.isPresent()) {
                 stockGroupRepository.delete(stock.get());
             } else {

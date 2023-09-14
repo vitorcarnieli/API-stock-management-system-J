@@ -112,7 +112,6 @@ function createTable(data, trueToAltSortC) {
         tr.className = "text-center";
         
         let tdChange = document.createElement("td");
-        console.log(data.changes)
         let valuesChanges = change.amount;
         let dateHour = change.date.split(" T ");
         
@@ -153,7 +152,6 @@ function createTable(data, trueToAltSortC) {
 
     for (let i = 0; i < rowArray.length; i++) {
         let row = rowArray[i];
-        console.log(row)
         let dateTime = row.date.split("T");
 
         let date = dateTime[0];
@@ -167,7 +165,6 @@ function createTable(data, trueToAltSortC) {
         tdHour.textContent = time
         
         let tr = document.createElement("tr");
-        console.log("foi")
         tr.appendChild(row.textContent);
         tr.appendChild(tdDate);
         tr.appendChild(tdHour);
@@ -179,17 +176,33 @@ function createTable(data, trueToAltSortC) {
 }
 
 function submit() {
+    console.log("entrou no submit")
     updateObject().then((data) => {
         let value;
+        console.log("data.amount = " + data.amount)
+        console.log("value = "+value)
+        console.log("amount.value = " + amount.value)
+        console.log("amountValue = " + amountValue)
         if (amount.value < amountValue) {
             value = -(amountValue - amount.value);
         } else {
             value = amount.value - amountValue;
         }
-        if (value == 0 || value == parseInt(amount.value)) {
-            console.log("retornou")
+        console.log("passou pelo if else")
+        console.log("data.amount = " + data.amount)
+        console.log("value = "+value)
+        console.log("amount.value = " + amount.value)
+        console.log("amountValue = " + amountValue)
+
+        console.log(value < 0)
+        console.log(value == parseInt(amount.value))
+        if(value == 0 && data.changes.length > 1) {
+            return
+        }
+        else if (value == data.amount) {
             return;
         }
+        console.log(value)
 
 
         fetch("http://127.0.0.1:8080/item/add/changes?idItem=" + urlParam.get("id") + "&change=" + value,
@@ -213,7 +226,6 @@ function submit() {
 }
 
 function destroy() {
-    console.log("oi")
     fetch("http://127.0.0.1:8080/item/delete?idItem=" + urlParam.get("id"), 
     {
         headers: {

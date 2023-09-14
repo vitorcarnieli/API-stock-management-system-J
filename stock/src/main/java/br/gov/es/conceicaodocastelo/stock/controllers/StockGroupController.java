@@ -2,8 +2,8 @@ package br.gov.es.conceicaodocastelo.stock.controllers;
 
 import br.gov.es.conceicaodocastelo.stock.dto.ItemRecordDto;
 import br.gov.es.conceicaodocastelo.stock.dto.StockGroupRecordDto;
-import br.gov.es.conceicaodocastelo.stock.models.ItemModel;
-import br.gov.es.conceicaodocastelo.stock.models.StockGroupModel;
+import br.gov.es.conceicaodocastelo.stock.models.Item;
+import br.gov.es.conceicaodocastelo.stock.models.StockGroup;
 import br.gov.es.conceicaodocastelo.stock.servicies.StockGroupService;
 import jakarta.validation.Valid;
 import org.hibernate.QueryException;
@@ -44,32 +44,32 @@ public class StockGroupController {
         this.stockGroupService = stockGroupService;
     }
 
-    private List<StockGroupModel> stocks = new ArrayList<>();
+    private List<StockGroup> stocks = new ArrayList<>();
 
-    StockGroupModel stockAwaitForReturn;
+    StockGroup stockAwaitForReturn;
 
     //POST'S
     @PostMapping(value = "/create")
-    public ResponseEntity<StockGroupModel> createStockGroup(@RequestBody @Valid StockGroupRecordDto stockGroupRecordDto ) {
+    public ResponseEntity<StockGroup> createStockGroup(@RequestBody @Valid StockGroupRecordDto stockGroupRecordDto ) {
         System.out.println("Recebendo solicitação POST em /stock-group/create");
-        StockGroupModel stockGroup = new StockGroupModel();
+        StockGroup stockGroup = new StockGroup();
         BeanUtils.copyProperties(stockGroupRecordDto,stockGroup);
         return ResponseEntity.status(HttpStatus.CREATED).body(stockGroupService.save(stockGroup));
     }
 
     @PostMapping(value = "/addItem/{idGroup}")
-    public ResponseEntity<StockGroupModel> addItemToStockGroup(@PathVariable(value = "idGroup") UUID idGroup, @RequestBody @Valid ItemRecordDto itemRecordDto) {
-        ItemModel item = new ItemModel();
+    public ResponseEntity<StockGroup> addItemToStockGroup(@PathVariable(value = "idGroup") UUID idGroup, @RequestBody @Valid ItemRecordDto itemRecordDto) {
+        Item item = new Item();
 
         BeanUtils.copyProperties(itemRecordDto, item);
 
-        Optional<StockGroupModel> stockO = stockGroupService.findById(idGroup);
+        Optional<StockGroup> stockO = stockGroupService.findById(idGroup);
 
         if (stockO.isEmpty()) {
             throw new QueryException("StockGroup not found");
         }
 
-        StockGroupModel stockM = stockO.get();
+        StockGroup stockM = stockO.get();
         stockM.addItems(item);
 
         stockM.getItems().forEach(i -> {
@@ -89,7 +89,7 @@ public class StockGroupController {
     //GETER'S
     @GetMapping(path = "/find/byName")
     @ResponseBody
-    public ResponseEntity<List<StockGroupModel>> findByName(@RequestParam(value = "name") String name) {
+    public ResponseEntity<List<StockGroup>> findByName(@RequestParam(value = "name") String name) {
         if(stockGroupService.findByName(name).getBody() != null) {
             return ResponseEntity.status(HttpStatus.OK).body(stockGroupService.findByName(name).getBody());
         } else {
@@ -99,9 +99,9 @@ public class StockGroupController {
 
     @GetMapping(value = "/find/byId")
     @ResponseBody
-    public ResponseEntity<Optional<StockGroupModel>> findById(@RequestParam(value = "id") UUID id) {
+    public ResponseEntity<Optional<StockGroup>> findById(@RequestParam(value = "id") UUID id) {
         if(id != null) {
-            Optional<StockGroupModel> stock = stockGroupService.findById(id);
+            Optional<StockGroup> stock = stockGroupService.findById(id);
             if(stock.isPresent()) {
                 return ResponseEntity.status(HttpStatus.OK).body(stockGroupService.findById(id));
             } else {
@@ -116,7 +116,7 @@ public class StockGroupController {
 
     @GetMapping(path = "/find/all")
     @ResponseBody
-    public List<StockGroupModel> findAll() {
+    public List<StockGroup> findAll() {
         stocks.clear();
         stocks = stockGroupService.findAll();
         return stocks;
@@ -143,9 +143,9 @@ public class StockGroupController {
 
     @GetMapping(value = "/getAllItems")
     @ResponseBody
-    public List<ItemModel> getAllItemInStockGroup(@RequestParam(value = "idGroup") UUID id) {
+    public List<Item> getAllItemInStockGroup(@RequestParam(value = "idGroup") UUID id) {
         if(id != null) {
-            Optional<StockGroupModel> stock = findById(id).getBody();
+            Optional<StockGroup> stock = findById(id).getBody();
             if(stock != null && stock.isPresent()) {
                 return ResponseEntity.status(HttpStatus.OK).body(stock.get().getItems()).getBody();
             } else {
@@ -171,7 +171,7 @@ public class StockGroupController {
     public ResponseEntity<List<String>> createReport() {
         Document document = new Document();
 
-        List<StockGroupModel> list = this.findAll();
+        List<StockGroup> list = this.findAll();
 
         try {
             String url = "C:\\Users\\usuario\\Documents\\stock\\stock\\src\\main\\resources\\static\\assets\\reports\\";
@@ -185,7 +185,7 @@ public class StockGroupController {
             title.setAlignment(Element.ALIGN_CENTER);
             title.setSpacingAfter(20f);
             document.add(title);
-            for (StockGroupModel stock : list) {
+            for (StockGroup stock : list) {
                 PdfPTable table = new PdfPTable(3);
                 table.setWidthPercentage(100);
 
@@ -201,7 +201,7 @@ public class StockGroupController {
                 table.addCell(new PdfPCell(unitType));
                 table.addCell(new PdfPCell(amount));
 
-                for (ItemModel item : stock.getItems()) {
+                for (Item item : stock.getItems()) {
                     table.addCell(new PdfPCell(new Paragraph(item.getName())));
                     table.addCell(new PdfPCell(new Paragraph(item.getUnitType())));
                     table.addCell(new PdfPCell(new Paragraph(item.getAmount().toString())));

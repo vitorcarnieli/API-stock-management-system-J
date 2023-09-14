@@ -1,0 +1,51 @@
+package br.gov.es.conceicaodocastelo.stock.servicies;
+
+import java.util.List;
+
+import br.gov.es.conceicaodocastelo.stock.models.Item;
+import br.gov.es.conceicaodocastelo.stock.models.Request;
+import br.gov.es.conceicaodocastelo.stock.models.School;
+import br.gov.es.conceicaodocastelo.stock.repositories.RequestRepository;
+
+public class RequestServicie {
+    
+    private final RequestRepository requestRepository;
+
+    public RequestServicie(RequestRepository requestRepository) {
+        this.requestRepository = requestRepository;
+    }
+
+    public Request save(Request request) {
+        if(request != null) {
+            return requestRepository.save(request);
+        }
+        throw new NullPointerException("request = null");
+    }
+
+    public Request createRequest(String name,Item item, School school, Integer requiredAmount) {
+        Request request = new Request();
+        request.setName(name);
+        request.setItems(item);
+        request.setRequiredAmount(requiredAmount);
+        request.setRequesterSchool(school);
+        return this.save(request);
+    }
+
+    public Request changeItem(Request request, Item item) {
+        request.setItems(item);
+        return this.save(request);
+    }
+
+    public Request changeAmount(Request request, Integer amount) {
+        request.setRequiredAmount(amount);
+        return this.save(request);
+    }
+
+    public List<Request> getAllRequestsToItem(Item item) {
+        return item.getRequests();
+    }
+
+    public Item getItemToRequest(Request request) {
+        return request.getItem();
+    }
+}

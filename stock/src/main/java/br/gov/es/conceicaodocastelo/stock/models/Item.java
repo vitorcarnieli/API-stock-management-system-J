@@ -15,7 +15,7 @@ import org.hibernate.annotations.Cascade;
 
 @Entity
 @Table(name = "TB_ITEMS")
-public class ItemModel implements Serializable {
+public class Item implements Serializable {
 
     @Serial
     private static final long serialVersionUID = -4834257346219938057L;
@@ -38,12 +38,33 @@ public class ItemModel implements Serializable {
     @Cascade(value = org.hibernate.annotations.CascadeType.ALL)
     private List<Records> changes = new ArrayList<>();
 
-    
     @ManyToOne
     @JsonBackReference
-    private StockGroupModel stockGroup;
+    private StockGroup stockGroup;
+
+
+    @OneToMany(mappedBy = "item")
+    @JsonManagedReference
+    @Cascade(value = org.hibernate.annotations.CascadeType.ALL)
+    private List<Request> requests;
     
-    public ItemModel() {
+    public List<Request> getRequests() {
+        return requests;
+    }
+
+    public void setRequests(List<Request> requests) {
+        this.requests = requests;
+    }
+
+    public void addRequest(List<Request> requests) {
+        this.requests.addAll(requests);
+    }
+
+    public void addRequest(Request request) {
+        this.requests.add(request);
+    }
+
+    public Item() {
     }
     
     public UUID getId() {
@@ -70,11 +91,11 @@ public class ItemModel implements Serializable {
         this.description = description;
     }
     
-    public StockGroupModel getStockGroup() {
+    public StockGroup getStockGroup() {
         return stockGroup;
     }
     
-    public void setStockGroup(StockGroupModel stockGroup) {
+    public void setStockGroup(StockGroup stockGroup) {
         if(stockGroup != null) {
             this.stockGroup = stockGroup;
         }
@@ -98,7 +119,7 @@ public class ItemModel implements Serializable {
     public void increaseOrDecreaseAmount(Integer valueToIncreaseOrDecrease) {
         //para incrementar mande um numero positivo, para decrementar mande um negativo
         if(valueToIncreaseOrDecrease != null) {
-            if(valueToIncreaseOrDecrease > 0) {
+            if(valueToIncreaseOrDecrease >= 0) {
                 this.setAmount(valueToIncreaseOrDecrease + this.getAmount());
             } else {
                 this.setAmount(this.getAmount() - (valueToIncreaseOrDecrease * -1));
@@ -159,7 +180,7 @@ public class ItemModel implements Serializable {
         return false;
         if (getClass() != obj.getClass())
         return false;
-        ItemModel other = (ItemModel) obj;
+        Item other = (Item) obj;
         if (id == null) {
             if (other.id != null)
             return false;
