@@ -4,7 +4,6 @@ import java.util.List;
 
 import br.gov.es.conceicaodocastelo.stock.models.Item;
 import br.gov.es.conceicaodocastelo.stock.models.Request;
-import br.gov.es.conceicaodocastelo.stock.models.School;
 import br.gov.es.conceicaodocastelo.stock.repositories.RequestRepository;
 
 public class RequestServicie {
@@ -22,12 +21,10 @@ public class RequestServicie {
         throw new NullPointerException("request = null");
     }
 
-    public Request createRequest(String name,Item item, School school, Integer requiredAmount) {
-        Request request = new Request();
-        request.setName(name);
-        request.setItems(item);
-        request.setRequiredAmount(requiredAmount);
-        request.setRequesterSchool(school);
+    public Request createRequest(Request request) {
+        if(request.getRequiredAmount() - request.getItem().getAmount() < 0) {
+            throw new RuntimeException("quantidade requerida maior que quantidade disponivel");
+        }
         return this.save(request);
     }
 
