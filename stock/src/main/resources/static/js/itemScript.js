@@ -112,6 +112,7 @@ function createTable(data, trueToAltSortC) {
         tr.className = "text-center";
         
         let tdChange = document.createElement("td");
+        console.log(data.changes)
         let valuesChanges = change.amount;
         let dateHour = change.date.split(" T ");
         

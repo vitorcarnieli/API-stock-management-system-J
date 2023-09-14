@@ -1,7 +1,36 @@
 const divForShowStockGroups = document.getElementById("stock-group");
+const downloadBtn = document.getElementById("downloadReport");
 
-document.addEventListener("DOMContentLoaded", refresh());
-
+document.addEventListener("DOMContentLoaded", refresh);
+console.log("btn")
+console.log(downloadBtn)
+downloadBtn.addEventListener("click", function () {
+    fetch("http://127.0.0.1:8080/stock-group/report", {
+        method: 'GET',
+    })
+        .then((response) => {
+            if (response.ok) {
+                return response.json(); // Converte a resposta em JSON
+            } else {
+                throw new Error('Erro ao gerar relatório');
+            }
+        })
+        .then((data) => {
+            const [filePath, fileName] = data; // Desestrutura a lista retornada
+            const normalizedPath = filePath.replace(/\\/g, '/'); // Substitui as barras invertidas por barras normais
+            console.log(fileName)
+            console.log(filePath)
+            const url = window.location.origin + normalizedPath + fileName; // Cria a URL completa do arquivo
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = fileName; // Define o nome do arquivo de download
+            document.body.appendChild(a);
+            a.click();
+        })
+        .catch((error) => {
+            console.error('Erro:', error);
+        });
+})
 
 function isUpperCase(str) {
     return str === str.toUpperCase();

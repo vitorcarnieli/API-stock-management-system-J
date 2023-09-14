@@ -76,6 +76,9 @@ public class StockGroupController {
             if(i.getUnitType() == null || i.getUnitType() == "") {
                 i.setUnitType("Unidade");
             }
+            if(i.getAmount() == null || i.getAmount() < 0) {
+                i.setAmount(0);
+            }
         });
 
 
@@ -163,29 +166,29 @@ public class StockGroupController {
     }
 
 
-    @GetMapping(value="/report")
-    public void createReport() {
+    @GetMapping(value = "/report")
+    @ResponseBody
+    public ResponseEntity<List<String>> createReport() {
         Document document = new Document();
 
         List<StockGroupModel> list = this.findAll();
 
-
-
         try {
-            PdfWriter.getInstance(document, new FileOutputStream("C:\\Users\\usuario\\Documents\\stock\\stock\\src\\main\\resources\\static\\assets\\reports\\report" + new Date().getTime() + ".pdf"));
+            String url = "C:\\Users\\usuario\\Documents\\stock\\stock\\src\\main\\resources\\static\\assets\\reports\\";
+            String fileName = "report" + new Date().getTime() + ".pdf";
+            PdfWriter.getInstance(document, new FileOutputStream(url + fileName));
             document.open();
             document.setPageSize(PageSize.A4);
 
-            //title
             Font fontTitle = new Font(Font.FontFamily.HELVETICA, 18, Font.BOLD);
             Paragraph title = new Paragraph("Relatório de estoque", fontTitle);
             title.setAlignment(Element.ALIGN_CENTER);
-            title.setSpacingAfter(20f); 
+            title.setSpacingAfter(20f);
             document.add(title);
             for (StockGroupModel stock : list) {
                 PdfPTable table = new PdfPTable(3);
                 table.setWidthPercentage(100);
-                
+
                 Font fontSubTitleTableProperties = new Font(Font.FontFamily.HELVETICA, 12, Font.BOLD);
                 Paragraph name = new Paragraph("Nome do item", fontSubTitleTableProperties);
                 Paragraph unitType = new Paragraph("Tipo de unidade do item", fontSubTitleTableProperties);
@@ -194,45 +197,45 @@ public class StockGroupController {
                 unitType.setAlignment(Element.ALIGN_CENTER);
                 amount.setAlignment(Element.ALIGN_CENTER);
 
-
-
                 table.addCell(new PdfPCell(name));
                 table.addCell(new PdfPCell(unitType));
                 table.addCell(new PdfPCell(amount));
-                
+
                 for (ItemModel item : stock.getItems()) {
                     table.addCell(new PdfPCell(new Paragraph(item.getName())));
                     table.addCell(new PdfPCell(new Paragraph(item.getUnitType())));
-                    table.addCell(new PdfPCell(new Paragraph(item.getAmount().toString()))); 
-                    
+                    table.addCell(new PdfPCell(new Paragraph(item.getAmount().toString())));
+
                 }
-                // Table Title (também com 3 colunas)
+
                 PdfPTable tituloTable = new PdfPTable(3);
                 tituloTable.setWidthPercentage(100);
-                PdfPCell tituloCell = new PdfPCell(new Phrase("Grupo de estoque: " + stock.getName(), new Font(Font.FontFamily.HELVETICA, 16, Font.BOLD)));
+                PdfPCell tituloCell = new PdfPCell(new Phrase("Grupo de estoque: " + stock.getName(),
+                        new Font(Font.FontFamily.HELVETICA, 16, Font.BOLD)));
                 tituloCell.setHorizontalAlignment(Element.ALIGN_CENTER);
                 tituloCell.setBackgroundColor(BaseColor.LIGHT_GRAY);
                 tituloCell.setPadding(10);
-                tituloCell.setColspan(3); // Defina o número de colunas para corresponder à tabela de dados
+                tituloCell.setColspan(3);
                 tituloTable.addCell(tituloCell);
-    
+
                 document.add(tituloTable);
                 document.add(table);
 
                 document.add(new Paragraph("\n\n\n"));
-                
+
             }
             SimpleDateFormat formatoData = new SimpleDateFormat("dd/MM/yyyy - EEEE - HH:mm");
             String data = formatoData.format(new Date());
             document.add(new Paragraph("\n\nRelatório gerado no dia " + data));
             document.close();
             System.out.println("criado");
+            return ResponseEntity.status(HttpStatus.OK).body(List.of(url, fileName));
         } catch (Exception e) {
             System.out.println(e);
             document.close();
+            throw new RuntimeException("Erro ao criar relatório");
         }
-    }
-    
+    }    
     
     
 }
