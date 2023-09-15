@@ -1,4 +1,5 @@
 const divForShowStockGroups = document.getElementById("stock-group");
+const divForShowSchool = document.getElementById("school-group");
 const downloadBtn = document.getElementById("downloadReport");
 
 document.addEventListener("DOMContentLoaded", refresh);
@@ -99,6 +100,51 @@ function refresh() {
         .catch((error) => {
             console.error('Erro ao fazer a solicitação:', error);
         });
+        fetch("http://localhost:8080/school/find/all")
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error("error no response" + response.status);
+            }
+            console.log(response)
+            console.log(response.json)
+            return response.json();
+        })
+        .then((data) => {
+            console.log(data)
+            for (let i = 0; i < data.length; i++) {
+                let object = data[i];
+
+                let title = object.name;
+
+                const aBtn = document.createElement("a")
+                aBtn.className = "col-3 btn m-3 btn-success";
+
+                const h = document.createElement("h5");
+
+                if (isUpperCase(title)) {
+                    title = title.toLowerCase();
+                    h.textContent = title;
+                    h.style.textTransform = "uppercase";
+                } else {
+                    h.textContent = title;
+                }
+
+
+                const pAmountRequests = document.createElement("p");
+                pAmountRequests.textContent = "Contém " + object.requests.length + " requisições."
+                pAmountRequests.className = "text-start fst-italic";
+
+
+                aBtn.appendChild(h);
+                aBtn.appendChild(pAmountRequests);
+                divForShowSchool.appendChild(aBtn);
+
+            }
+        })
+        .catch((error) => {
+            console.error('Erro ao fazer a solicitação:', error);
+        });
+
 }
 
 function passToNextWindow() {

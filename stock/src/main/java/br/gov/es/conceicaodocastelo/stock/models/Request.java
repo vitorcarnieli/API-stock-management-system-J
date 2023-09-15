@@ -1,18 +1,26 @@
 package br.gov.es.conceicaodocastelo.stock.models;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
-public class Request {
+@Table(name = "TB_REQUESTS")
+public class Request implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = -4834257346219938057L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -24,9 +32,11 @@ public class Request {
 
     
     @ManyToOne
+    @JsonBackReference("school-request")
     private School requesterSchool;
     
     @ManyToOne
+    @JsonBackReference("item-request")    
     private Item item;
 
     

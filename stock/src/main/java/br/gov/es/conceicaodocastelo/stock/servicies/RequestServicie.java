@@ -2,10 +2,13 @@ package br.gov.es.conceicaodocastelo.stock.servicies;
 
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+
 import br.gov.es.conceicaodocastelo.stock.models.Item;
 import br.gov.es.conceicaodocastelo.stock.models.Request;
 import br.gov.es.conceicaodocastelo.stock.repositories.RequestRepository;
 
+@Service
 public class RequestServicie {
     
     private final RequestRepository requestRepository;

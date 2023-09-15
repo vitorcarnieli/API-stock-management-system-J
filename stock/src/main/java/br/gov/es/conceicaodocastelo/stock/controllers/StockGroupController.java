@@ -51,7 +51,7 @@ public class StockGroupController {
     //POST'S
     @PostMapping(value = "/create")
     public ResponseEntity<StockGroup> createStockGroup(@RequestBody @Valid StockGroupRecordDto stockGroupRecordDto ) {
-        System.out.println("Recebendo solicitação POST em /stock-group/create");
+        System.out.println("\n\nRecebendo solicitação POST em /stock-group/create\n\n");
         StockGroup stockGroup = new StockGroup();
         BeanUtils.copyProperties(stockGroupRecordDto,stockGroup);
         return ResponseEntity.status(HttpStatus.CREATED).body(stockGroupService.save(stockGroup));

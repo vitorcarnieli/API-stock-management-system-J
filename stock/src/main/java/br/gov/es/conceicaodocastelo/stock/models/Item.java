@@ -34,17 +34,17 @@ public class Item implements Serializable {
 
     
     @OneToMany(mappedBy = "itemModel")
-    @JsonManagedReference
+    @JsonManagedReference("item-record")
     @Cascade(value = org.hibernate.annotations.CascadeType.ALL)
     private List<Records> changes = new ArrayList<>();
 
     @ManyToOne
-    @JsonBackReference
+    @JsonBackReference("stockGroup-item")    
     private StockGroup stockGroup;
 
 
     @OneToMany(mappedBy = "item")
-    @JsonManagedReference
+    @JsonManagedReference("item-request") 
     @Cascade(value = org.hibernate.annotations.CascadeType.ALL)
     private List<Request> requests;
     

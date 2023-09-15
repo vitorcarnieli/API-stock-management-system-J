@@ -1,5 +1,7 @@
 package br.gov.es.conceicaodocastelo.stock.models;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
@@ -13,9 +15,14 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
-public class Records {
+@Table(name = "TB_RECORDS")
+public class Records implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = -4834257346219938057L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -25,7 +32,7 @@ public class Records {
     private String amount;
 
     @ManyToOne
-    @JsonBackReference
+    @JsonBackReference("item-record")
     @Cascade(value = org.hibernate.annotations.CascadeType.ALL)
     private Item itemModel;
 

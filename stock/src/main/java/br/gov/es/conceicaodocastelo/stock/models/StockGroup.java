@@ -26,7 +26,7 @@ public class StockGroup implements Serializable {
     private String description;
 
     @OneToMany(mappedBy = "stockGroup")
-    @JsonManagedReference
+    @JsonManagedReference("stockGroup-item")
     @Cascade(value = org.hibernate.annotations.CascadeType.ALL)
     private List<Item> items;
 

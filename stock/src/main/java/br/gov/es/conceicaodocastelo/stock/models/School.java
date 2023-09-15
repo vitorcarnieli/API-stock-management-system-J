@@ -14,8 +14,10 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name = "TB_SCHOOL")
 public class School implements Serializable {
 
     @Serial
@@ -29,7 +31,7 @@ public class School implements Serializable {
 
     
     @OneToMany(mappedBy = "requesterSchool")
-    @JsonManagedReference
+    @JsonManagedReference("school-request")
     @Cascade(value = org.hibernate.annotations.CascadeType.ALL)
     private List<Request> requests;
 
@@ -64,14 +66,21 @@ public class School implements Serializable {
 
     public void setRequests(List<Request> requests) {
         this.requests = requests;
+        requests.forEach(r -> r.setRequesterSchool(this));
     }
 
     public void addRequest(Request request) {
         this.requests.add(request);
+        request.setRequesterSchool(this);
     }
 
     public void addRequest(List<Request> requests) {
         this.requests.addAll(requests);
+        requests.forEach(r -> r.setRequesterSchool(this));
+    }
+
+    public void deleteRequest(Request request) {
+        this.requests.remove(request);
     }
 
 

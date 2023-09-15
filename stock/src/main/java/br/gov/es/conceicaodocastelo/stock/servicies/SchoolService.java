@@ -1,6 +1,7 @@
 package br.gov.es.conceicaodocastelo.stock.servicies;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -16,11 +17,32 @@ public class SchoolService {
         this.schoolRepository = schoolRepository;
     }
 
-    public School save(School school) {
-        if(school != null) {
-            return schoolRepository.save(school);
+    public void save(School school) {
+        schoolRepository.save(school);
+    }
+
+    public List<School> findAll() {
+        List<School> schools = schoolRepository.findAll();
+        if(schools.isEmpty()) {
+            throw new RuntimeException("schools is empty");
+        } else {
+            return schools;
         }
-        throw new NullPointerException("school == null");
+    }
+
+    public School createRequestIntoSchool(School school, Request request) {
+        if(school != null && request != null) {
+            Optional<School> optSchool = schoolRepository.findById(school.getId());
+            if (optSchool.isPresent()) {
+                school = optSchool.get();
+                school.addRequest(request);
+                return schoolRepository.save(school);
+            } else {
+                throw new RuntimeException("School not found");
+            }
+        } else {
+            throw new NullPointerException("Null args");
+        }
     }
 
     public List<Request> getAllRequestsIntoSchool(School school) {
@@ -29,6 +51,21 @@ public class SchoolService {
 
     public School getSchoolIntoRequest(Request request) {
         return request.getRequesterSchool();
+    }
+
+    public void deleteRequest(School school, Request request) {
+        if(school != null && request != null) {
+            Optional<School> optSchool = schoolRepository.findById(school.getId());
+            if (optSchool.isPresent()) {
+                school = optSchool.get();
+                school.deleteRequest(request);
+                schoolRepository.save(school);
+            } else {
+                throw new RuntimeException("School not found");
+            }
+        } else {
+            throw new NullPointerException("Null args");
+        }
     }
 
     
