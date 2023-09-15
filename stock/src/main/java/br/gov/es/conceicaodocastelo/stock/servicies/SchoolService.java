@@ -2,10 +2,10 @@ package br.gov.es.conceicaodocastelo.stock.servicies;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
-import br.gov.es.conceicaodocastelo.stock.models.Request;
 import br.gov.es.conceicaodocastelo.stock.models.School;
 import br.gov.es.conceicaodocastelo.stock.repositories.SchoolRepository;
 
@@ -17,8 +17,8 @@ public class SchoolService {
         this.schoolRepository = schoolRepository;
     }
 
-    public void save(School school) {
-        schoolRepository.save(school);
+    public School save(School school) {
+        return schoolRepository.save(school);
     }
 
     public List<School> findAll() {
@@ -30,43 +30,15 @@ public class SchoolService {
         }
     }
 
-    public School createRequestIntoSchool(School school, Request request) {
-        if(school != null && request != null) {
-            Optional<School> optSchool = schoolRepository.findById(school.getId());
-            if (optSchool.isPresent()) {
-                school = optSchool.get();
-                school.addRequest(request);
-                return schoolRepository.save(school);
-            } else {
-                throw new RuntimeException("School not found");
-            }
+    public School findById(String id) {
+        Optional<School> school = schoolRepository.findById(UUID.fromString(id));
+        if(school.isPresent()) {
+            return school.get();
         } else {
-            throw new NullPointerException("Null args");
+            throw new RuntimeException("not found school by id");
         }
     }
 
-    public List<Request> getAllRequestsIntoSchool(School school) {
-        return school.getRequests();
-    }
-
-    public School getSchoolIntoRequest(Request request) {
-        return request.getRequesterSchool();
-    }
-
-    public void deleteRequest(School school, Request request) {
-        if(school != null && request != null) {
-            Optional<School> optSchool = schoolRepository.findById(school.getId());
-            if (optSchool.isPresent()) {
-                school = optSchool.get();
-                school.deleteRequest(request);
-                schoolRepository.save(school);
-            } else {
-                throw new RuntimeException("School not found");
-            }
-        } else {
-            throw new NullPointerException("Null args");
-        }
-    }
 
     
 }

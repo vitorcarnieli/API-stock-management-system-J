@@ -118,6 +118,7 @@ function refresh() {
 
                 const aBtn = document.createElement("a")
                 aBtn.className = "col-3 btn m-3 btn-success";
+                aBtn.href = "http://127.0.0.1:8080/pages/schoolPage.html?id=" + object.id;
 
                 const h = document.createElement("h5");
 
@@ -131,7 +132,7 @@ function refresh() {
 
 
                 const pAmountRequests = document.createElement("p");
-                pAmountRequests.textContent = "Contém " + object.requests.length + " requisições."
+                pAmountRequests.textContent = "Contém " + object.orders.length + " pedidos."
                 pAmountRequests.className = "text-start fst-italic";
 
 

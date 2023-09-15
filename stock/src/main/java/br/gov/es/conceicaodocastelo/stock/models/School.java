@@ -30,16 +30,16 @@ public class School implements Serializable {
     private String name;
 
     
-    @OneToMany(mappedBy = "requesterSchool")
-    @JsonManagedReference("school-request")
+    @OneToMany(mappedBy = "school")
+    @JsonManagedReference("school-order")
     @Cascade(value = org.hibernate.annotations.CascadeType.ALL)
-    private List<Request> requests;
+    private List<Order> orders;
 
     
-
+    
     public School() {
     }
-
+    
     public static long getSerialversionuid() {
         return serialVersionUID;
     }
@@ -47,11 +47,11 @@ public class School implements Serializable {
     public UUID getId() {
         return id;
     }
-
+    
     public void setId(UUID id) {
         this.id = id;
     }
-
+    
     public String getName() {
         return name;
     }
@@ -59,28 +59,29 @@ public class School implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
-
-    public List<Request> getRequests() {
-        return requests;
+    
+    public List<Order> getOrders() {
+        return orders;
+    }
+    
+    public void setOrders(List<Order> order) {
+        this.orders = order;
     }
 
-    public void setRequests(List<Request> requests) {
-        this.requests = requests;
-        requests.forEach(r -> r.setRequesterSchool(this));
+    public void addOrders(List<Order> orders) {
+        orders.forEach(o -> {
+            o.setSchool(this);
+        });
+        this.orders.addAll(orders);
     }
 
-    public void addRequest(Request request) {
-        this.requests.add(request);
-        request.setRequesterSchool(this);
-    }
+    public void addOrders(Order order) {
+        order.setSchool(this);
+        this.orders.add(order);
+    }    
 
-    public void addRequest(List<Request> requests) {
-        this.requests.addAll(requests);
-        requests.forEach(r -> r.setRequesterSchool(this));
-    }
-
-    public void deleteRequest(Request request) {
-        this.requests.remove(request);
+    public void deleteOrder(Order order) {
+        this.orders.remove(order);
     }
 
 

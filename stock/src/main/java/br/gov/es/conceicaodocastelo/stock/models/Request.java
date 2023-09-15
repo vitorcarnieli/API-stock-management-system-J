@@ -40,11 +40,24 @@ public class Request implements Serializable {
     private Item item;
 
     
+    @ManyToOne
+    @JsonBackReference("order-request")    
+    private Order order;
+
+    
     private Date date;
     
     
     
     public Request() {
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
+    }
+
+    public Order getOrder() {
+        return this.order;
     }
     
     public UUID getId() {
@@ -100,7 +113,10 @@ public class Request implements Serializable {
         if(item.getAmount() - this.getRequiredAmount() < 0) {
             throw new RuntimeException("limit out range");
         }
+        item.setAmount(item.getAmount() - this.getRequiredAmount());
         this.item = item;
     }
+
+    
     
 }

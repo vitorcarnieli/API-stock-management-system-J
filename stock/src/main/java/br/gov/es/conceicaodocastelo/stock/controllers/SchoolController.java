@@ -5,15 +5,16 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.gov.es.conceicaodocastelo.stock.dto.SchoolRecordDto;
-import br.gov.es.conceicaodocastelo.stock.models.Request;
+import br.gov.es.conceicaodocastelo.stock.models.Order;
 import br.gov.es.conceicaodocastelo.stock.models.School;
 import br.gov.es.conceicaodocastelo.stock.servicies.SchoolService;
 
@@ -34,10 +35,32 @@ public class SchoolController {
 
     @PostMapping(path = "/set")
     public ResponseEntity<String> createSchool(@RequestBody SchoolRecordDto schoolDTO) {
-            School s = new School();
-            s.setName(schoolDTO.name());
-            schoolService.save(s);
+        School s = new School();
+        s.setName(schoolDTO.name());
+        schoolService.save(s);
         return ResponseEntity.status(HttpStatus.OK).body("ESCOLA : \n" + schoolDTO.name() + "\n salva com sucesso");
+    }
+    
+    @PostMapping(path = "/set/order")
+    public ResponseEntity<Object> createOrder(@RequestBody School school, @RequestBody Order order) {
+        try {
+            school.addOrders(order);
+            return ResponseEntity.status(HttpStatus.OK).body(schoolService.save(school));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body("ERROR: " + e.getMessage());
+        }
+    }
+
+
+
+    @GetMapping(value = "/find/byId")
+    @ResponseBody
+    public ResponseEntity<Object> findById(@RequestParam(value = "id") String id) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(schoolService.findById(id));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("ERROR: " + e.getMessage());
+        }
     }
 
     @GetMapping(path = "/find/all")
@@ -50,22 +73,13 @@ public class SchoolController {
         }
     }
 
-    @PostMapping(path = "/create/request")
-    public ResponseEntity<Object> createRequestIntoSchool(School school, Request request) {
+    @GetMapping(path = "/find/school")
+    public ResponseEntity<Object> findSchoolInOrder(Order order) {
         try {
-            schoolService.createRequestIntoSchool(school, request);
-            return ResponseEntity.status(HttpStatus.OK).body(school);
+            return ResponseEntity.status(HttpStatus.OK).body(order.getSchool());        
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 
-    @DeleteMapping(path = "/delete/request")
-    public void deleteRequest(School school, Request request) {
-        try {
-            schoolService.deleteRequest(school, request);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-    }
 }
