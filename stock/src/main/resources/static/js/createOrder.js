@@ -35,7 +35,6 @@ function createPage() {
         return response.json();
     })
     .then((data) => {
-        console.log(data)
         for (let i = 0; i < data.length; i++) {
             let object = data[i];
 
@@ -61,34 +60,43 @@ function createPage() {
 function addItem() {
     let selectValue = selectItems.value.split(",");
     let amountValue = amountItem.value;
+    console.log(selectValue)
     
-    console.log("selectItems: " + selectValue[2]);
-    console.log("itemsPresent: " + itemsPresent);
-
-    for (let i = 0; i < itemsPresent.length; i++) {
-        
+    let children = tBody.children;
+    for (let i = 0; i < children.length; i++) {
+        if(children[i].id == selectValue[2]) {
+            let amountRow = document.getElementById("amountRow");
+            let finalAmount = parseInt(amountRow.textContent) + parseInt(amountValue);
+            amountRow.textContent = finalAmount;
+            return
+        }
         
     }
+
 
     if(selectValue != "" && amountValue != "") {
         tContainer.classList.remove("modal");
         let tdName = document.createElement("td");
+        tdName.id = "nameRow";
         let tdStock = document.createElement("td");
+        tdStock.id = "stockRow"
         let tdAmount = document.createElement("td");
+        tdAmount.id = "amountRow"
         let tdDelete = document.createElement("td");
 
-        tdName.textContent = selectValue[0];
-        tdStock.textContent = selectValue[1];
+        tdName.textContent = selectValue[1];
+        tdStock.textContent = selectValue[0];
         tdAmount.textContent = amountValue;
 
         let btnDelete = document.createElement("button");
-        btnDelete.className = "btn btn-primary rounded-5"
+        btnDelete.className = "btn btn-danger rounded-5"
         let iIcon = document.createElement("i");
         iIcon.className = "bi bi-trash3 text-white"
         btnDelete.appendChild(iIcon);
         tdDelete.appendChild(btnDelete)
 
         let tr = document.createElement("tr");
+        tr.id = selectValue[2]
 
         tr.appendChild(tdName);
         tr.appendChild(tdStock);
@@ -96,8 +104,7 @@ function addItem() {
         tr.appendChild(tdDelete);
 
         tBody.appendChild(tr);
-        selectValue.push(parseInt(amountValue));
-        itemsPresent.push(Array.of(selectValue));
+
     } else {
     }
 

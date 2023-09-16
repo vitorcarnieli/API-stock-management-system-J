@@ -38,7 +38,7 @@ function refresh() {
 
             let a = document.getElementById("addOrder");
 
-            a.href = "createorder.html?id=" + urlParam.get("id");
+            a.href = "createOrder.html?id=" + urlParam.get("id");
 
             let ordersObj = object.orders;
             orders = ordersObj;
