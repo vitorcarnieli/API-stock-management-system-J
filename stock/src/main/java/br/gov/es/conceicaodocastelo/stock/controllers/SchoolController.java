@@ -35,10 +35,12 @@ public class SchoolController {
 
     @PostMapping(path = "/set")
     public ResponseEntity<String> createSchool(@RequestBody SchoolRecordDto schoolDTO) {
-        School s = new School();
-        s.setName(schoolDTO.name());
-        schoolService.save(s);
-        return ResponseEntity.status(HttpStatus.OK).body("ESCOLA : \n" + schoolDTO.name() + "\n salva com sucesso");
+        schoolDTO.names().forEach(n -> {
+            School s = new School();
+            s.setName(n);
+            schoolService.save(s);
+        });
+        return ResponseEntity.status(HttpStatus.OK).body("ESCOLA : \n" + schoolDTO.names() + "\n salva com sucesso");
     }
     
     @PostMapping(path = "/set/order")
