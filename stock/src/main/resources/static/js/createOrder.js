@@ -1,5 +1,7 @@
-const name = document.getElementById("name");
-const description = document.getElementById("description");
+const nome = document.getElementById("nome");
+const observations = document.getElementById("observations");
+const inviteBtn = document.getElementById("invite");
+const formCreateOrder = document.getElementById("form");
 const formCreate = document.getElementById("form-create");
 const formAdd = document.getElementById("form-add");
 const tContainer = document.getElementById("table-container");
@@ -7,25 +9,33 @@ const tBody = document.getElementById("tbody")
 const selectItems = document.getElementById("items");
 const amountItem = document.getElementById("amount");
 const btnAddItem = document.getElementById("add");
+var botoesDeletar = document.querySelectorAll('.btn-danger');
 var itemsPresent = []
 
 
 document.addEventListener("DOMContentLoaded", createPage);
 btnAddItem.addEventListener("click", addItem);
 
+tBody.addEventListener('click', function (event) {
+    if (event.target.classList.contains('btn-danger')) {
+        deleteRow.call(event.target);
+        console.log(tBody.rows.length);
+        if(tBody && tBody.rows.length == 0) {
+            tContainer.classList.add("modal");
+            observations.disabled = true;
+            observations.value = null
+            nome.disabled = true;
+            nome.value = null
+            inviteBtn.disabled = true;
 
-
-
-
-
-
-
-
-
-
-
-
-
+        } else {
+            tContainer.classList.remove("modal");
+            observations.disabled = false;
+            nome.disabled = false;
+            inviteBtn.disabled = false;
+        }
+    }
+});
 
 
 function createPage() {
@@ -36,18 +46,18 @@ function createPage() {
     })
     .then((data) => {
         for (let i = 0; i < data.length; i++) {
-            let object = data[i];
+            let stockGroup = data[i];
 
             let optionStockName = document.createElement("option");
-            optionStockName.textContent = object.name;
+            optionStockName.textContent = stockGroup.name;
             optionStockName.disabled = true;
             selectItems.appendChild(optionStockName);
 
-            for (let ii = 0; ii < object.items.length; ii++) {
-                let item = object.items[ii]
+            for (let ii = 0; ii < stockGroup.items.length; ii++) {
+                let item = stockGroup.items[ii]
                 let optionItemName = document.createElement("option");
                 optionItemName.textContent = item.name;
-                optionItemName.value = [object.name, item.name, object.id]; 
+                optionItemName.value = [stockGroup.name, item.name, item.id]; 
                 selectItems.appendChild(optionItemName);
             }   
         }
@@ -60,12 +70,11 @@ function createPage() {
 function addItem() {
     let selectValue = selectItems.value.split(",");
     let amountValue = amountItem.value;
-    console.log(selectValue)
-    
+
     let children = tBody.children;
     for (let i = 0; i < children.length; i++) {
         if(children[i].id == selectValue[2]) {
-            let amountRow = document.getElementById("amountRow");
+            let amountRow = document.getElementById("amountRow" + selectValue[2]);
             let finalAmount = parseInt(amountRow.textContent) + parseInt(amountValue);
             amountRow.textContent = finalAmount;
             return
@@ -75,13 +84,16 @@ function addItem() {
 
 
     if(selectValue != "" && amountValue != "") {
+        observations.disabled = false;
+        nome.disabled = false;
+        inviteBtn.disabled = false;
         tContainer.classList.remove("modal");
         let tdName = document.createElement("td");
-        tdName.id = "nameRow";
+        tdName.id = "nameRow" + selectValue[2];
         let tdStock = document.createElement("td");
-        tdStock.id = "stockRow"
+        tdStock.id = "stockRow" + selectValue[2];
         let tdAmount = document.createElement("td");
-        tdAmount.id = "amountRow"
+        tdAmount.id = "amountRow" + selectValue[2];
         let tdDelete = document.createElement("td");
 
         tdName.textContent = selectValue[1];
@@ -89,11 +101,12 @@ function addItem() {
         tdAmount.textContent = amountValue;
 
         let btnDelete = document.createElement("button");
-        btnDelete.className = "btn btn-danger rounded-5"
+        btnDelete.className = "btn btn-danger rounded-5";
         let iIcon = document.createElement("i");
-        iIcon.className = "bi bi-trash3 text-white"
+        iIcon.className = "bi bi-trash3 text-white";
+        btnDelete.id = selectValue[2];
         btnDelete.appendChild(iIcon);
-        tdDelete.appendChild(btnDelete)
+        tdDelete.appendChild(btnDelete);
 
         let tr = document.createElement("tr");
         tr.id = selectValue[2]
@@ -108,4 +121,12 @@ function addItem() {
     } else {
     }
 
+}
+
+function deleteRow() {
+    console.log("entrou")
+    var row = this.closest('tr');
+    if (row) {
+      row.remove();
+    }
 }
