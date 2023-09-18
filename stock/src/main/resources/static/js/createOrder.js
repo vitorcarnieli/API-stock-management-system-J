@@ -144,13 +144,11 @@ function createOrder() {
         let td = tds[i];
         if(td.id.includes("nameRow")) {
             provisionalOrder.push(td.id.replace("nameRow",""));
-        } else if(td.id.includes("stockRow")) {
-            provisionalOrder.push(td.classList[0]);
         } else if(td.id.includes("amountRow")) {
             provisionalOrder.push(td.textContent);
         }
         //[]
-        if(provisionalOrder.length == 3) {
+        if(provisionalOrder.length == 2) {
             finalOrder.push(provisionalOrder);
             provisionalOrder = [];
         }
@@ -160,7 +158,7 @@ function createOrder() {
         name: nome.value,
         observations: observations.value,
         requests: finalOrder
-        //[itemId, stockId, amount]
+        //[itemId, amount]
     }
 
     console.log(order)

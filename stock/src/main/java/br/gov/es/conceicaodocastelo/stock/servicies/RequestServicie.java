@@ -32,7 +32,7 @@ public class RequestServicie {
     }
 
     public Request changeItem(Request request, Item item) {
-        request.setItems(item);
+        request.setItem(item);
         return this.save(request);
     }
 

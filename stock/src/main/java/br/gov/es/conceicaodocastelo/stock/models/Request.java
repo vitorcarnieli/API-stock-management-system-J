@@ -26,8 +26,6 @@ public class Request implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-    private String name;
-
     private Integer requiredAmount;
     
     @ManyToOne
@@ -63,15 +61,6 @@ public class Request implements Serializable {
         this.id = id;
     }
     
-    public String getName() {
-        return name;
-    }
-    
-    public void setName(String name) {
-        this.name = name;
-    }
-    
-    
     public Date getDateDefault() {
         return date;
     }
@@ -97,7 +86,7 @@ public class Request implements Serializable {
         return item;
     }
     
-    public void setItems(Item item) {
+    public void setItem(Item item) {
         if(item.getAmount() - this.getRequiredAmount() < 0) {
             throw new RuntimeException("limit out range");
         }
