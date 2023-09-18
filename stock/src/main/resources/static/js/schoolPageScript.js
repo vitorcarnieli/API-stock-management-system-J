@@ -54,15 +54,10 @@ function refresh() {
         });
 }
 
-function createTable(obj, orgToZA) {
+function createTable(obj) {
     console.log(obj)
     tbody.innerHTML = ""
-    if (orgToZA) {
-        alphaOrderSort(obj, false)
-    } else {
-        alphaOrderSort(obj, true)
-    }
-    for (let i = 0; i < obj.length; i++) {
+    for (let i = 0; i < obj.orders.length; i++) {
         let tr = document.createElement("tr");
 
         let tdName = document.createElement("td");
@@ -71,34 +66,18 @@ function createTable(obj, orgToZA) {
 
         tdEnter.className = "text-center";
 
-        let order = obj[i];
+        let order = obj.orders[i];
         tdName.textContent = order.name;
-        tdDate.textContent = order.date;
+        var date = order.dateFormated.replace(/-/g, "/").replace("T", " - ");
+        tdDate.textContent = date;
         tdEnter.appendChild(createTdWithIcons("ENTER", order.id));
         tr.appendChild(tdName);
         tr.appendChild(tdDate);
         tr.appendChild(tdEnter)
 
+        console.log(tr)
         tbody.appendChild(tr);
     }
-}
-
-function destroy() {
-    fetch("http://127.0.0.1:8080/stock-group/delete?idGroup=" + urlParam.get("id"))
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error("error no response" + response.status);
-            }
-
-            console.log(response)
-            console.log(response.json)
-            return response.json();
-        })
-        .then((data) => {
-        })
-        .catch((error) => {
-            window.location.href = "http://127.0.0.1:8080/index.html";
-        });
 }
 
 function toggleIcon() {
@@ -114,16 +93,3 @@ function toggleIcon() {
         icon.classList.add("bi-sort-alpha-down");
     }
 }
-
-function alphaOrderSort(obj, boolArg) {
-    if (boolArg) {
-        obj.sort(function (a, b) {
-            return a.name.localeCompare(b.name);
-        });
-    } else {
-        obj.sort(function (a, b) {
-            return b.name.localeCompare(a.name);
-        });
-    }
-}
-

@@ -146,7 +146,7 @@ public class Item implements Serializable {
         this.changes = changes;
     }
 
-    public void addChanges(Integer changedValue) {
+    public void addChanges(Integer changedValue ) {
         Records record = new Records(this);
         if(amount == null) {
             record.setAmount("c"+changedValue);

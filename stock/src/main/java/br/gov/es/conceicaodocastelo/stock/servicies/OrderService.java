@@ -1,5 +1,6 @@
 package br.gov.es.conceicaodocastelo.stock.servicies;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -7,11 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.gov.es.conceicaodocastelo.stock.dto.OrderRecordDto;
+import br.gov.es.conceicaodocastelo.stock.models.Item;
 import br.gov.es.conceicaodocastelo.stock.models.Order;
 import br.gov.es.conceicaodocastelo.stock.models.Request;
-import br.gov.es.conceicaodocastelo.stock.models.StockGroup;
 import br.gov.es.conceicaodocastelo.stock.repositories.OrderRepository;
-import jakarta.persistence.criteria.CriteriaBuilder.In;
 
 @Service
 public class OrderService {
@@ -19,6 +19,8 @@ public class OrderService {
     private OrderRepository orderRepository;
     @Autowired
     private ItemService itemService;
+    @Autowired
+    private SchoolService schoolService;
 
     public OrderService(OrderRepository orderRepository) {
         this.orderRepository = orderRepository;
@@ -30,18 +32,27 @@ public class OrderService {
 
     public void create(OrderRecordDto orderRecordDto) { 
         Order order = new Order();
-        Request request = new Request();
         order.setName(orderRecordDto.name());
         order.setObservation(orderRecordDto.observations());
+        order.setSchool(schoolService.findById(orderRecordDto.school()));
+        Item item = null;
+        Integer amount;
+        List<Request> requests = new ArrayList<>();
         
-        List<List<String>> requests = orderRecordDto.requests();
-        for (List<String> list : requests) {
+        List<List<String>> requestsFromList = orderRecordDto.requests();
+        for (List<String> list : requestsFromList) {
             for (int i = 0; i < list.size(); i++) {
                 System.out.println(list.get(i));
                 if(i == 0) {
-                    request.setItem(itemService.findById(UUID.fromString(list.get(i))).getBody().get());
+                    item = itemService.findById(UUID.fromString(list.get(i))).getBody().get();
+                    continue;
                 } else {
-                    request.setRequiredAmount(Integer.parseInt(list.get(i)));
+                    amount = Integer.parseInt(list.get(i));
+                    Request request = new Request();
+                    request.setRequiredAmount(amount);
+                    request.setItem(item);
+                    requests.add(request);  
+                    orderRepository.save(order);
                 }
             }
         }

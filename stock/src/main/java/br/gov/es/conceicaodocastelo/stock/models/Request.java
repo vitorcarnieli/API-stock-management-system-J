@@ -6,6 +6,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
 
+import org.hibernate.annotations.Cascade;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.Entity;
@@ -29,12 +31,14 @@ public class Request implements Serializable {
     private Integer requiredAmount;
     
     @ManyToOne
-    @JsonBackReference("item-request")    
+    @JsonBackReference("item-request") 
+    @Cascade(value = org.hibernate.annotations.CascadeType.ALL)   
     private Item item;
 
     
     @ManyToOne
     @JsonBackReference("order-request")    
+    @Cascade(value = org.hibernate.annotations.CascadeType.ALL)
     private Order order;
 
     
@@ -79,6 +83,7 @@ public class Request implements Serializable {
     }
     
     public void setRequiredAmount(Integer requiredAmount) {
+        this.setDate();
         this.requiredAmount = requiredAmount;
     }
     
@@ -90,7 +95,9 @@ public class Request implements Serializable {
         if(item.getAmount() - this.getRequiredAmount() < 0) {
             throw new RuntimeException("limit out range");
         }
-        item.setAmount(item.getAmount() - this.getRequiredAmount());
+        System.out.println(item.getAmount());
+        item.increaseOrDecreaseAmount(-this.getRequiredAmount());
+        System.out.println(item.getAmount());
         this.item = item;
     }
 

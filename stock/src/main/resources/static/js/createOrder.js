@@ -1,3 +1,4 @@
+const urlParam = new URLSearchParams(window.location.search)
 const nome = document.getElementById("nome");
 const observations = document.getElementById("observations");
 const inviteBtn = document.getElementById("invite");
@@ -10,6 +11,7 @@ const selectItems = document.getElementById("items");
 const amountItem = document.getElementById("amount");
 const btnAddItem = document.getElementById("add");
 var botoesDeletar = document.querySelectorAll('.btn-danger');
+var options = document.getElementsByTagName("option");
 var itemsPresent = []
 
 document.addEventListener("DOMContentLoaded", createPage);
@@ -19,6 +21,14 @@ inviteBtn.addEventListener("click", function(e) {
     e.preventDefault();
     createOrder();
 })
+
+selectItems.addEventListener("change", function(e) {
+    var indiceSelecionado = selectItems.selectedIndex;
+    var opcaoSelecionada = selectItems.options[indiceSelecionado];
+    console.log(opcaoSelecionada.value)
+    amountItem.placeholder = "Valor máximo: " + opcaoSelecionada.classList[0];
+    amountItem.max = parseInt(opcaoSelecionada.classList[0]);
+});
 
 nome.addEventListener("input", function(e) {
     if(nome.value != "") {
@@ -70,6 +80,7 @@ function createPage() {
                 let optionItemName = document.createElement("option");
                 optionItemName.textContent = item.name;
                 optionItemName.value = [stockGroup.name, item.name, item.id, stockGroup.id]; 
+                optionItemName.classList = item.amount;
                 selectItems.appendChild(optionItemName);
             }   
         }
@@ -157,6 +168,7 @@ function createOrder() {
     let order = {
         name: nome.value,
         observations: observations.value,
+        school: urlParam.get("id"),
         requests: finalOrder
         //[itemId, amount]
     }
@@ -173,6 +185,7 @@ function createOrder() {
         })
         .then(function (res) {
             console.log(res);
+            window.location.href = "http://127.0.0.1:8080/pages/schoolPage.html?id=" + urlParam.get("id");
         })
         .catch(function (res) { console.log(res) })
 }
