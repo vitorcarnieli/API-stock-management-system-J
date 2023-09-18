@@ -29,11 +29,6 @@ public class Request implements Serializable {
     private String name;
 
     private Integer requiredAmount;
-
-    
-    @ManyToOne
-    @JsonBackReference("school-request")
-    private School requesterSchool;
     
     @ManyToOne
     @JsonBackReference("item-request")    
@@ -76,13 +71,6 @@ public class Request implements Serializable {
         this.name = name;
     }
     
-    public School getRequesterSchool() {
-        return requesterSchool;
-    }
-    
-    public void setRequesterSchool(School requesterSchool) {
-        this.requesterSchool = requesterSchool;
-    }
     
     public Date getDateDefault() {
         return date;

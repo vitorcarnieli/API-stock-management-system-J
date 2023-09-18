@@ -12,9 +12,21 @@ const btnAddItem = document.getElementById("add");
 var botoesDeletar = document.querySelectorAll('.btn-danger');
 var itemsPresent = []
 
-
 document.addEventListener("DOMContentLoaded", createPage);
 btnAddItem.addEventListener("click", addItem);
+
+inviteBtn.addEventListener("click", function(e) {
+    e.preventDefault();
+    createOrder();
+})
+
+nome.addEventListener("input", function(e) {
+    if(nome.value != "") {
+        inviteBtn.disabled = false;
+    } else {
+        inviteBtn.disabled = true;
+    }
+})
 
 tBody.addEventListener('click', function (event) {
     if (event.target.classList.contains('btn-danger')) {
@@ -57,7 +69,7 @@ function createPage() {
                 let item = stockGroup.items[ii]
                 let optionItemName = document.createElement("option");
                 optionItemName.textContent = item.name;
-                optionItemName.value = [stockGroup.name, item.name, item.id]; 
+                optionItemName.value = [stockGroup.name, item.name, item.id, stockGroup.id]; 
                 selectItems.appendChild(optionItemName);
             }   
         }
@@ -86,12 +98,12 @@ function addItem() {
     if(selectValue != "" && amountValue != "") {
         observations.disabled = false;
         nome.disabled = false;
-        inviteBtn.disabled = false;
         tContainer.classList.remove("modal");
         let tdName = document.createElement("td");
         tdName.id = "nameRow" + selectValue[2];
         let tdStock = document.createElement("td");
         tdStock.id = "stockRow" + selectValue[2];
+        tdStock.className = selectValue[3]
         let tdAmount = document.createElement("td");
         tdAmount.id = "amountRow" + selectValue[2];
         let tdDelete = document.createElement("td");
@@ -117,11 +129,60 @@ function addItem() {
         tr.appendChild(tdDelete);
 
         tBody.appendChild(tr);
-
     } else {
     }
 
 }
+
+
+function createOrder() {
+    let tds = tBody.getElementsByTagName("td");
+    let finalOrder = [];
+    let provisionalOrder = [];
+
+    for (let i = 0; i < tds.length; i++) {
+        let td = tds[i];
+        if(td.id.includes("nameRow")) {
+            provisionalOrder.push(td.id.replace("nameRow",""));
+        } else if(td.id.includes("stockRow")) {
+            provisionalOrder.push(td.classList[0]);
+        } else if(td.id.includes("amountRow")) {
+            provisionalOrder.push(td.textContent);
+        }
+        //[]
+        if(provisionalOrder.length == 3) {
+            finalOrder.push(provisionalOrder);
+            provisionalOrder = [];
+        }
+    }
+
+    let order = {
+        name: nome.value,
+        observations: observations.value,
+        requests: finalOrder
+        //[itemId, stockId, amount]
+    }
+
+    console.log(order)
+    fetch("http://127.0.0.1:8080/order/create",
+        {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            method: "POST",
+            body: JSON.stringify(order)
+        })
+        .then(function (res) {
+            console.log(res);
+        })
+        .catch(function (res) { console.log(res) })
+}
+
+
+
+
+
 
 function deleteRow() {
     console.log("entrou")

@@ -4,7 +4,9 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import br.gov.es.conceicaodocastelo.stock.dto.OrderRecordDto;
 import br.gov.es.conceicaodocastelo.stock.models.Order;
+import br.gov.es.conceicaodocastelo.stock.models.StockGroup;
 import br.gov.es.conceicaodocastelo.stock.repositories.OrderRepository;
 
 @Service
@@ -18,6 +20,14 @@ public class OrderService {
 
     public Order save(Order order) {
         return orderRepository.save(order);
+    }
+
+    public void create(OrderRecordDto orderRecordDto) { 
+        Order order = new Order();
+        order.setName(orderRecordDto.name());
+        order.setObservation(orderRecordDto.observations());
+        
+        orderRecordDto.requests().forEach(System.out::println);
     }
 
     public List<Order> findAll() {
