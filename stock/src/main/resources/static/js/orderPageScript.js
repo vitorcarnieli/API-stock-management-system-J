@@ -1,6 +1,6 @@
 const urlParam = new URLSearchParams(window.location.search)
 const orderName = document.getElementById("orderName");
-const description = document.getElementById("description");
+const observation = document.getElementById("description");
 const tbody = document.getElementById("tbody");
 const deleteOrder = document.getElementById("deleteItem");
 const deleteButton = document.getElementById("delete");
@@ -36,8 +36,9 @@ function createPage() {
     })
     .then((data) => {
         let object = data;
+        console.log(data)
         orderName.textContent = object.name
-        description.textContent = object.description
+        observation.textContent = object.observation
         createTable(object);
     })
     .catch((error) => {
