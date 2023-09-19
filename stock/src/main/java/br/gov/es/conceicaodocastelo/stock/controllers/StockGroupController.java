@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -174,7 +175,7 @@ public class StockGroupController {
         List<StockGroup> list = this.findAll();
 
         try {
-            String url = "C:\\Users\\usuario\\Documents\\stock\\stock\\src\\main\\resources\\static\\assets\\reports\\";
+            String url = "C:\\Users\\usuario\\Documents\\sistema_gerenciamento_estoque\\stock-management-system-J-SpringBoot\\stock\\src\\main\\resources\\static\\assets\\reports\\";
             String fileName = "report" + new Date().getTime() + ".pdf";
             PdfWriter.getInstance(document, new FileOutputStream(url + fileName));
             document.open();
@@ -229,6 +230,15 @@ public class StockGroupController {
             document.add(new Paragraph("\n\nRelatório gerado no dia " + data));
             document.close();
             System.out.println("criado");
+            boolean whilecondition = true;
+            while (whilecondition) {
+                File file = new File(url+fileName);
+                if(file.exists()) {
+                    whilecondition = false;
+                    continue;
+                }
+                System.out.println("\n\nnao existe ainda");
+            }
             return ResponseEntity.status(HttpStatus.OK).body(List.of(url, fileName));
         } catch (Exception e) {
             System.out.println(e);

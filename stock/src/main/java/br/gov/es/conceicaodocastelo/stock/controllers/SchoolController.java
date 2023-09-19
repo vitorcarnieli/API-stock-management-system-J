@@ -84,4 +84,9 @@ public class SchoolController {
         }
     }
 
+    @GetMapping(path = "/delete")
+    public void delete() {
+        schoolService.deleteAll();
+    }
+
 }

@@ -10,12 +10,31 @@ const tBody = document.getElementById("tbody")
 const selectItems = document.getElementById("items");
 const amountItem = document.getElementById("amount");
 const btnAddItem = document.getElementById("add");
+const back = document.getElementById("back");
 var botoesDeletar = document.querySelectorAll('.btn-danger');
 var options = document.getElementsByTagName("option");
 var itemsPresent = []
 
 document.addEventListener("DOMContentLoaded", createPage);
 btnAddItem.addEventListener("click", addItem);
+
+back.addEventListener("mouseover", function() {
+    back.classList.add("border");
+    back.style.cursor = "pointer";
+})
+
+back.addEventListener("mouseout", function() {
+    back.classList.remove("border")
+    back.style.cursor = "auto";
+})
+
+back.addEventListener("click", function(e) {
+    console.log('Entrou')
+    let a = document.createElement("a");
+    a.href = "http://127.0.0.1:8080/pages/schoolPage.html?id=" + urlParam.get("id");
+    document.body.appendChild(a);
+    a.click();
+})
 
 inviteBtn.addEventListener("click", function(e) {
     e.preventDefault();

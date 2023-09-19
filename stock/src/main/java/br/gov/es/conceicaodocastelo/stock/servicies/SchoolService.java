@@ -39,6 +39,10 @@ public class SchoolService {
         }
     }
 
+    public void deleteAll() {
+        schoolRepository.deleteAll();
+    }
+
 
     
 }

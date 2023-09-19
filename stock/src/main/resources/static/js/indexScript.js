@@ -20,13 +20,12 @@ downloadBtn.addEventListener("click", function () {
             const [filePath, fileName] = data; // Desestrutura a lista retornada
             const normalizedPath = filePath.replace(/\\/g, '/'); // Substitui as barras invertidas por barras normais
             console.log(fileName)
-            console.log(filePath)
-            const url = window.location.origin + normalizedPath + fileName; // Cria a URL completa do arquivo
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = fileName; // Define o nome do arquivo de download
-            document.body.appendChild(a);
-            a.click();
+            console.log(normalizedPath + fileName)
+            const url = normalizedPath + fileName; // Cria a URL completa do arquivo
+            const aaa = document.createElement('a');
+            aaa.href = "file:///" + normalizedPath;
+            aaa.download = fileName;
+            aaa.click();
         })
         .catch((error) => {
             console.error('Erro:', error);
