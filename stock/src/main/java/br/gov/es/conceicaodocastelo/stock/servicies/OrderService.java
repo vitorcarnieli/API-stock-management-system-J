@@ -2,6 +2,7 @@ package br.gov.es.conceicaodocastelo.stock.servicies;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,8 @@ public class OrderService {
     private ItemService itemService;
     @Autowired
     private SchoolService schoolService;
+    @Autowired
+    private RequestServicie requestServicie;
 
     public OrderService(OrderRepository orderRepository) {
         this.orderRepository = orderRepository;
@@ -47,11 +50,14 @@ public class OrderService {
                     item = itemService.findById(UUID.fromString(list.get(i))).getBody().get();
                     continue;
                 } else {
+                    System.out.println(item);
                     amount = Integer.parseInt(list.get(i));
                     Request request = new Request();
                     request.setRequiredAmount(amount);
                     request.setItem(item);
                     requests.add(request);  
+                    request.setOrder(order);
+                    requestServicie.save(request);
                     orderRepository.save(order);
                 }
             }
@@ -62,10 +68,32 @@ public class OrderService {
         List<Order> orders = orderRepository.findAll();
         if(orders.isEmpty()) {
             throw new RuntimeException("orders not found");
-        } else {
-            return orders;
+        }
+        return orders;
+    }
+
+    public Order findById(UUID orderId) {
+        Optional<Order> order = orderRepository.findById(orderId);
+        if(order.isEmpty()) {
+            throw new RuntimeException("order id not founded");
+        }
+        return order.get();
+    }
+
+    public boolean delete(Order order) {
+        try {
+            orderRepository.delete(order);
+            return true;
+        } catch (Exception e) {
+            System.out.println(e);
+            return false;
         }
     }
     
+    public List<Request> findAllRequests(Order order) {
+        return order.getRequests();
+    }
+    
+
     
 }

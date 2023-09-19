@@ -16,7 +16,7 @@ function createTdWithIcons(condition, idItem) {
             let a = document.createElement("a");
             a.className = "btn btn-primary rounded-5";
             icon.className = "bi bi-box-arrow-in-right text-light";
-            a.href = "http://127.0.0.1:8080/pages/item.html?id=" + idItem;
+            a.href = "http://127.0.0.1:8080/pages/OrderPage.html?id=" + idItem;
             a.appendChild(icon);
             return a;
     }
