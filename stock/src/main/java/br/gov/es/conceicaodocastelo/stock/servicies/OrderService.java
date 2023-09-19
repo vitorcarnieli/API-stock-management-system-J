@@ -89,6 +89,16 @@ public class OrderService {
             return false;
         }
     }
+
+    public boolean deleteById(String id) {
+        try {
+            orderRepository.deleteById(UUID.fromString(id));
+            return true;
+        } catch (Exception e) {
+            System.out.println(e);
+            return false;
+        }
+    }
     
     public List<Request> findAllRequests(Order order) {
         return order.getRequests();

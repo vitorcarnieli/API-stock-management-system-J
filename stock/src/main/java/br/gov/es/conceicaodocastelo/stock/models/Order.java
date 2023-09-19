@@ -42,7 +42,6 @@ public class Order implements Serializable {
     
     @ManyToOne
     @JsonBackReference("school-order")
-    @Cascade(value = org.hibernate.annotations.CascadeType.ALL)
     private School school;
 
     

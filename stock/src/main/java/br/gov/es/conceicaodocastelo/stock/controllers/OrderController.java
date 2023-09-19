@@ -2,12 +2,14 @@ package br.gov.es.conceicaodocastelo.stock.controllers;
 
 
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,7 +18,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.gov.es.conceicaodocastelo.stock.dto.OrderRecordDto;
+import br.gov.es.conceicaodocastelo.stock.models.Item;
 import br.gov.es.conceicaodocastelo.stock.models.Order;
+import br.gov.es.conceicaodocastelo.stock.models.School;
 import br.gov.es.conceicaodocastelo.stock.servicies.OrderService;
 
 @RestController
@@ -59,5 +63,20 @@ public class OrderController {
         orderService.create(orderRecordDto);
         return ResponseEntity.status(HttpStatus.OK).body("criado");    
     
+    }
+
+    @GetMapping(path = "/create-table") 
+    public ResponseEntity<List<Item>> createTable(@RequestParam(name = "id") String id) {
+        Order order = orderService.findById(UUID.fromString(id));
+        List<Item> items = new ArrayList<>();
+        order.getRequests().forEach(r -> items.add(r.getItem()));
+        return ResponseEntity.status(HttpStatus.OK).body(items);
+    }
+
+    @DeleteMapping(path = "/delete")
+    public ResponseEntity<School> delete(@RequestParam(name = "id") String id) {
+        Order order = orderService.findById(UUID.fromString(id));
+        orderService.delete(order);
+        return ResponseEntity.status(HttpStatus.OK).body(order.getSchool());
     }
 }

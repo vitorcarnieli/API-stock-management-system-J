@@ -79,7 +79,7 @@ function createPage() {
                 let item = stockGroup.items[ii]
                 let optionItemName = document.createElement("option");
                 optionItemName.textContent = item.name;
-                optionItemName.value = [stockGroup.name, item.name, item.id, stockGroup.id]; 
+                optionItemName.value = [stockGroup.name, item.name.replace(/,/g,"."), item.id, stockGroup.id]; 
                 optionItemName.classList = item.amount;
                 selectItems.appendChild(optionItemName);
             }   

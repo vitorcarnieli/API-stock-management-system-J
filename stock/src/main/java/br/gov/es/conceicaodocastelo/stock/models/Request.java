@@ -32,7 +32,6 @@ public class Request implements Serializable {
     
     @ManyToOne
     @JsonBackReference("item-request") 
-    @Cascade(value = org.hibernate.annotations.CascadeType.ALL)   
     private Item item;
 
     
@@ -95,11 +94,19 @@ public class Request implements Serializable {
         if(item.getAmount() - this.getRequiredAmount() < 0) {
             throw new RuntimeException("limit out range");
         }
-        System.out.println(item.getAmount());
         item.increaseOrDecreaseAmount(-this.getRequiredAmount());
-        System.out.println(item.getAmount());
         this.item = item;
     }
+
+    public String getItemName() {
+        return this.getItem().getName();
+    }
+
+    public String getStockGroupItemName() {
+        return this.getItem().getStockGroup().getName();
+    }
+
+    
 
     
     
