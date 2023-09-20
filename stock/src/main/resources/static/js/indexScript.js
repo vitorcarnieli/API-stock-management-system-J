@@ -58,7 +58,8 @@ function refresh() {
                 let itemsLenght = object.items.length;
 
                 const aBtn = document.createElement("a")
-                aBtn.className = "col-3 btn m-3 btn-success";
+                aBtn.className = "col-3 btn m-3 text-white";
+                aBtn.style = "background-color: #FF9CA9;"
                 aBtn.href = "http://127.0.0.1:8080/pages/stockGroup.html?id=" + object.id;
 
                 const h = document.createElement("h5");
@@ -116,7 +117,8 @@ function refresh() {
                 let title = object.name;
 
                 const aBtn = document.createElement("a")
-                aBtn.className = "col-3 btn m-3 btn-success";
+                aBtn.className = "col-3 btn m-3 text-white";
+                aBtn.style = "background-color: #FF9CA9;"
                 aBtn.href = "http://127.0.0.1:8080/pages/schoolPage.html?id=" + object.id;
 
                 const h = document.createElement("h5");
