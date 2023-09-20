@@ -82,6 +82,10 @@ public class Item implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
+
+    public String getStockId() {
+        return this.getStockGroup().getId().toString();
+    }
     
     public String getDescription() {
         return description;
@@ -109,7 +113,7 @@ public class Item implements Serializable {
     public void setAmount(Integer amount) {
         if(amount != null) {
             if(this.amount == null) {
-                addChanges(amount);
+                addChanges(amount.toString());
             }
             this.amount = amount;
             
@@ -124,7 +128,21 @@ public class Item implements Serializable {
             } else {
                 this.setAmount(this.getAmount() - (valueToIncreaseOrDecrease * -1));
             }
-            addChanges(valueToIncreaseOrDecrease);
+            addChanges(valueToIncreaseOrDecrease.toString());
+        } else {
+            throw new NullPointerException("valueToIncreaseOrDecrease == null");
+        }
+    }
+
+    public void increaseOrDecreaseAmountSchool(Integer valueToIncreaseOrDecrease, String schoolName) {
+        //para incrementar mande um numero positivo, para decrementar mande um negativo
+        if(valueToIncreaseOrDecrease != null) {
+            if(valueToIncreaseOrDecrease >= 0) {
+                this.setAmount(valueToIncreaseOrDecrease + this.getAmount());
+            } else {
+                this.setAmount(this.getAmount() - (valueToIncreaseOrDecrease * -1));
+            }
+            addChanges(schoolName + "," + valueToIncreaseOrDecrease.toString());
         } else {
             throw new NullPointerException("valueToIncreaseOrDecrease == null");
         }
@@ -146,7 +164,7 @@ public class Item implements Serializable {
         this.changes = changes;
     }
 
-    public void addChanges(Integer changedValue ) {
+    public void addChanges(String changedValue ) {
         Records record = new Records(this);
         if(amount == null) {
             record.setAmount("c"+changedValue);

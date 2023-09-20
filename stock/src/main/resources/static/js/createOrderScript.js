@@ -90,7 +90,8 @@ function createPage() {
             let stockGroup = data[i];
 
             let optionStockName = document.createElement("option");
-            optionStockName.textContent = stockGroup.name;
+            optionStockName.textContent = "Grupo de estoque: " + stockGroup.name;
+            optionStockName.classList = "fw-bold bg-dark text-white"
             optionStockName.disabled = true;
             selectItems.appendChild(optionStockName);
 

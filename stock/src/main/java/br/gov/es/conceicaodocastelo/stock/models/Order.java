@@ -61,6 +61,10 @@ public class Order implements Serializable {
     public void setSchool(School school) {
         this.school = school;
     }
+
+    public String getSchoolId() {
+        return school.getId().toString();
+    }
     
     public Order() {
     }

@@ -6,6 +6,7 @@ const amount = document.getElementById("amount");
 const form = document.getElementById("form");
 const tbody = document.getElementById("tbody");
 const title = document.getElementById("title");
+const back = document.getElementById("back");
 var deleteButton = document.getElementById("delete");
 const destroyButton = document.getElementById("deleteItem");
 var cancelButton = document.getElementById("cancel");
@@ -14,7 +15,26 @@ var on = true
 var records;
 var amountValue
 
-//TODO: IMPLEMENTAR ADD ITEM NA PAGINA DE ESTOQUE
+function createBackBtn(stockId) {
+
+    back.addEventListener("mouseover", function() {
+        back.classList.add("border");
+        back.style.cursor = "pointer";
+    })
+    
+    back.addEventListener("mouseout", function() {
+        back.classList.remove("border")
+        back.style.cursor = "auto";
+    })
+    
+    back.addEventListener("click", function(e) {
+        console.log('Entrou')
+        let a = document.createElement("a");
+        a.href = "http://127.0.0.1:8080/pages/stockGroup.html?id=" + stockId;
+        document.body.appendChild(a);
+        a.click();
+    })
+}
 
 function updateObject() {
     return fetch("http://127.0.0.1:8080/item/find/byId?id=" + urlParam.get("id"))
@@ -25,6 +45,7 @@ function updateObject() {
             return response.json()
         })
         .then(data => {
+            stockId = data.stockId
             return data;
 
         })
@@ -80,7 +101,8 @@ function createPage() {
             unitType.textContent = object.unitType;
             amount.value = object.amount;
             changesList = object.changes;
-            createTable(data, on)
+            createTable(data, on);
+            createBackBtn(data.stockId);
         })
         .catch((error) => {
             console.error('Erro ao fazer a solicitação:', error);
@@ -115,8 +137,12 @@ function createTable(data, trueToAltSortC) {
         let valuesChanges = change.amount;
         let dateHour = change.date.split(" T ");
         
-        
-        if (valuesChanges[0] == "c") {
+        if(valuesChanges.includes(",")) {
+            let arrSchool = valuesChanges.split(",")
+            tdChange.textContent = "Retirado " + arrSchool[1] + " para " + arrSchool[0];
+            tdChange.className = "text-info";
+        }
+        else if (valuesChanges[0] == "c") {
             tdChange.textContent = "Criou com " + valuesChanges.replace("c", "");
             tdChange.className = "text-primary";
         } else if (parseInt(valuesChanges) > 0) {

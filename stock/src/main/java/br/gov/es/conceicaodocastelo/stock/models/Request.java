@@ -94,7 +94,7 @@ public class Request implements Serializable {
         if(item.getAmount() - this.getRequiredAmount() < 0) {
             throw new RuntimeException("limit out range");
         }
-        item.increaseOrDecreaseAmount(-this.getRequiredAmount());
+        item.increaseOrDecreaseAmountSchool(-this.getRequiredAmount(), order.getSchool().getName());
         this.item = item;
     }
 

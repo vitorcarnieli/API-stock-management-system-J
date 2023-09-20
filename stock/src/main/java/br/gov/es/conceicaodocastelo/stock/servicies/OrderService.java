@@ -53,10 +53,10 @@ public class OrderService {
                     System.out.println(item);
                     amount = Integer.parseInt(list.get(i));
                     Request request = new Request();
+                    request.setOrder(order);
                     request.setRequiredAmount(amount);
                     request.setItem(item);
                     requests.add(request);  
-                    request.setOrder(order);
                     requestServicie.save(request);
                     orderRepository.save(order);
                 }

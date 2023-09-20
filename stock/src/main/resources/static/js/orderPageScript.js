@@ -1,10 +1,12 @@
-const urlParam = new URLSearchParams(window.location.search)
+const urlParam = new URLSearchParams(window.location.search);
+const title = document.getElementById("title");
 const orderName = document.getElementById("orderName");
 const observation = document.getElementById("description");
 const tbody = document.getElementById("tbody");
 const deleteOrder = document.getElementById("deleteItem");
 const deleteButton = document.getElementById("delete");
-const cancelButton = document.getElementById("cancel")
+const cancelButton = document.getElementById("cancel");
+const back = document.getElementById("back");
 
 document.addEventListener("DOMContentLoaded", createPage());
 
@@ -36,6 +38,7 @@ function createPage() {
     })
     .then((data) => {
         let object = data;
+        title.textContent = object.name
         console.log(data)
         orderName.textContent = object.name
         observation.textContent = object.observation
@@ -48,6 +51,7 @@ function createPage() {
 
 function createTable(data) {
     let requests = data.requests;
+    createBackBtn(data.schoolId)
     for (let i = 0; i < requests.length; i++) {
         let request = requests[i]
         let tr = document.createElement("tr");
@@ -87,4 +91,24 @@ function destroy() {
         })
         .catch((error) => {
         });
+}
+
+function createBackBtn(id) {
+    back.addEventListener("mouseover", function() {
+        back.classList.add("border");
+        back.style.cursor = "pointer";
+    })
+    
+    back.addEventListener("mouseout", function() {
+        back.classList.remove("border")
+        back.style.cursor = "auto";
+    })
+    
+    back.addEventListener("click", function(e) {
+        console.log('Entrou')
+        let a = document.createElement("a");
+        a.href = "http://127.0.0.1:8080/pages/schoolPage.html?id=" + id;
+        document.body.appendChild(a);
+        a.click();
+    })
 }
