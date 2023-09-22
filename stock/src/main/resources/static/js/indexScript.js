@@ -1,12 +1,12 @@
 const divForShowStockGroups = document.getElementById("stock-group");
-const divForShowSchool = document.getElementById("school-group");
+const divForShowInstitution = document.getElementById("institution-group");
 const downloadBtn = document.getElementById("downloadReport");
 
 document.addEventListener("DOMContentLoaded", refresh);
 console.log("btn")
 console.log(downloadBtn)
 downloadBtn.addEventListener("click", function () {
-    fetch("http://192.168.0.90:8080/stock-group/report", {
+    fetch("http://localhost:8080/stock-group/report", {
         method: 'GET',
     })
         .then((response) => {
@@ -39,7 +39,7 @@ function isUpperCase(str) {
 //TODO: IMPLEMENTAR RELATÓRIO, PROVAVELMENTE UM GERAÇÃO DE PDF OU QUALQUER DOCUMENTO DO TIPO NO BACK
 
 function refresh() {
-    fetch("http://192.168.0.90:8080/stock-group/find/all")
+    fetch("http://localhost:8080/stock-group")
         .then((response) => {
             if (!response.ok) {
                 throw new Error("error no response" + response.status);
@@ -60,7 +60,7 @@ function refresh() {
                 const aBtn = document.createElement("a")
                 aBtn.className = "col-3 btn m-3 text-white";
                 aBtn.style = "background-color: #FF9CA9;"
-                aBtn.href = "http://192.168.0.90:8080/pages/stockGroup.html?id=" + object.id;
+                aBtn.href = "http://localhost:8080/pages/stockGroup.html?id=" + object.id;
 
                 const h = document.createElement("h5");
 
@@ -100,11 +100,8 @@ function refresh() {
         .catch((error) => {
             console.error('Erro ao fazer a solicitação:', error);
         });
-    fetch("http://192.168.0.90:8080/school/find/all")
+    fetch("http://localhost:8080/institution/find/all")
         .then((response) => {
-            if (!response.ok) {
-                throw new Error("error no response" + response.status);
-            }
             console.log(response)
             console.log(response.json)
             return response.json();
@@ -119,7 +116,7 @@ function refresh() {
                 const aBtn = document.createElement("a")
                 aBtn.className = "col-3 btn m-3 text-white";
                 aBtn.style = "background-color: #FF9CA9;"
-                aBtn.href = "http://192.168.0.90:8080/pages/schoolPage.html?id=" + object.id;
+                aBtn.href = "http://localhost:8080/pages/institutionPage.html?id=" + object.id;
 
                 const h = document.createElement("h5");
 
@@ -139,7 +136,7 @@ function refresh() {
 
                 aBtn.appendChild(h);
                 aBtn.appendChild(pAmountRequests);
-                divForShowSchool.appendChild(aBtn);
+                divForShowInstitution.appendChild(aBtn);
 
             }
         })

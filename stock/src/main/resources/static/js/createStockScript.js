@@ -1,3 +1,4 @@
+console.log(2)
 const form = document.getElementById("form");
 
 form.addEventListener("submit", function (event) {
@@ -10,7 +11,7 @@ function createStockGroup() {
     const name = document.getElementById("name");
     const description = document.getElementById("description");
 
-    fetch("http://192.168.0.90:8080/stock-group/create",
+    fetch("http://localhost:8080/stock-group/create",
         {
             headers: {
                 'Accept': 'application/json',
@@ -25,7 +26,7 @@ function createStockGroup() {
         .then(function (res) {
             console.log(res);
             alert(name.value + " Criado com sucesso!")
-            window.location.href = "http://192.168.0.90:8080/index.html";
+            window.location.href = "http://localhost:8080/index.html";
         })
         .catch(function (res) { console.log(res) })
 

@@ -1,10 +1,7 @@
 package br.gov.es.conceicaodocastelo.stock.controllers;
 
-
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import br.gov.es.conceicaodocastelo.stock.dto.OrderRecordDto;
 import br.gov.es.conceicaodocastelo.stock.models.Item;
 import br.gov.es.conceicaodocastelo.stock.models.Order;
-import br.gov.es.conceicaodocastelo.stock.models.School;
+import br.gov.es.conceicaodocastelo.stock.models.Institution;
 import br.gov.es.conceicaodocastelo.stock.servicies.OrderService;
 
 @RestController
@@ -35,7 +32,7 @@ public class OrderController {
 
     @GetMapping(path = "/find/all")
     public ResponseEntity<Object> findAll() {
-        try { 
+        try {
             List<Order> allOrders = orderService.findAll();
             return ResponseEntity.status(HttpStatus.OK).body(allOrders);
         } catch (Exception e) {
@@ -47,8 +44,8 @@ public class OrderController {
 
     @GetMapping(path = "/find/by/id")
     public ResponseEntity<Object> findById(@RequestParam(name = "id") String id) {
-        try { 
-            Order order = orderService.findById(UUID.fromString(id));
+        try {
+            Order order = orderService.findById(Long.parseLong(id));
             order.getRequests().forEach(r -> System.out.println(r.getItem()));
             return ResponseEntity.status(HttpStatus.OK).body(order);
         } catch (Exception e) {
@@ -61,22 +58,22 @@ public class OrderController {
     @PostMapping(path = "/create")
     public ResponseEntity<Object> createOrder(@RequestBody OrderRecordDto orderRecordDto) {
         orderService.create(orderRecordDto);
-        return ResponseEntity.status(HttpStatus.OK).body("criado");    
-    
+        return ResponseEntity.status(HttpStatus.OK).body("criado");
+
     }
 
-    @GetMapping(path = "/create-table") 
+    @GetMapping(path = "/create-table")
     public ResponseEntity<List<Item>> createTable(@RequestParam(name = "id") String id) {
-        Order order = orderService.findById(UUID.fromString(id));
+        Order order = orderService.findById(Long.parseLong(id));
         List<Item> items = new ArrayList<>();
         order.getRequests().forEach(r -> items.add(r.getItem()));
         return ResponseEntity.status(HttpStatus.OK).body(items);
     }
 
     @DeleteMapping(path = "/delete")
-    public ResponseEntity<School> delete(@RequestParam(name = "id") String id) {
-        Order order = orderService.findById(UUID.fromString(id));
+    public ResponseEntity<Institution> delete(@RequestParam(name = "id") String id) {
+        Order order = orderService.findById(Long.parseLong(id));
         orderService.delete(order);
-        return ResponseEntity.status(HttpStatus.OK).body(order.getSchool());
+        return ResponseEntity.status(HttpStatus.OK).body(order.getInstitution());
     }
 }

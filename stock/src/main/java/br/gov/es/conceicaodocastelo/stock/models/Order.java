@@ -1,91 +1,50 @@
 package br.gov.es.conceicaodocastelo.stock.models;
 
-import java.io.Serial;
-import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 import org.hibernate.annotations.Cascade;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
+import br.gov.es.conceicaodocastelo.stock.models.generic.BaseEntity;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "TB_ORDERS")
-public class Order implements Serializable {
+public class Order extends BaseEntity {
 
-    @Serial
-    private static final long serialVersionUID = -4834257346219938057L;
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
-
-    private String name;
-
-    
     @OneToMany(mappedBy = "order")
     @JsonManagedReference("order-request")
     @Cascade(value = org.hibernate.annotations.CascadeType.ALL)
     private List<Request> requests;
 
-    
     @ManyToOne
-    @JsonBackReference("school-order")
-    private School school;
+    @JsonBackReference("institution-order")
+    private Institution institution;
 
-    
     private String observation;
 
     private Date date;
 
-    
-    public static long getSerialversionuid() {
-        return serialVersionUID;
-    }
-    
-    public School getSchool() {
-        return school;
+    public Institution getInstitution() {
+        return institution;
     }
 
-    public void setSchool(School school) {
-        this.school = school;
+    public void setInstitution(Institution institution) {
+        this.institution = institution;
     }
 
-    public String getSchoolId() {
-        return school.getId().toString();
+    public String getInstitutionId() {
+        return institution.getId().toString();
     }
-    
+
     public Order() {
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        if(date == null) {
-            this.setDate();
-        }
-        this.name = name;
     }
 
     public List<Request> getRequests() {
@@ -116,30 +75,22 @@ public class Order implements Serializable {
     }
 
     public Date getDateDefault() {
-        if(date == null) {
+        if (date == null) {
             this.setDate();
         }
         return date;
     }
 
     public String getDateFormated() {
-        if(date == null) {
+        if (date == null) {
             this.setDate();
         }
         SimpleDateFormat formatData = new SimpleDateFormat("dd-MM-yyyy'T'HH:mm:ss");
         return formatData.format(date);
     }
-    
+
     public void setDate() {
         this.date = new Date();
     }
-
-
-
-    
-
-
-
-
 
 }

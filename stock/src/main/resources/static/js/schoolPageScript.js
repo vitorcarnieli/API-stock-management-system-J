@@ -1,7 +1,7 @@
 const urlParam = new URLSearchParams(window.location.search)
 const title = document.getElementById("title");
 const totalPedidos = document.getElementById("total-pedidos")
-const schoolName = document.getElementById("school-name");
+const institutionName = document.getElementById("institution-name");
 const tbody = document.getElementById("tbody");
 const searchByNameField = document.getElementById("searchByNameField");
 const searchByNameBtn = document.getElementById("searchByName");
@@ -16,14 +16,14 @@ function createTdWithIcons(condition, idItem) {
             let a = document.createElement("a");
             a.className = "btn btn-primary rounded-5";
             icon.className = "bi bi-box-arrow-in-right text-light";
-            a.href = "http://192.168.0.90:8080/pages/OrderPage.html?id=" + idItem;
+            a.href = "http://localhost:8080/pages/OrderPage.html?id=" + idItem;
             a.appendChild(icon);
             return a;
     }
 }
 
 function refresh() {
-    fetch("http://192.168.0.90:8080/school/find/byId?id=" + urlParam.get("id"))
+    fetch("http://localhost:8080/institution/find/byId?id=" + urlParam.get("id"))
         .then((response) => {
             if (!response.ok) {
                 throw new Error("error no response" + response.status);
@@ -33,7 +33,7 @@ function refresh() {
         .then((data) => {
             let object = data;
             title.textContent = object.name
-            schoolName.textContent = object.name
+            institutionName.textContent = object.name
             totalPedidos.textContent = "TOTAL DE PEDIDOS: " + object.orders.length
 
             let a = document.getElementById("addOrder");

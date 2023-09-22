@@ -31,7 +31,7 @@ back.addEventListener("mouseout", function () {
 back.addEventListener("click", function (e) {
     console.log('Entrou')
     let a = document.createElement("a");
-    a.href = "http://192.168.0.90:8080/pages/schoolPage.html?id=" + urlParam.get("id");
+    a.href = "http://localhost:8080/pages/institutionPage.html?id=" + urlParam.get("id");
     document.body.appendChild(a);
     a.click();
 })
@@ -80,7 +80,7 @@ tBody.addEventListener('click', function (event) {
 
 
 function createPage() {
-    fetch("http://192.168.0.90:8080/stock-group/find/all")
+    fetch("http://localhost:8080/stock-group/")
         .then((response) => {
             if (!response.ok) { throw new Error("error no response" + response.status); }
             return response.json();
@@ -188,13 +188,13 @@ function createOrder() {
     let order = {
         name: nome.value,
         observations: observations.value,
-        school: urlParam.get("id"),
+        institution: urlParam.get("id"),
         requests: finalOrder
         //[itemId, amount]
     }
 
     console.log(order)
-    fetch("http://192.168.0.90:8080/order/create",
+    fetch("http://localhost:8080/order/create",
         {
             headers: {
                 'Accept': 'application/json',
@@ -205,7 +205,7 @@ function createOrder() {
         })
         .then(function (res) {
             console.log(res);
-            window.location.href = "http://192.168.0.90:8080/pages/schoolPage.html?id=" + urlParam.get("id");
+            window.location.href = "http://localhost:8080/pages/institutionPage.html?id=" + urlParam.get("id");
         })
         .catch(function (res) { console.log(res) })
 }

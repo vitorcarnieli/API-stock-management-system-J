@@ -43,7 +43,7 @@ function createTdWithIcons(condition, idItem) {
             let a = document.createElement("a");
             a.className = "btn btn-primary rounded-5";
             icon.className = "bi bi-box-arrow-in-right text-light";
-            a.href = "http://192.168.0.90:8080/pages/item.html?id=" + idItem;
+            a.href = "http://localhost:8080/pages/item.html?id=" + idItem;
             a.appendChild(icon);
             return a;
     }
@@ -54,7 +54,7 @@ function refresh(test, obj) {
         createTable(obj)
         return
     }
-    fetch("http://192.168.0.90:8080/stock-group/find/byId?id=" + urlParam.get("id"))
+    fetch("http://localhost:8080/stock-group/" + urlParam.get("id"))
         .then((response) => {
             if (!response.ok) {
                 throw new Error("error no response" + response.status);
@@ -64,6 +64,7 @@ function refresh(test, obj) {
             return response.json();
         })
         .then((data) => {
+            console.log("data" + data)
             let object = data;
             title.textContent = object.name
             stockName.textContent = object.name
@@ -120,26 +121,30 @@ function createTable(obj, orgToZA) {
 }
 
 function destroy() {
-    fetch("http://192.168.0.90:8080/stock-group/delete?idGroup=" + urlParam.get("id"))
+    fetch("http://localhost:8080/stock-group/" + urlParam.get("id"),
+        {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            method: "DELETE",
+        })
         .then((response) => {
             if (!response.ok) {
                 throw new Error("error no response" + response.status);
             }
-
-            console.log(response)
-            console.log(response.json)
             return response.json();
         })
         .then((data) => {
+            window.location.href = "http://localhost:8080/index.html";
         })
         .catch((error) => {
-            window.location.href = "http://192.168.0.90:8080/index.html";
         });
 }
 
 function findByName() {
     console.log("entrou")
-    fetch("http://192.168.0.90:8080/item/find/byName?idGroup=" + urlParam.get("id") + "&name=" + searchByNameField.value)
+    fetch("http://localhost:8080/item/find/byName?idGroup=" + urlParam.get("id") + "&name=" + searchByNameField.value)
         .then((response) => {
             if (!response.ok) {
                 throw new Error("error no response" + response.status);

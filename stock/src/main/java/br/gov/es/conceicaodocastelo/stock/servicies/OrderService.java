@@ -3,7 +3,6 @@ package br.gov.es.conceicaodocastelo.stock.servicies;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,7 +20,7 @@ public class OrderService {
     @Autowired
     private ItemService itemService;
     @Autowired
-    private SchoolService schoolService;
+    private InstitutionService institutionService;
     @Autowired
     private RequestServicie requestServicie;
 
@@ -33,21 +32,29 @@ public class OrderService {
         return orderRepository.save(order);
     }
 
-    public void create(OrderRecordDto orderRecordDto) { 
+    public void create(OrderRecordDto orderRecordDto) {
         Order order = new Order();
         order.setName(orderRecordDto.name());
         order.setObservation(orderRecordDto.observations());
-        order.setSchool(schoolService.findById(orderRecordDto.school()));
+        try {
+            order.setInstitution(institutionService.findById(Long.parseLong(orderRecordDto.institution())));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         Item item = null;
         Integer amount;
         List<Request> requests = new ArrayList<>();
-        
+
         List<List<String>> requestsFromList = orderRecordDto.requests();
         for (List<String> list : requestsFromList) {
             for (int i = 0; i < list.size(); i++) {
                 System.out.println(list.get(i));
-                if(i == 0) {
-                    item = itemService.findById(UUID.fromString(list.get(i))).getBody().get();
+                if (i == 0) {
+                    try {
+                        item = itemService.findById(Long.parseLong(list.get(i)));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                     continue;
                 } else {
                     System.out.println(item);
@@ -56,7 +63,7 @@ public class OrderService {
                     request.setOrder(order);
                     request.setRequiredAmount(amount);
                     request.setItem(item);
-                    requests.add(request);  
+                    requests.add(request);
                     requestServicie.save(request);
                     orderRepository.save(order);
                 }
@@ -66,15 +73,15 @@ public class OrderService {
 
     public List<Order> findAll() {
         List<Order> orders = orderRepository.findAll();
-        if(orders.isEmpty()) {
+        if (orders.isEmpty()) {
             throw new RuntimeException("orders not found");
         }
         return orders;
     }
 
-    public Order findById(UUID orderId) {
+    public Order findById(Long orderId) {
         Optional<Order> order = orderRepository.findById(orderId);
-        if(order.isEmpty()) {
+        if (order.isEmpty()) {
             throw new RuntimeException("order id not founded");
         }
         return order.get();
@@ -92,18 +99,16 @@ public class OrderService {
 
     public boolean deleteById(String id) {
         try {
-            orderRepository.deleteById(UUID.fromString(id));
+            orderRepository.deleteById(Long.parseLong(id));
             return true;
         } catch (Exception e) {
             System.out.println(e);
             return false;
         }
     }
-    
+
     public List<Request> findAllRequests(Order order) {
         return order.getRequests();
     }
-    
 
-    
 }

@@ -1,50 +1,34 @@
 package br.gov.es.conceicaodocastelo.stock.models;
 
-import java.io.Serial;
-import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.UUID;
 
 import org.hibernate.annotations.Cascade;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
+import br.gov.es.conceicaodocastelo.stock.models.generic.BaseEntity;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "TB_REQUESTS")
-public class Request implements Serializable {
-
-    @Serial
-    private static final long serialVersionUID = -4834257346219938057L;
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+public class Request extends BaseEntity {
 
     private Integer requiredAmount;
-    
+
     @ManyToOne
-    @JsonBackReference("item-request") 
+    @JsonBackReference("item-request")
     private Item item;
 
-    
     @ManyToOne
-    @JsonBackReference("order-request")    
+    @JsonBackReference("order-request")
     @Cascade(value = org.hibernate.annotations.CascadeType.ALL)
     private Order order;
 
-    
     private Date date;
-    
-    
-    
+
     public Request() {
     }
 
@@ -55,15 +39,7 @@ public class Request implements Serializable {
     public Order getOrder() {
         return this.order;
     }
-    
-    public UUID getId() {
-        return id;
-    }
 
-    public void setId(UUID id) {
-        this.id = id;
-    }
-    
     public Date getDateDefault() {
         return date;
     }
@@ -72,29 +48,29 @@ public class Request implements Serializable {
         SimpleDateFormat formatData = new SimpleDateFormat("dd-MM-yyyy'T'HH:mm:ss");
         return formatData.format(date);
     }
-    
+
     public void setDate() {
         this.date = new Date();
     }
-    
+
     public Integer getRequiredAmount() {
         return requiredAmount;
     }
-    
+
     public void setRequiredAmount(Integer requiredAmount) {
         this.setDate();
         this.requiredAmount = requiredAmount;
     }
-    
+
     public Item getItem() {
         return item;
     }
-    
+
     public void setItem(Item item) {
-        if(item.getAmount() - this.getRequiredAmount() < 0) {
+        if (item.getAmount() - this.getRequiredAmount() < 0) {
             throw new RuntimeException("limit out range");
         }
-        item.increaseOrDecreaseAmountSchool(-this.getRequiredAmount(), order.getSchool().getName());
+        item.increaseOrDecreaseAmountInstitution(-this.getRequiredAmount(), order.getInstitution().getName());
         this.item = item;
     }
 
@@ -106,8 +82,4 @@ public class Request implements Serializable {
         return this.getItem().getStockGroup().getName();
     }
 
-    
-
-    
-    
 }

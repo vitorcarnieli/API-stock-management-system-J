@@ -30,14 +30,14 @@ function createBackBtn(stockId) {
     back.addEventListener("click", function (e) {
         console.log('Entrou')
         let a = document.createElement("a");
-        a.href = "http://192.168.0.90:8080/pages/stockGroup.html?id=" + stockId;
+        a.href = "http://localhost:8080/pages/stockGroup.html?id=" + stockId;
         document.body.appendChild(a);
         a.click();
     })
 }
 
 function updateObject() {
-    return fetch("http://192.168.0.90:8080/item/find/byId?id=" + urlParam.get("id"))
+    return fetch("http://localhost:8080/item/find/byId?id=" + urlParam.get("id"))
         .then((response) => {
             if (!response.ok) {
                 throw new Error("error no response" + response.status);
@@ -84,11 +84,8 @@ cancelButton.addEventListener("click", function () {
 
 
 function createPage() {
-    fetch("http://192.168.0.90:8080/item/find/byId?id=" + urlParam.get("id"))
+    fetch("http://localhost:8080/item/find/byId?id=" + urlParam.get("id"))
         .then((response) => {
-            if (!response.ok) {
-                throw new Error("error no response" + response.status);
-            }
             return response.json();
         })
         .then((data) => {
@@ -138,8 +135,8 @@ function createTable(data, trueToAltSortC) {
         let dateHour = change.date.split(" T ");
 
         if (valuesChanges.includes(",")) {
-            let arrSchool = valuesChanges.split(",")
-            tdChange.textContent = "Retirado " + arrSchool[1] + " para " + arrSchool[0];
+            let arrInstitution = valuesChanges.split(",")
+            tdChange.textContent = "Retirado " + arrInstitution[1] + " para " + arrInstitution[0];
             tdChange.className = "text-info";
         }
         else if (valuesChanges[0] == "c") {
@@ -231,7 +228,7 @@ function submit() {
         console.log(value)
 
 
-        fetch("http://192.168.0.90:8080/item/add/changes?idItem=" + urlParam.get("id") + "&change=" + value,
+        fetch("http://localhost:8080/item/add/changes?idItem=" + urlParam.get("id") + "&change=" + value,
             {
                 headers: {
                     'Accept': 'application/json',
@@ -252,7 +249,7 @@ function submit() {
 }
 
 function destroy() {
-    fetch("http://192.168.0.90:8080/item/delete?idItem=" + urlParam.get("id"),
+    fetch("http://localhost:8080/item/delete?idItem=" + urlParam.get("id"),
         {
             headers: {
                 'Accept': 'application/json',
@@ -267,7 +264,7 @@ function destroy() {
             return response.json();
         })
         .then((data) => {
-            window.location.href = "http://192.168.0.90:8080/pages/stockGroup.html?id=" + data.id;
+            window.location.href = "http://localhost:8080/pages/stockGroup.html?id=" + data.id;
         })
         .catch((error) => {
         });

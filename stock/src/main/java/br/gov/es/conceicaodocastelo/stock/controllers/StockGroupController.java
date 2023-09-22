@@ -1,10 +1,10 @@
 package br.gov.es.conceicaodocastelo.stock.controllers;
 
+import br.gov.es.conceicaodocastelo.stock.controllers.generic.GenericControllerImp;
+import br.gov.es.conceicaodocastelo.stock.controllers.interfaces.StockGroupInterface;
 import br.gov.es.conceicaodocastelo.stock.dto.ItemRecordDto;
-import br.gov.es.conceicaodocastelo.stock.dto.StockGroupRecordDto;
 import br.gov.es.conceicaodocastelo.stock.models.Item;
 import br.gov.es.conceicaodocastelo.stock.models.StockGroup;
-import br.gov.es.conceicaodocastelo.stock.servicies.StockGroupService;
 import jakarta.validation.Valid;
 import org.hibernate.QueryException;
 import org.springframework.beans.BeanUtils;
@@ -15,11 +15,8 @@ import org.springframework.web.bind.annotation.*;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
@@ -32,139 +29,71 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
-
 @RestController
 @CrossOrigin("*")
 @RequestMapping(path = "/stock-group")
-public class StockGroupController {
-
-
-    final StockGroupService stockGroupService;
-
-    public StockGroupController(StockGroupService stockGroupService) {
-        this.stockGroupService = stockGroupService;
-    }
-
-    private List<StockGroup> stocks = new ArrayList<>();
-
-    StockGroup stockAwaitForReturn;
-
-    //POST'S
-    @PostMapping(value = "/create")
-    public ResponseEntity<StockGroup> createStockGroup(@RequestBody @Valid StockGroupRecordDto stockGroupRecordDto ) {
-        System.out.println("\n\nRecebendo solicitação POST em /stock-group/create\n\n");
-        StockGroup stockGroup = new StockGroup();
-        BeanUtils.copyProperties(stockGroupRecordDto,stockGroup);
-        return ResponseEntity.status(HttpStatus.CREATED).body(stockGroupService.save(stockGroup));
-    }
+public class StockGroupController extends GenericControllerImp<StockGroup> implements StockGroupInterface {
 
     @PostMapping(value = "/addItem/{idGroup}")
-    public ResponseEntity<StockGroup> addItemToStockGroup(@PathVariable(value = "idGroup") UUID idGroup, @RequestBody @Valid ItemRecordDto itemRecordDto) {
-        Item item = new Item();
+    public ResponseEntity<Object> addItemToStockGroup(@PathVariable(value = "idGroup") Long idGroup,
+            @RequestBody @Valid ItemRecordDto itemRecordDto) {
+        try {
+            Item item = new Item();
 
-        BeanUtils.copyProperties(itemRecordDto, item);
+            BeanUtils.copyProperties(itemRecordDto, item);
 
-        Optional<StockGroup> stockO = stockGroupService.findById(idGroup);
+            ResponseEntity<Object> stockO = this.findById(idGroup);
+            if (stockO.getStatusCode().is2xxSuccessful()) {
+                StockGroup stockM = (StockGroup) stockO.getBody();
 
-        if (stockO.isEmpty()) {
-            throw new QueryException("StockGroup not found");
+                stockM.addItems(item);
+
+                stockM.getItems().forEach(i -> {
+                    if (i.getUnitType() == null || i.getUnitType() == "") {
+                        i.setUnitType("Unidade");
+                    }
+                    if (i.getAmount() == null || i.getAmount() < 0) {
+                        i.setAmount(0);
+                    }
+                });
+                return ResponseEntity.status(HttpStatus.OK).body(this.save(stockM));
+            } else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error");
+            }
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error");
         }
 
-        StockGroup stockM = stockO.get();
-        stockM.addItems(item);
-
-        stockM.getItems().forEach(i -> {
-            if(i.getUnitType() == null || i.getUnitType() == "") {
-                i.setUnitType("Unidade");
-            }
-            if(i.getAmount() == null || i.getAmount() < 0) {
-                i.setAmount(0);
-            }
-        });
-
-
-        return ResponseEntity.status(HttpStatus.OK).body(stockGroupService.save(stockM));
     }
 
-
-    //GETER'S
+    // GETER'S
     @GetMapping(path = "/find/byName")
     @ResponseBody
-    public ResponseEntity<List<StockGroup>> findByName(@RequestParam(value = "name") String name) {
-        if(stockGroupService.findByName(name).getBody() != null) {
-            return ResponseEntity.status(HttpStatus.OK).body(stockGroupService.findByName(name).getBody());
+    public ResponseEntity<Object> findByName(@RequestParam(value = "name") String name) {
+        ResponseEntity<Object> query = this.findByNameS(name);
+        if (query.getStatusCode().is2xxSuccessful()) {
+            return ResponseEntity.status(HttpStatus.OK).body(query.getBody());
         } else {
             throw new QueryException("not found");
         }
     }
 
-    @GetMapping(value = "/find/byId")
-    @ResponseBody
-    public ResponseEntity<Optional<StockGroup>> findById(@RequestParam(value = "id") UUID id) {
-        if(id != null) {
-            Optional<StockGroup> stock = stockGroupService.findById(id);
-            if(stock.isPresent()) {
-                return ResponseEntity.status(HttpStatus.OK).body(stockGroupService.findById(id));
-            } else {
-                throw new QueryException("not found");
-            }
-        } else {
-            throw new NullPointerException("ResponseEntity<Optional<StockGroupModel>> findById(@RequestParam(value = \"id\") UUID id == null)");
-        }
-    }
-
-
-
-    @GetMapping(path = "/find/all")
-    @ResponseBody
-    public List<StockGroup> findAll() {
-        stocks.clear();
-        stocks = stockGroupService.findAll();
-        return stocks;
-    }
-
-    @GetMapping(path = "/getNames")
-    @ResponseBody
-    public List<String> getAllStockNamesAndDescription() {
-        List<String> l = new ArrayList<>();
-        l.clear();
-        findAll().forEach(s -> {
-            l.add(s.getName());
-            String d = s.getDescription();
-            if(d != null) {
-                l.add(s.getDescription());
-            } else {
-                l.add("");
-            }
-        });
-        System.out.println(l.toString());
-        return l;
-
-    }
-
     @GetMapping(value = "/getAllItems")
     @ResponseBody
-    public List<Item> getAllItemInStockGroup(@RequestParam(value = "idGroup") UUID id) {
-        if(id != null) {
-            Optional<StockGroup> stock = findById(id).getBody();
-            if(stock != null && stock.isPresent()) {
-                return ResponseEntity.status(HttpStatus.OK).body(stock.get().getItems()).getBody();
+    public ResponseEntity<Object> getAllItemInStockGroup(@RequestParam(value = "idGroup") Long id) {
+        try {
+            ResponseEntity<Object> query = this.findById(id);
+            if(query.getStatusCode().is2xxSuccessful()) {
+                return ResponseEntity.status(HttpStatus.OK).body(((StockGroup) this.findById(id).getBody()).getItems());
             } else {
-                throw new QueryException("stock not found");
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("ID NOT FOUND");  
             }
-        }
-        throw new NullPointerException("List<ItemModel> getAllItemInStockGroup(@RequestParam(value = \"idGroup\") UUID id == null)");
-    }
-
-
-    //DESTROYERS
-    @GetMapping("/delete")
-    @ResponseBody
-    public void deleteStockGroupById(@RequestParam(value = "idGroup") UUID id) {
-        if(id != null) {
-            stockGroupService.deleteById(id);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("ID NOT FOUND");
         }
     }
+
 
 
     @GetMapping(value = "/report")
@@ -172,7 +101,7 @@ public class StockGroupController {
     public ResponseEntity<List<String>> createReport() {
         Document document = new Document();
 
-        List<StockGroup> list = this.findAll();
+        List<StockGroup> list = (List<StockGroup>) this.findAll();
 
         try {
             String url = "C:\\Users\\usuario\\Documents\\sistema_gerenciamento_estoque\\stock-management-system-J-SpringBoot\\stock\\src\\main\\resources\\static\\assets\\reports\\";
@@ -232,8 +161,8 @@ public class StockGroupController {
             System.out.println("criado");
             boolean whilecondition = true;
             while (whilecondition) {
-                File file = new File(url+fileName);
-                if(file.exists()) {
+                File file = new File(url + fileName);
+                if (file.exists()) {
                     whilecondition = false;
                     continue;
                 }
@@ -245,7 +174,6 @@ public class StockGroupController {
             document.close();
             throw new RuntimeException("Erro ao criar relatório");
         }
-    }    
-    
-    
+    }
+
 }

@@ -29,7 +29,7 @@ cancelButton.addEventListener("click", function () {
 });
 
 function createPage() {
-    fetch("http://192.168.0.90:8080/order/find/by/id?id=" + urlParam.get("id"))
+    fetch("http://localhost:8080/order/find/by/id?id=" + urlParam.get("id"))
         .then((response) => {
             if (!response.ok) {
                 throw new Error("error no response" + response.status);
@@ -51,7 +51,7 @@ function createPage() {
 
 function createTable(data) {
     let requests = data.requests;
-    createBackBtn(data.schoolId)
+    createBackBtn(data.institutionId)
     for (let i = 0; i < requests.length; i++) {
         let request = requests[i]
         let tr = document.createElement("tr");
@@ -72,7 +72,7 @@ function createTable(data) {
 }
 
 function destroy() {
-    fetch("http://192.168.0.90:8080/order/delete?id=" + urlParam.get("id"),
+    fetch("http://localhost:8080/order/delete?id=" + urlParam.get("id"),
         {
             headers: {
                 'Accept': 'application/json',
@@ -87,7 +87,7 @@ function destroy() {
             return response.json();
         })
         .then((data) => {
-            window.location.href = "http://192.168.0.90:8080/pages/schoolPage.html?id=" + data.id;
+            window.location.href = "http://localhost:8080/pages/institutionPage.html?id=" + data.id;
         })
         .catch((error) => {
         });
@@ -107,7 +107,7 @@ function createBackBtn(id) {
     back.addEventListener("click", function (e) {
         console.log('Entrou')
         let a = document.createElement("a");
-        a.href = "http://192.168.0.90:8080/pages/schoolPage.html?id=" + id;
+        a.href = "http://localhost:8080/pages/institutionPage.html?id=" + id;
         document.body.appendChild(a);
         a.click();
     })

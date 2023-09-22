@@ -6,23 +6,11 @@ import org.springframework.stereotype.Service;
 
 import br.gov.es.conceicaodocastelo.stock.models.Item;
 import br.gov.es.conceicaodocastelo.stock.models.Request;
-import br.gov.es.conceicaodocastelo.stock.repositories.RequestRepository;
+import br.gov.es.conceicaodocastelo.stock.servicies.generic.GenericServiceImp;
+import br.gov.es.conceicaodocastelo.stock.servicies.interfaces.RequestInterface;
 
 @Service
-public class RequestServicie {
-    
-    private final RequestRepository requestRepository;
-
-    public RequestServicie(RequestRepository requestRepository) {
-        this.requestRepository = requestRepository;
-    }
-
-    public Request save(Request request) {
-        if(request != null) {
-            return requestRepository.save(request);
-        }
-        throw new NullPointerException("request = null");
-    }
+public class RequestServicie extends GenericServiceImp<Request> implements RequestInterface{
 
     public Request createRequest(Request request) {
         if(request.getRequiredAmount() - request.getItem().getAmount() < 0) {
@@ -48,6 +36,8 @@ public class RequestServicie {
     public Item getItemToRequest(Request request) {
         return request.getItem();
     }
+
+    
 
     
 }

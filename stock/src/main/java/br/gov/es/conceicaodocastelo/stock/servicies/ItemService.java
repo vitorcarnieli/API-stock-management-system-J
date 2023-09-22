@@ -1,33 +1,16 @@
 package br.gov.es.conceicaodocastelo.stock.servicies;
 
 import br.gov.es.conceicaodocastelo.stock.models.Item;
-import br.gov.es.conceicaodocastelo.stock.models.StockGroup;
-import br.gov.es.conceicaodocastelo.stock.repositories.ItemRepository;
+import br.gov.es.conceicaodocastelo.stock.servicies.generic.GenericServiceImp;
+import br.gov.es.conceicaodocastelo.stock.servicies.interfaces.ItemInterface;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @Service
-public class ItemService {
+public class ItemService extends GenericServiceImp<Item> implements ItemInterface{
 
-    private final ItemRepository itemRepository;
-
-    public ItemService(ItemRepository itemRepository) {
-        this.itemRepository = itemRepository;
-    }
-
-    public Item save(Item itemModel) {
-        if (itemModel != null) {
-            return itemRepository.save(itemModel);
-        }
-        throw new NullPointerException("ItemModel save(ItemModel itemModel == null)");
-    }
 
     public void decrementAmountItem(Integer amount, Item itemModel) {
         if (amount != null && itemModel != null) {
@@ -52,49 +35,40 @@ public class ItemService {
         }
     }
 
-    public ResponseEntity<Item> changeAmountItem(Integer amount, Item itemModel) {
-        if(amount != null && amount > 0) {
+    public Item changeAmountItem(Integer amount, Item itemModel) {
+        if (amount != null && amount > 0) {
             itemModel.setAmount(amount);
             this.save(itemModel);
-            return ResponseEntity.status(HttpStatus.OK).body(itemModel);
+            return itemModel;
         } else {
             throw new NullPointerException("Invalid argument for amount or itemModel");
         }
     }
 
-    public ResponseEntity<List<Item>> findByName(@RequestParam(value = "name") String name) {
+    public List<Item> findByName(String name) {
         if (name != null) {
-            List<Item> items = itemRepository.findByNome(name);
-            return new ResponseEntity<List<Item>>(items, HttpStatus.OK);
+            List<Item> items = this.findByNameI(name);
+            return items;
         } else {
-            throw new NullPointerException("ResponseEntity<List<ItemModel>> findByName(@RequestParam(value = \"name\") String name  == null)");
+            throw new NullPointerException(
+                    "ResponseEntity<List<ItemModel>> findByName(@RequestParam(value = \"name\") String name  == null)");
         }
     }
 
-    public ResponseEntity<Item> addChanges(UUID id, Integer amount) {
-        if(id != null & amount != null) {
-            Item item = itemRepository.findById(id).get();
-            item.increaseOrDecreaseAmount(amount);
-            itemRepository.save(item);
-            return ResponseEntity.status(HttpStatus.OK).body(item);
+    public Item addChanges(Long id, Integer amount) {
+        if (id != null & amount != null) {
+            Item item;
+            try {
+                item = this.findById(id);
+                item.increaseOrDecreaseAmount(amount);
+                this.save(item);
+                return item;
+            } catch (Exception e) {
+                return null;
+            }
         } else {
             throw new NullPointerException("null pointer");
         }
-    }
-
-    public ResponseEntity<Optional<Item>> findById(UUID id) {
-        if(id != null) {
-            Optional<Item> optItemModel = itemRepository.findById(id);
-            return ResponseEntity.status(HttpStatus.OK).body(optItemModel);
-        } else {
-            throw new NullPointerException("null");
-        }
-    }
-
-    public StockGroup deleteById(UUID id) {
-        Item item = this.findById(id).getBody().get();
-        itemRepository.delete(item);
-        return item.getStockGroup();
     }
 
 }
