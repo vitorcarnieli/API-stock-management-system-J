@@ -29,24 +29,24 @@ cancelButton.addEventListener("click", function () {
 });
 
 function createPage() {
-    fetch("http://127.0.0.1:8080/order/find/by/id?id=" + urlParam.get("id"))
-    .then((response) => {
-        if (!response.ok) {
-            throw new Error("error no response" + response.status);
-        }
-        return response.json();
-    })
-    .then((data) => {
-        let object = data;
-        title.textContent = object.name
-        console.log(data)
-        orderName.textContent = object.name
-        observation.textContent = object.observation
-        createTable(object);
-    })
-    .catch((error) => {
-        console.error('Erro ao fazer a solicitação:', error);
-    });
+    fetch("http://192.168.0.90:8080/order/find/by/id?id=" + urlParam.get("id"))
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error("error no response" + response.status);
+            }
+            return response.json();
+        })
+        .then((data) => {
+            let object = data;
+            title.textContent = object.name
+            console.log(data)
+            orderName.textContent = object.name
+            observation.textContent = object.observation
+            createTable(object);
+        })
+        .catch((error) => {
+            console.error('Erro ao fazer a solicitação:', error);
+        });
 }
 
 function createTable(data) {
@@ -67,19 +67,19 @@ function createTable(data) {
         tr.appendChild(tdStockGroup);
         tr.appendChild(tdAmount);
 
-        tbody.appendChild(tr); 
+        tbody.appendChild(tr);
     }
 }
 
 function destroy() {
-    fetch("http://127.0.0.1:8080/order/delete?id=" + urlParam.get("id"), 
-    {
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        },
-        method: "DELETE",
-    })
+    fetch("http://192.168.0.90:8080/order/delete?id=" + urlParam.get("id"),
+        {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            method: "DELETE",
+        })
         .then((response) => {
             if (!response.ok) {
                 throw new Error("error no response" + response.status);
@@ -87,27 +87,27 @@ function destroy() {
             return response.json();
         })
         .then((data) => {
-            window.location.href = "http://127.0.0.1:8080/pages/schoolPage.html?id=" + data.id;
+            window.location.href = "http://192.168.0.90:8080/pages/schoolPage.html?id=" + data.id;
         })
         .catch((error) => {
         });
 }
 
 function createBackBtn(id) {
-    back.addEventListener("mouseover", function() {
+    back.addEventListener("mouseover", function () {
         back.classList.add("border");
         back.style.cursor = "pointer";
     })
-    
-    back.addEventListener("mouseout", function() {
+
+    back.addEventListener("mouseout", function () {
         back.classList.remove("border")
         back.style.cursor = "auto";
     })
-    
-    back.addEventListener("click", function(e) {
+
+    back.addEventListener("click", function (e) {
         console.log('Entrou')
         let a = document.createElement("a");
-        a.href = "http://127.0.0.1:8080/pages/schoolPage.html?id=" + id;
+        a.href = "http://192.168.0.90:8080/pages/schoolPage.html?id=" + id;
         document.body.appendChild(a);
         a.click();
     })

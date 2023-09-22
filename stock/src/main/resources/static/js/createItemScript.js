@@ -18,7 +18,7 @@ form.addEventListener("submit", function (event) {
 
 function createItem() {
 
-    fetch("http://127.0.0.1:8080/stock-group/addItem/" + urlParam.get("id"),
+    fetch("http://192.168.0.90:8080/stock-group/addItem/" + urlParam.get("id"),
         {
             headers: {
                 'Accept': 'application/json',
@@ -35,26 +35,26 @@ function createItem() {
         .then(function (res) {
             console.log(res);
             alert(name.value + " Adicionado com sucesso!")
-            window.location.href = "http://127.0.0.1:8080/pages/stockGroup.html?id=" + urlParam.get("id");
+            window.location.href = "http://192.168.0.90:8080/pages/stockGroup.html?id=" + urlParam.get("id");
         })
         .catch(function (res) { console.log(res) })
 
 }
 
-back.addEventListener("mouseover", function() {
+back.addEventListener("mouseover", function () {
     back.classList.add("border");
     back.style.cursor = "pointer";
 })
 
-back.addEventListener("mouseout", function() {
+back.addEventListener("mouseout", function () {
     back.classList.remove("border")
     back.style.cursor = "auto";
 })
 
-back.addEventListener("click", function(e) {
+back.addEventListener("click", function (e) {
     console.log('Entrou')
     let a = document.createElement("a");
-    a.href = "http://127.0.0.1:8080/pages/stockGroup.html?id=" + urlParam.get("id");
+    a.href = "http://192.168.0.90:8080/pages/stockGroup.html?id=" + urlParam.get("id");
     document.body.appendChild(a);
     a.click();
 })

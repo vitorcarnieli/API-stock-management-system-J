@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", refresh);
 console.log("btn")
 console.log(downloadBtn)
 downloadBtn.addEventListener("click", function () {
-    fetch("http://127.0.0.1:8080/stock-group/report", {
+    fetch("http://192.168.0.90:8080/stock-group/report", {
         method: 'GET',
     })
         .then((response) => {
@@ -39,7 +39,7 @@ function isUpperCase(str) {
 //TODO: IMPLEMENTAR RELATÓRIO, PROVAVELMENTE UM GERAÇÃO DE PDF OU QUALQUER DOCUMENTO DO TIPO NO BACK
 
 function refresh() {
-    fetch("http://127.0.0.1:8080/stock-group/find/all")
+    fetch("http://192.168.0.90:8080/stock-group/find/all")
         .then((response) => {
             if (!response.ok) {
                 throw new Error("error no response" + response.status);
@@ -60,7 +60,7 @@ function refresh() {
                 const aBtn = document.createElement("a")
                 aBtn.className = "col-3 btn m-3 text-white";
                 aBtn.style = "background-color: #FF9CA9;"
-                aBtn.href = "http://127.0.0.1:8080/pages/stockGroup.html?id=" + object.id;
+                aBtn.href = "http://192.168.0.90:8080/pages/stockGroup.html?id=" + object.id;
 
                 const h = document.createElement("h5");
 
@@ -100,7 +100,7 @@ function refresh() {
         .catch((error) => {
             console.error('Erro ao fazer a solicitação:', error);
         });
-        fetch("http://localhost:8080/school/find/all")
+    fetch("http://192.168.0.90:8080/school/find/all")
         .then((response) => {
             if (!response.ok) {
                 throw new Error("error no response" + response.status);
@@ -119,7 +119,7 @@ function refresh() {
                 const aBtn = document.createElement("a")
                 aBtn.className = "col-3 btn m-3 text-white";
                 aBtn.style = "background-color: #FF9CA9;"
-                aBtn.href = "http://127.0.0.1:8080/pages/schoolPage.html?id=" + object.id;
+                aBtn.href = "http://192.168.0.90:8080/pages/schoolPage.html?id=" + object.id;
 
                 const h = document.createElement("h5");
 

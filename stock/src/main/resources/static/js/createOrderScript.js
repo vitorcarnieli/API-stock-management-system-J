@@ -18,30 +18,30 @@ var itemsPresent = []
 document.addEventListener("DOMContentLoaded", createPage);
 btnAddItem.addEventListener("click", addItem);
 
-back.addEventListener("mouseover", function() {
+back.addEventListener("mouseover", function () {
     back.classList.add("border");
     back.style.cursor = "pointer";
 })
 
-back.addEventListener("mouseout", function() {
+back.addEventListener("mouseout", function () {
     back.classList.remove("border")
     back.style.cursor = "auto";
 })
 
-back.addEventListener("click", function(e) {
+back.addEventListener("click", function (e) {
     console.log('Entrou')
     let a = document.createElement("a");
-    a.href = "http://127.0.0.1:8080/pages/schoolPage.html?id=" + urlParam.get("id");
+    a.href = "http://192.168.0.90:8080/pages/schoolPage.html?id=" + urlParam.get("id");
     document.body.appendChild(a);
     a.click();
 })
 
-inviteBtn.addEventListener("click", function(e) {
+inviteBtn.addEventListener("click", function (e) {
     e.preventDefault();
     createOrder();
 })
 
-selectItems.addEventListener("change", function(e) {
+selectItems.addEventListener("change", function (e) {
     var indiceSelecionado = selectItems.selectedIndex;
     var opcaoSelecionada = selectItems.options[indiceSelecionado];
     console.log(opcaoSelecionada.value)
@@ -49,8 +49,8 @@ selectItems.addEventListener("change", function(e) {
     amountItem.max = parseInt(opcaoSelecionada.classList[0]);
 });
 
-nome.addEventListener("input", function(e) {
-    if(nome.value != "") {
+nome.addEventListener("input", function (e) {
+    if (nome.value != "") {
         inviteBtn.disabled = false;
     } else {
         inviteBtn.disabled = true;
@@ -61,7 +61,7 @@ tBody.addEventListener('click', function (event) {
     if (event.target.classList.contains('btn-danger')) {
         deleteRow.call(event.target);
         console.log(tBody.rows.length);
-        if(tBody && tBody.rows.length == 0) {
+        if (tBody && tBody.rows.length == 0) {
             tContainer.classList.add("modal");
             observations.disabled = true;
             observations.value = null
@@ -80,34 +80,34 @@ tBody.addEventListener('click', function (event) {
 
 
 function createPage() {
-    fetch("http://127.0.0.1:8080/stock-group/find/all")
-    .then((response) => {
-        if (!response.ok) {throw new Error("error no response" + response.status);}
-        return response.json();
-    })
-    .then((data) => {
-        for (let i = 0; i < data.length; i++) {
-            let stockGroup = data[i];
+    fetch("http://192.168.0.90:8080/stock-group/find/all")
+        .then((response) => {
+            if (!response.ok) { throw new Error("error no response" + response.status); }
+            return response.json();
+        })
+        .then((data) => {
+            for (let i = 0; i < data.length; i++) {
+                let stockGroup = data[i];
 
-            let optionStockName = document.createElement("option");
-            optionStockName.textContent = "Grupo de estoque: " + stockGroup.name;
-            optionStockName.classList = "fw-bold bg-dark text-white"
-            optionStockName.disabled = true;
-            selectItems.appendChild(optionStockName);
+                let optionStockName = document.createElement("option");
+                optionStockName.textContent = "Grupo de estoque: " + stockGroup.name;
+                optionStockName.classList = "fw-bold bg-dark text-white"
+                optionStockName.disabled = true;
+                selectItems.appendChild(optionStockName);
 
-            for (let ii = 0; ii < stockGroup.items.length; ii++) {
-                let item = stockGroup.items[ii]
-                let optionItemName = document.createElement("option");
-                optionItemName.textContent = item.name;
-                optionItemName.value = [stockGroup.name, item.name.replace(/,/g,"."), item.id, stockGroup.id]; 
-                optionItemName.classList = item.amount;
-                selectItems.appendChild(optionItemName);
-            }   
-        }
-    })
-    .catch((error) => {
-        console.error('Erro em createPage(): ', error);
-    });
+                for (let ii = 0; ii < stockGroup.items.length; ii++) {
+                    let item = stockGroup.items[ii]
+                    let optionItemName = document.createElement("option");
+                    optionItemName.textContent = item.name;
+                    optionItemName.value = [stockGroup.name, item.name.replace(/,/g, "."), item.id, stockGroup.id];
+                    optionItemName.classList = item.amount;
+                    selectItems.appendChild(optionItemName);
+                }
+            }
+        })
+        .catch((error) => {
+            console.error('Erro em createPage(): ', error);
+        });
 }
 
 function addItem() {
@@ -116,17 +116,17 @@ function addItem() {
 
     let children = tBody.children;
     for (let i = 0; i < children.length; i++) {
-        if(children[i].id == selectValue[2]) {
+        if (children[i].id == selectValue[2]) {
             let amountRow = document.getElementById("amountRow" + selectValue[2]);
             let finalAmount = parseInt(amountRow.textContent) + parseInt(amountValue);
             amountRow.textContent = finalAmount;
             return
         }
-        
+
     }
 
 
-    if(selectValue != "" && amountValue != "") {
+    if (selectValue != "" && amountValue != "") {
         observations.disabled = false;
         nome.disabled = false;
         tContainer.classList.remove("modal");
@@ -173,13 +173,13 @@ function createOrder() {
 
     for (let i = 0; i < tds.length; i++) {
         let td = tds[i];
-        if(td.id.includes("nameRow")) {
-            provisionalOrder.push(td.id.replace("nameRow",""));
-        } else if(td.id.includes("amountRow")) {
+        if (td.id.includes("nameRow")) {
+            provisionalOrder.push(td.id.replace("nameRow", ""));
+        } else if (td.id.includes("amountRow")) {
             provisionalOrder.push(td.textContent);
         }
         //[]
-        if(provisionalOrder.length == 2) {
+        if (provisionalOrder.length == 2) {
             finalOrder.push(provisionalOrder);
             provisionalOrder = [];
         }
@@ -194,7 +194,7 @@ function createOrder() {
     }
 
     console.log(order)
-    fetch("http://127.0.0.1:8080/order/create",
+    fetch("http://192.168.0.90:8080/order/create",
         {
             headers: {
                 'Accept': 'application/json',
@@ -205,7 +205,7 @@ function createOrder() {
         })
         .then(function (res) {
             console.log(res);
-            window.location.href = "http://127.0.0.1:8080/pages/schoolPage.html?id=" + urlParam.get("id");
+            window.location.href = "http://192.168.0.90:8080/pages/schoolPage.html?id=" + urlParam.get("id");
         })
         .catch(function (res) { console.log(res) })
 }
@@ -219,6 +219,6 @@ function deleteRow() {
     console.log("entrou")
     var row = this.closest('tr');
     if (row) {
-      row.remove();
+        row.remove();
     }
 }

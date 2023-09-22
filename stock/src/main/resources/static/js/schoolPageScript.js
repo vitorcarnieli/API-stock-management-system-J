@@ -16,14 +16,14 @@ function createTdWithIcons(condition, idItem) {
             let a = document.createElement("a");
             a.className = "btn btn-primary rounded-5";
             icon.className = "bi bi-box-arrow-in-right text-light";
-            a.href = "http://127.0.0.1:8080/pages/OrderPage.html?id=" + idItem;
+            a.href = "http://192.168.0.90:8080/pages/OrderPage.html?id=" + idItem;
             a.appendChild(icon);
             return a;
     }
 }
 
 function refresh() {
-    fetch("http://127.0.0.1:8080/school/find/byId?id=" + urlParam.get("id"))
+    fetch("http://192.168.0.90:8080/school/find/byId?id=" + urlParam.get("id"))
         .then((response) => {
             if (!response.ok) {
                 throw new Error("error no response" + response.status);

@@ -17,27 +17,27 @@ var amountValue
 
 function createBackBtn(stockId) {
 
-    back.addEventListener("mouseover", function() {
+    back.addEventListener("mouseover", function () {
         back.classList.add("border");
         back.style.cursor = "pointer";
     })
-    
-    back.addEventListener("mouseout", function() {
+
+    back.addEventListener("mouseout", function () {
         back.classList.remove("border")
         back.style.cursor = "auto";
     })
-    
-    back.addEventListener("click", function(e) {
+
+    back.addEventListener("click", function (e) {
         console.log('Entrou')
         let a = document.createElement("a");
-        a.href = "http://127.0.0.1:8080/pages/stockGroup.html?id=" + stockId;
+        a.href = "http://192.168.0.90:8080/pages/stockGroup.html?id=" + stockId;
         document.body.appendChild(a);
         a.click();
     })
 }
 
 function updateObject() {
-    return fetch("http://127.0.0.1:8080/item/find/byId?id=" + urlParam.get("id"))
+    return fetch("http://192.168.0.90:8080/item/find/byId?id=" + urlParam.get("id"))
         .then((response) => {
             if (!response.ok) {
                 throw new Error("error no response" + response.status);
@@ -84,7 +84,7 @@ cancelButton.addEventListener("click", function () {
 
 
 function createPage() {
-    fetch("http://127.0.0.1:8080/item/find/byId?id=" + urlParam.get("id"))
+    fetch("http://192.168.0.90:8080/item/find/byId?id=" + urlParam.get("id"))
         .then((response) => {
             if (!response.ok) {
                 throw new Error("error no response" + response.status);
@@ -94,7 +94,7 @@ function createPage() {
         .then((data) => {
             object = data;
             amountValue = object.amount;
-            
+
             title.textContent = object.name;
             itemName.textContent = object.name;
             description.textContent = object.description;
@@ -132,12 +132,12 @@ function createTable(data, trueToAltSortC) {
         let change = data.changes[i];
         let tr = document.createElement("tr");
         tr.className = "text-center";
-        
+
         let tdChange = document.createElement("td");
         let valuesChanges = change.amount;
         let dateHour = change.date.split(" T ");
-        
-        if(valuesChanges.includes(",")) {
+
+        if (valuesChanges.includes(",")) {
             let arrSchool = valuesChanges.split(",")
             tdChange.textContent = "Retirado " + arrSchool[1] + " para " + arrSchool[0];
             tdChange.className = "text-info";
@@ -154,26 +154,26 @@ function createTable(data, trueToAltSortC) {
             tdChange.textContent = valuesChanges;
             tdChange.className = "text-danger";
         }
-        
+
         var row = {
             textContent: tdChange,
             date: dateHour[0]
         };
         rowArray.push(row);
     }
-    
-    if(trueToAltSortC) {
-        rowArray.sort(function(a, b) {
+
+    if (trueToAltSortC) {
+        rowArray.sort(function (a, b) {
             var dateA = a.date;
             var dateB = b.date;
             return dateA.localeCompare(dateB);
-          });
+        });
     } else {
-        rowArray.sort(function(a, b) {
+        rowArray.sort(function (a, b) {
             var dateA = a.date;
             var dateB = b.date;
             return dateB.localeCompare(dateA);
-          });
+        });
     }
 
     for (let i = 0; i < rowArray.length; i++) {
@@ -181,7 +181,7 @@ function createTable(data, trueToAltSortC) {
         let dateTime = row.date.split("T");
 
         let date = dateTime[0];
-        date = date.replace(/-/g,"/");
+        date = date.replace(/-/g, "/");
         let time = dateTime[1];
 
         let tdDate = document.createElement("td");
@@ -189,7 +189,7 @@ function createTable(data, trueToAltSortC) {
 
         tdDate.textContent = date;
         tdHour.textContent = time
-        
+
         let tr = document.createElement("tr");
         tr.appendChild(row.textContent);
         tr.appendChild(tdDate);
@@ -206,7 +206,7 @@ function submit() {
     updateObject().then((data) => {
         let value;
         console.log("data.amount = " + data.amount)
-        console.log("value = "+value)
+        console.log("value = " + value)
         console.log("amount.value = " + amount.value)
         console.log("amountValue = " + amountValue)
         if (amount.value < amountValue) {
@@ -216,13 +216,13 @@ function submit() {
         }
         console.log("passou pelo if else")
         console.log("data.amount = " + data.amount)
-        console.log("value = "+value)
+        console.log("value = " + value)
         console.log("amount.value = " + amount.value)
         console.log("amountValue = " + amountValue)
 
         console.log(value < 0)
         console.log(value == parseInt(amount.value))
-        if(value == 0 && data.changes.length > 1) {
+        if (value == 0 && data.changes.length > 1) {
             return
         }
         else if (value == data.amount) {
@@ -231,7 +231,7 @@ function submit() {
         console.log(value)
 
 
-        fetch("http://127.0.0.1:8080/item/add/changes?idItem=" + urlParam.get("id") + "&change=" + value,
+        fetch("http://192.168.0.90:8080/item/add/changes?idItem=" + urlParam.get("id") + "&change=" + value,
             {
                 headers: {
                     'Accept': 'application/json',
@@ -242,7 +242,7 @@ function submit() {
             })
             .then(function (res) {
                 return res.json()
-            })  
+            })
             .catch(function (res) {
 
                 createPage();
@@ -252,14 +252,14 @@ function submit() {
 }
 
 function destroy() {
-    fetch("http://127.0.0.1:8080/item/delete?idItem=" + urlParam.get("id"), 
-    {
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        },
-        method: "DELETE",
-    })
+    fetch("http://192.168.0.90:8080/item/delete?idItem=" + urlParam.get("id"),
+        {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            method: "DELETE",
+        })
         .then((response) => {
             if (!response.ok) {
                 throw new Error("error no response" + response.status);
@@ -267,14 +267,14 @@ function destroy() {
             return response.json();
         })
         .then((data) => {
-            window.location.href = "http://127.0.0.1:8080/pages/stockGroup.html?id=" + data.id;
+            window.location.href = "http://192.168.0.90:8080/pages/stockGroup.html?id=" + data.id;
         })
         .catch((error) => {
         });
 }
 
 function toggleIcon() {
-    if(on) {
+    if (on) {
         on = false;
     } else {
         on = true;
