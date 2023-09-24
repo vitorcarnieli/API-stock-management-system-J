@@ -95,15 +95,20 @@ public class StockGroupController extends GenericControllerImp<StockGroup> imple
     }
 
 
-
+    /* 
     @GetMapping(value = "/report")
     @ResponseBody
     public ResponseEntity<List<String>> createReport() {
         Document document = new Document();
 
-        List<StockGroup> list = (List<StockGroup>) this.findAll();
-
+        
+        
+        
         try {
+            ResponseEntity<Object> query = this.findAll();
+            if(query.getStatusCode().is2xxSuccessful()) {
+                List<StockGroup> lista = (List<StockGroup>) query.getBody();
+            } 
             String url = "C:\\Users\\usuario\\Documents\\sistema_gerenciamento_estoque\\stock-management-system-J-SpringBoot\\stock\\src\\main\\resources\\static\\assets\\reports\\";
             String fileName = "report" + new Date().getTime() + ".pdf";
             PdfWriter.getInstance(document, new FileOutputStream(url + fileName));
@@ -115,7 +120,7 @@ public class StockGroupController extends GenericControllerImp<StockGroup> imple
             title.setAlignment(Element.ALIGN_CENTER);
             title.setSpacingAfter(20f);
             document.add(title);
-            for (StockGroup stock : list) {
+            for (StockGroup stock : lista) {
                 PdfPTable table = new PdfPTable(3);
                 table.setWidthPercentage(100);
 
@@ -175,5 +180,6 @@ public class StockGroupController extends GenericControllerImp<StockGroup> imple
             throw new RuntimeException("Erro ao criar relatório");
         }
     }
+    */
 
 }
