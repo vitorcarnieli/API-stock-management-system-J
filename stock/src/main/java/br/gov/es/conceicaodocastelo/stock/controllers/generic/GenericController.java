@@ -1,5 +1,7 @@
 package br.gov.es.conceicaodocastelo.stock.controllers.generic;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -9,7 +11,7 @@ import br.gov.es.conceicaodocastelo.stock.models.generic.BaseEntity;
 public interface GenericController<T extends BaseEntity> {
     ResponseEntity<Object> save(@RequestBody T entity);
 
-    ResponseEntity<Object> findAll();
+    ResponseEntity<List<T>> findAll() throws Exception;
 
     ResponseEntity<Object> findById(@PathVariable Long id);
 

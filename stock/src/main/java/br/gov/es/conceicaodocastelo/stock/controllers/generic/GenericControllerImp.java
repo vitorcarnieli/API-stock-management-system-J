@@ -1,5 +1,7 @@
 package br.gov.es.conceicaodocastelo.stock.controllers.generic;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,12 +30,11 @@ public class GenericControllerImp<T extends BaseEntity> implements GenericContro
 
     @Override
     @GetMapping
-    public ResponseEntity<Object> findAll() {
+    public ResponseEntity<List<T>> findAll() throws Exception {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(genericService.findAll());
         } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("ERROR: findAll()");
+            throw new Exception();
         }
     }
 
