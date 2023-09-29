@@ -15,10 +15,20 @@ import jakarta.persistence.Table;
 @Table(name = "TB_INSTITUTION")
 public class Institution extends BaseEntity {
 
-    @OneToMany(mappedBy = "institution")
+	private static final long serialVersionUID = -4409232857182759514L;
+
+	@OneToMany(mappedBy = "institution")
     @JsonManagedReference("institution-order")
     @Cascade(value = org.hibernate.annotations.CascadeType.ALL)
     private List<Order> orders;
+    
+    private String responsible;
+    
+    private String email;
+    
+    private String contatcPhone;
+    
+    private String adress;
 
     public Institution() {
     }
@@ -46,5 +56,43 @@ public class Institution extends BaseEntity {
     public void deleteOrder(Order order) {
         this.orders.remove(order);
     }
+
+	public String getResponsible() {
+		return responsible;
+	}
+
+	public void setResponsible(String responsible) {
+		this.responsible = responsible;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getContatcPhone() {
+		return contatcPhone;
+	}
+
+	public void setContatcPhone(String contatcPhone) {
+		this.contatcPhone = contatcPhone;
+	}
+
+	public String getAdress() {
+		return adress;
+	}
+
+	public void setAdress(String adress) {
+		this.adress = adress;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+    
+    
 
 }

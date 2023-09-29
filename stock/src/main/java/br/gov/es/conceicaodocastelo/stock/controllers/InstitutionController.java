@@ -29,7 +29,7 @@ public class InstitutionController extends GenericControllerImp<Institution>{
     public InstitutionController(InstitutionService institutionService) {
         this.institutionService = institutionService;
     }
-
+    /*
     @PostMapping(path = "/set")
     public ResponseEntity<String> createInstitution(@RequestBody InstitutionRecordDto institutionDTO) {
         institutionDTO.names().forEach(n -> {
@@ -40,6 +40,23 @@ public class InstitutionController extends GenericControllerImp<Institution>{
         return ResponseEntity.status(HttpStatus.OK)
                 .body("ESCOLA : \n" + institutionDTO.names() + "\n salva com sucesso");
     }
+    */
+    @PostMapping(path = "/setdata")
+    public ResponseEntity<String> addData(@RequestParam(value = "id") Long id, @RequestBody InstitutionRecordDto institutionDTO) {
+    	ResponseEntity<Object> i = this.findById(id);
+    	if(i.getStatusCode().is2xxSuccessful()) {
+    		Institution institution = (Institution) i.getBody();
+    		institution.setAdress(institutionDTO.adress());
+    		institution.setContatcPhone(institutionDTO.contatcPhone());
+    		institution.setEmail(institutionDTO.email());
+    		institution.setResponsible(institutionDTO.responsible());
+    		this.save(institution);
+    		return ResponseEntity.status(HttpStatus.OK).body("ok");
+    	} else {
+    		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("ERROR");
+
+    	}
+    }
 
     @PostMapping(path = "/set/order")
     public ResponseEntity<Object> createOrder(@RequestBody Institution institution, @RequestBody Order order) {
@@ -48,16 +65,6 @@ public class InstitutionController extends GenericControllerImp<Institution>{
             return ResponseEntity.status(HttpStatus.OK).body(institutionService.save(institution));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body("ERROR: " + e.getMessage());
-        }
-    }
-
-    @GetMapping(value = "/find/byId")
-    @ResponseBody
-    public ResponseEntity<Object> findById(@RequestParam(value = "id") String id) {
-        try {
-            return ResponseEntity.status(HttpStatus.OK).body(institutionService.findById(Long.parseLong(id)));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("ERROR: " + e.getMessage());
         }
     }
 

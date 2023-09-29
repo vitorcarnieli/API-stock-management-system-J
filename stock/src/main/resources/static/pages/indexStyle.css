@@ -1,0 +1,21 @@
+.select {
+    background-color: #ff93c7;
+}
+
+.unselect {
+    background-color: #FF70AE;
+}
+
+#stockGroup, #instituitions {
+    cursor: pointer;
+}
+
+.entitys {
+    background-color: #007BCD;
+    transition: background-color 0.3s ease; 
+}
+
+.entitys:hover {
+    background-color: #019CDB;
+
+}
