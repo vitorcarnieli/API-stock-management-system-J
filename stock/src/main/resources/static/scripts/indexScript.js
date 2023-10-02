@@ -75,8 +75,8 @@ actionBtn.addEventListener("click", function() {
                         while (modalInstituitionBody.firstChild) {
                             modalInstituitionBody.removeChild(modalInstituitionBody.firstChild);
                         }
-                        let institutionResponsible = document.createElement("p");
-                        institutionResponsible.textContent = "Responsável: " + data.responsible;
+                        let institutionResponsible = document.createElement("div");
+                        let institutionResponsibleText = document.createElement("p")
                         let institutionEmail = document.createElement("p");
                         institutionEmail.textContent = "Email: " + data.email;
                         let institutionContatcPhone = document.createElement("p");

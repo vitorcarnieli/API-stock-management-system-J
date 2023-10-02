@@ -1,7 +1,9 @@
 package br.gov.es.conceicaodocastelo.stock.controllers;
 
+import java.beans.Beans;
 import java.util.List;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -41,17 +43,14 @@ public class InstitutionController extends GenericControllerImp<Institution>{
                 .body("ESCOLA : \n" + institutionDTO.names() + "\n salva com sucesso");
     }
     */
-    @PostMapping(path = "/setdata")
-    public ResponseEntity<String> addData(@RequestParam(value = "id") Long id, @RequestBody InstitutionRecordDto institutionDTO) {
-    	ResponseEntity<Object> i = this.findById(id);
-    	if(i.getStatusCode().is2xxSuccessful()) {
-    		Institution institution = (Institution) i.getBody();
-    		institution.setAdress(institutionDTO.adress());
-    		institution.setContatcPhone(institutionDTO.contatcPhone());
-    		institution.setEmail(institutionDTO.email());
-    		institution.setResponsible(institutionDTO.responsible());
-    		this.save(institution);
-    		return ResponseEntity.status(HttpStatus.OK).body("ok");
+    @PostMapping(path = "/set")
+    public ResponseEntity<String> addData(@RequestBody List<Institution> institution) {
+    	if(institution != null) {
+            institution.forEach(i -> {
+                institutionService.save(i);
+            });
+            return ResponseEntity.status(HttpStatus.OK).body("ok");
+
     	} else {
     		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("ERROR");
 
