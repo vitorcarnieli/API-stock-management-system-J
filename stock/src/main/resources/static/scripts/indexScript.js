@@ -60,8 +60,6 @@ actionBtn.addEventListener("click", function() {
     if(stockGroup.classList.contains("select")) {
         modal.show();
     } else {
-        let modalInstituitionName = document.getElementById("modalInstituition");
-        let modalInstituitionBody = document.getElementById("modalInstituitionBody");
         let checkboxes = document.querySelectorAll('input[type="checkbox"]');
         for (var i = 0; i < checkboxes.length; i++) {
             if (checkboxes[i].checked) {
@@ -75,28 +73,96 @@ actionBtn.addEventListener("click", function() {
                         while (modalInstituitionBody.firstChild) {
                             modalInstituitionBody.removeChild(modalInstituitionBody.firstChild);
                         }
-                        let institutionResponsible = document.createElement("div");
-                        let institutionResponsibleText = document.createElement("p")
-                        let institutionEmail = document.createElement("p");
-                        institutionEmail.textContent = "Email: " + data.email;
-                        let institutionContatcPhone = document.createElement("p");
-                        institutionContatcPhone.textContent ="Telefone de contato: " + data.contatcPhone;
-                        let institutionAdress = document.createElement("p");
-                        institutionAdress.textContent = "Endereço: " + data.adress;
+
+                        //
 
                         let instituitionName = document.getElementById("instituitionName");
                         instituitionName.textContent = data.name;
 
-                        modalInstituitionBody.appendChild(institutionResponsible);
-                        modalInstituitionBody.appendChild(institutionEmail);
-                        modalInstituitionBody.appendChild(institutionContatcPhone);
-                        modalInstituitionBody.appendChild(institutionAdress);
+                        //
+
+                        let divResponsible = document.createElement("div");
+                        divResponsible.classList = "form-floating mb-3";
                         
+                        let inputResponsibleName = document.createElement("input");
+                        inputResponsibleName.type = "text";
+                        inputResponsibleName.classList = "form-control";
+                        inputResponsibleName.disabled = true;
+                        inputResponsibleName.id = "responsible";
+                        inputResponsibleName.value = data.responsible;
+
+                        let labelResposible = document.createElement("label");
+                        labelResposible.for = "responsible";
+                        labelResposible.textContent = "Responsável";
+                        divResponsible.appendChild(inputResponsibleName);
+                        divResponsible.appendChild(labelResposible);
+
+                        //
+
+                        let divEmail = document.createElement("div");
+                        divEmail.classList = "form-floating mb-3";
+                        
+                        let inputEmail = document.createElement("input");
+                        inputEmail.type = "email";
+                        inputEmail.classList = "form-control";
+                        inputEmail.disabled = true;
+                        inputEmail.id = "email";
+                        inputEmail.value = data.email;
+
+                        let labelEmail = document.createElement("label");
+                        labelEmail.for = "email";
+                        labelEmail.textContent = "E-mail";
+                        divEmail.appendChild(inputEmail);
+                        divEmail.appendChild(labelEmail);
+
+                        //
+
+                        let divPhone = document.createElement("div");
+                        divPhone.classList = "form-floating mb-3";
+                        
+                        let inputPhone = document.createElement("input");
+                        inputPhone.type = "text";
+                        inputPhone.classList = "form-control";
+                        inputPhone.disabled = true;
+                        inputPhone.id = "phone";
+                        inputPhone.value = data.contatcPhone;
+
+                        let labelPhone = document.createElement("label");
+                        labelPhone.for = "phone";
+                        labelPhone.textContent = "Telefone de contato";
+                        divPhone.appendChild(inputPhone);
+                        divPhone.appendChild(labelPhone);
+
+                        //
+
+                        let divAdress = document.createElement("div");
+                        divAdress.classList = "form-floating mb-3";
+                        
+                        let inputAdress = document.createElement("input");
+                        inputAdress.type = "text";
+                        inputAdress.classList = "form-control";
+                        inputAdress.disabled = true;
+                        inputAdress.id = "adress";
+                        inputAdress.value = data.adress;
+
+                        let labelAdress = document.createElement("label");
+                        labelAdress.for = "adress";
+                        labelAdress.textContent = "Endereço";
+                        divAdress.appendChild(inputAdress);
+                        divAdress.appendChild(labelAdress);
+
+                        //
+
+                        modalInstituitionBody.appendChild(divResponsible);
+                        modalInstituitionBody.appendChild(divEmail);
+                        modalInstituitionBody.appendChild(divPhone);
+                        modalInstituitionBody.appendChild(divAdress);
+                        modalInstituitionBody.classList = "p-3";
 
                     })
                     .catch((error) => {
+                        console.log(error);
                     });
-    
             }
         }
 

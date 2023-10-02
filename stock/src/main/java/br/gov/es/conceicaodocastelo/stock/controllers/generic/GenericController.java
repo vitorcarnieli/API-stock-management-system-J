@@ -16,6 +16,9 @@ public interface GenericController<T extends BaseEntity> {
     ResponseEntity<Object> findById(@PathVariable Long id);
 
     ResponseEntity<Boolean> delete(@PathVariable Long id);
+    ResponseEntity<Boolean> delete(@RequestBody T entity);
+    ResponseEntity<Boolean> deleteAll();
+
 
     
     ResponseEntity<Object> findByNameS(@PathVariable String name);

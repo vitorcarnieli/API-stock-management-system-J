@@ -1,5 +1,7 @@
 package br.gov.es.conceicaodocastelo.stock.controllers;
 
+import br.gov.es.conceicaodocastelo.stock.controllers.generic.GenericControllerImp;
+import br.gov.es.conceicaodocastelo.stock.controllers.interfaces.ItemInterface;
 import br.gov.es.conceicaodocastelo.stock.models.Item;
 import br.gov.es.conceicaodocastelo.stock.models.StockGroup;
 import br.gov.es.conceicaodocastelo.stock.servicies.ItemService;
@@ -16,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @CrossOrigin("*")
 @RequestMapping(value = "/item")
-public class ItemController {
+public class ItemController extends GenericControllerImp<Item> implements ItemInterface{
 
     @Autowired
     private ItemService itemService;
@@ -66,13 +68,5 @@ public class ItemController {
         }
     }
 
-    @DeleteMapping(path = "/delete")
-    @ResponseBody
-    public ResponseEntity<StockGroup> delete(@RequestParam(value = "idItem") String idItem) {
-        itemService.deleteById(Long.parseLong(idItem));
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(stockGroupService.findStockGroupByItem(Long.parseLong(idItem)));
-
-    }
 
 }

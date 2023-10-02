@@ -8,7 +8,7 @@
     <!-- BOOTSTRAP -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
         crossorigin="anonymous"></script>
     <!-- BOOTSTRAP -->
@@ -21,9 +21,9 @@
     <script src="../scripts/stockPageScript.js" defer></script>
     <!-- SCRIPT -->
 
-    
+
     <!-- STYLE -->
-    <link rel="stylesheet"  href="../assets/styles/indexStyle.css">
+    <link rel="stylesheet" href="../assets/styles/indexStyle.css">
     <!-- STYLE -->
 
 </head>
@@ -56,6 +56,24 @@
 
     <section class="">
         <div class="container-fluid" style="margin-top: 13vh;">
+            <div class="modal" tabindex="-1" id="deleteModal">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Tem certeza que deseja apagar este item?</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>O item será apagado permanentemente tornando impossível sua recuperação após concluir a ação. Se realmente deseja apagar este item, aperte no botão "Apagar" abaixo.</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-danger" id="deleteConfirm">Apagar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="modal fade" id="myModal">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -67,45 +85,48 @@
                             <div class="row">
                                 <div class="col-12 my-2">
                                     <div class="form-group">
-                                        <label for="campo1">Nome: </label>
-                                        <input type="text" class="form-control" id="campo1">
+                                        <label for="name">Nome: </label>
+                                        <input type="text" class="form-control" id="name" required
+                                            placeholder="Obrigatório">
                                     </div>
                                 </div>
                                 <div class="col-12 my-2">
                                     <div class="form-group">
-                                        <label for="campo2">Descrição: </label>
-                                        <input type="text" class="form-control" id="campo2">
+                                        <label for="description">Descrição: </label>
+                                        <input type="text" class="form-control" id="description">
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-8 my-2">
                                     <div class="form-group">
-                                        <label for="campo3">Tipo de unidade: </label>
-                                        <input type="text" class="form-control" id="campo3">
+                                        <label for="unitType">Tipo de unidade: </label>
+                                        <input type="text" class="form-control" id="unitType"
+                                            placeholder="Padrão: Unidade">
                                     </div>
                                 </div>
                                 <div class="col-4 my-2">
                                     <div class="form-group">
-                                        <label for="campo4">Quantidade: </label>
-                                        <input type="number" class="form-control" id="campo4" min="0">
+                                        <label for="amount">Quantidade: </label>
+                                        <input type="number" class="form-control" id="amount" min="0"
+                                            placeholder="Mínimo: 0">
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-                            <button type="button" class="btn btn-primary">Registrar</button>
+                            <button type="button" class="btn btn-primary" id="register">Registrar</button>
                         </div>
                     </div>
                 </div>
             </div>
-              
+
 
             <div class="row vh-100">
                 <div class="col-2" style="background-color: #007BCD;">
                     <ul class="p-2 list-unstyled" id="ul">
-                        
+
 
                     </ul>
                 </div>
@@ -118,31 +139,45 @@
                         <div class="col-12 container">
                             <div class="row p-4">
 
-                                <div class="col-2 me-3 p-3 text-center select" style="user-select: none;"  id="all">
-                                    <p class="p-0 m-0 text-white fs-5" style="user-select: none;"><i class="bi bi-collection"></i> TODOS</p>
+                                <div class="col-2 me-3 p-3 text-center select" style="user-select: none;" id="all">
+                                    <p class="p-0 m-0 text-white fs-5" style="user-select: none;"><i
+                                            class="bi bi-collection"></i> TODOS</p>
                                 </div>
                                 <div class="col-2 me-3 p-3 text-center unselect" style="user-select: none;" id="high">
-                                    <p class="p-0 m-0 text-white fs-5" style="user-select: none;"><i class="bi bi-thermometer-high"></i> DISPONÍVEIS</p>
+                                    <p class="p-0 m-0 text-white fs-5" style="user-select: none;"><i
+                                            class="bi bi-thermometer-high"></i> DISPONÍVEIS</p>
                                 </div>
                                 <div class="col-2 p-3 text-center unselect" style="user-select: none;" id="low">
-                                    <p class="p-0 m-0 text-white fs-5" style="user-select: none;"><i class="bi bi-thermometer"></i> EM FALTA</p>
+                                    <p class="p-0 m-0 text-white fs-5" style="user-select: none;"><i
+                                            class="bi bi-thermometer"></i> EM FALTA</p>
                                 </div>
                                 <div class="col-12" style="border: 1px solid #FF89C3;"></div>
                                 <table class="table table-striped col-12">
                                     <thead>
                                         <tr>
-                                            <th class="p-3 col-2" style="width: 50%;">
-                                                <button class="btn rounded-0 text-white fw-bold me-3" style="background-color: #FF89C3;" id="actionBtn">Registrar novo item</button>
-                                                <div class="btn rounded-0 text-white fw-bold me-3">
-                                                    <input type="text" class="input-group-text rounded-0" placeholder="Pesquisar item por nome" id="searchByNameField" style="border: 1px solid #FF89C3;">
-                                                </div>
-                                                <button class="disabled btn border rounded-0 text-secondary fw-bold" id="trashBtn"><i class="bi bi-trash3"></i></button>
+                                            <th class="col-1">
+
                                             </th>
-                                            <th class="col-10"></th>
+                                            <th class="">
+                                                <button class="btn rounded-0 text-white fw-bold me-3"
+                                                    style="background-color: #FF89C3;" id="actionBtn">Registrar novo
+                                                    item</button>
+                                                <div class="btn rounded-0 text-white fw-bold me-3">
+                                                    <input type="text" class="input-group-text rounded-0"
+                                                        placeholder="Pesquisar item por nome" id="searchByNameField"
+                                                        style="border: 1px solid #FF89C3;">
+                                                </div>
+                                                <button class="disabled btn border rounded-0 text-secondary fw-bold"
+                                                    id="trashBtn"><i class="bi bi-trash3"></i></button>
+                                            </th>
+                                            <th class="col-2">
+
+                                            </th>
+
                                         </tr>
                                     </thead>
-                                    <tbody id="tbody">
-                                        
+                                    <tbody id="tbody" class="text-center">
+
                                     </tbody>
                                 </table>
                             </div>

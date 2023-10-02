@@ -63,6 +63,33 @@ public class GenericControllerImp<T extends BaseEntity> implements GenericContro
     }
 
     @Override
+    @DeleteMapping()
+    public ResponseEntity<Boolean> delete(T entity) {
+        try {
+            genericService.delete(entity);
+            return ResponseEntity.status(HttpStatus.OK).body(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(false);
+        }
+    }
+
+    
+    @Override
+    @DeleteMapping(path = "/all")
+    public ResponseEntity<Boolean> deleteAll() {
+        try {
+            List<T> entitys = this.findAll().getBody();
+            genericService.deleteAll(entitys);
+            return ResponseEntity.status(HttpStatus.OK).body(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(false);
+        }
+    }
+    
+
+    @Override
     @GetMapping("/s/{name}")
     public ResponseEntity<Object> findByNameS(@PathVariable("name") String name) {
         try {
