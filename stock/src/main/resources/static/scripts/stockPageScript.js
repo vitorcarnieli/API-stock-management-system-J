@@ -204,6 +204,26 @@ function constructTableItems(itemsArr) {
 
         tbody.appendChild(trBody);
     }
+    let checkboxes = document.querySelectorAll("input[type='checkbox']")
+    checkboxes.forEach(function(checkbox) {
+        checkbox.addEventListener('change', function() {
+            if (this.checked) {
+                trashBtn.classList.remove("disabled");
+                trashBtn.classList.add("btn-danger");
+                trashBtn.classList.add("text-white");
+
+                checkboxes.forEach(function(otherCheckbox) {
+                    if (otherCheckbox !== checkbox) {
+                        otherCheckbox.checked = false;
+                    }
+                });
+            } else {
+                trashBtn.classList.add("disabled");
+                trashBtn.classList.remove("btn-danger");
+                trashBtn.classList.remove("text-white");
+            }
+        });
+    });
 }
 
 
