@@ -1,11 +1,11 @@
-const stockName = document.getElementById("stockName"); //TODO: colocar nome do stockGroup
-const ul = document.getElementById("ul"); //TODO: colocar todos os items e o link para a modal deles
+const stockName = document.getElementById("stockName");
+const ul = document.getElementById("ul"); 
 const tbody = document.getElementById("tbody");
 const trashBtn = document.getElementById("trashBtn");
 const actionBtn = document.getElementById("actionBtn");
-const all = document.getElementById("all"); //TODO: implementar click do mouse select un
-const available = document.getElementById("available"); //TODO: implementar click do mouse select un
-const missing = document.getElementById("missing"); //TODO: implementar click do mouse select un
+const all = document.getElementById("all");
+const available = document.getElementById("available");
+const missing = document.getElementById("missing");
 const register = document.getElementById("register");
 const urlParam = new URLSearchParams(window.location.search);
 const deleteConfirm = document.getElementById("deleteConfirm");
@@ -13,7 +13,11 @@ const myModal = new bootstrap.Modal(document.getElementById('myModal'));
 const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
 const searchByNameField = document.getElementById("searchByNameField");
 
-//TODO: IMPLEMENTAR BUSCAS E CRIAÇÃO DA PAGINA
+/* 
+
+TODO: Implementar modal ao clickar no item;
+
+*/
 
 searchByNameField.addEventListener("input", function() {
     searchByName(searchByNameField.value);
@@ -21,63 +25,21 @@ searchByNameField.addEventListener("input", function() {
 
 all.addEventListener("click", function () {
     select(all, available, missing);
-    refresh("al");
+    refresh("all");
 });
 
 available.addEventListener("click", function () {
     select(available, all, missing);
-    refresh("av");
+    refresh("available");
 });
 
 missing.addEventListener("click", function () {
     select(missing, available, all)
-    refresh("m");
+    refresh("missing");
 });
 
 document.addEventListener("DOMContentLoaded", function() {
-    fetch("http://localhost:8080/stock-group/" + urlParam.get("id"))
-    .then((response) => {
-        if (!response.ok) {
-            throw new Error("Erro na resposta: " + response.status);
-        }
-        return response.json();
-    })
-    .then((object) => {
-        trashBtn.classList.add("disabled");
-        trashBtn.classList.remove("btn-danger");
-        trashBtn.classList.remove("text-white");
-        actionBtn.classList.remove("disabled");
-    
-        while (tbody.firstChild) {
-            tbody.removeChild(tbody.firstChild);
-        }
-        
-        
-        stockName.textContent = object.name;
-        let trHeader = document.createElement("tr");
-        let td1 = document.createElement("td");
-        td1.textContent = "Selecionar";
-        td1.classList = "text-muted";
-        td1.style.fontSize = "14px";
-        
-        let td2 = document.createElement("td");
-        td2.textContent = "Nome";
-        td2.classList = "text-muted";
-        td2.style.fontSize = "14px";
-    
-        let td3 = document.createElement("td");
-        td3.textContent = "Quantidade";
-        td3.classList = "text-muted";
-        td3.style.fontSize = "14px";
-        
-        trHeader.classList = "text-center";
-        trHeader.appendChild(td1);
-        trHeader.appendChild(td2);
-        trHeader.appendChild(td3);
-        tbody.appendChild(trHeader)
-        
-    });
-    refresh("al");
+    refresh("all")
 });
 
 trashBtn.addEventListener("click", function() {
@@ -112,8 +74,13 @@ register.addEventListener("click", function() {
         myModal.hide()
 
 
-        refresh();
-        
+        if(all.classList.contains("select")) {
+            refresh("all");
+        } else if(available.classList.contains("select")) {
+            refresh("available");
+        } else if(missing.classList.contains("select")) {
+            refresh("missing");
+        }        
     })
     .catch(function (res) { console.log(res) })
 
@@ -146,10 +113,12 @@ function select(field, neighboringField1, neighboringField2) {
     }
 }
 
-function constructLateralBar(object) {
+function constructLateralBarAndHeader(object) {
     while (ul.firstChild) {
         ul.removeChild(ul.firstChild);
     }
+
+    stockName.textContent = object.name;
     
     let d = document.createElement("div");
     d.classList = "text-center";
@@ -171,89 +140,74 @@ function constructLateralBar(object) {
         aa.textContent = object.items[i].name;
         aa.classList = "link-light fst-italic d-block";
         li.appendChild(aa);
-        
         ul.appendChild(li);
-        
-
     }
     
 }
 
-function constructPage(object) {
-    trashBtn.classList.add("disabled");
-    trashBtn.classList.remove("btn-danger");
-    trashBtn.classList.remove("text-white");
-    actionBtn.classList.remove("disabled");
-
-    
-    for (let i = 0; i < object.length; i++) {
-        
-        let data = object[i];
-
-        let td1 = document.createElement("td");
-        td1.classList.add("text-center");
-
-        let inp = document.createElement("input");
-        inp.value = data.id;
-        inp.type = "checkbox";
-
-        td1.appendChild(inp);
-
-        let td2 = document.createElement("td");
-        td2.classList.add("fs-5");
-        let a = document.createElement("a");
-        a.textContent = data.name;
-        a.href = "";
-        td2.appendChild(a);
-
-        let td3 = document.createElement("td");
-        td3.classList.add("fs-5");
-        td3.textContent = data.amount;
-        td3.classList = "text-muted";
-
-        let tr = document.createElement("tr");
-
-        tr.appendChild(td1);
-        tr.appendChild(td2);
-        tr.appendChild(td3);
-
-        tbody.appendChild(tr);
-
-    }
-
-    var checkboxes = document.querySelectorAll('input[type="checkbox"]');
-
-    checkboxes.forEach(function(checkbox) {
-        checkbox.addEventListener('change', function() {
-            // Verifique se o checkbox atual está marcado
-            if (this.checked) {
-                trashBtn.classList.remove("disabled");
-                trashBtn.classList.add("btn-danger");
-                trashBtn.classList.add("text-white");
-
-                checkboxes.forEach(function(otherCheckbox) {
-                    if (otherCheckbox !== checkbox) {
-                        otherCheckbox.checked = false;
-                    }
-                });
-            } else {
-                trashBtn.classList.add("disabled");
-                trashBtn.classList.remove("btn-danger");
-                trashBtn.classList.remove("text-white");
-
-
-
-            }
-        });
-    });
-}
-
-
-function refresh(opt,data) {
+function constructTableItems(itemsArr) {
     while (tbody.firstChild) {
         tbody.removeChild(tbody.firstChild);
     }
 
+    let td1 = document.createElement("td");
+    td1.textContent = "Selecionar";
+    td1.classList = "text-muted";
+    td1.style.fontSize = "14px";
+    
+    let td2 = document.createElement("td");
+    td2.textContent = "Nome";
+    td2.classList = "text-muted";
+    td2.style.fontSize = "14px";
+    
+    let td3 = document.createElement("td");
+    td3.textContent = "Quantidade";
+    td3.classList = "text-muted";
+    td3.style.fontSize = "14px";
+    
+    let trHeader = document.createElement("tr");
+    trHeader.classList = "text-center";
+    trHeader.appendChild(td1);
+    trHeader.appendChild(td2);
+    trHeader.appendChild(td3);
+    tbody.appendChild(trHeader);       
+    
+    for (let i = 0; i < itemsArr.length; i++) {
+        let item = itemsArr[i];
+        
+        let tdCheckbox = document.createElement("td");
+            tdCheckbox.classList.add("text-center");
+            let inp = document.createElement("input");
+            inp.value = item.id;
+            inp.type = "checkbox";
+            tdCheckbox.appendChild(inp);
+        
+        
+        let tdItemName = document.createElement("td");
+            tdItemName.classList.add("fs-5");
+            let a = document.createElement("a");
+            a.textContent = item.name;
+            a.href = "";
+            tdItemName.appendChild(a);
+        
+        
+        let tdAmount = document.createElement("td");
+            tdAmount.classList.add("fs-5");
+            tdAmount.textContent = item.amount;
+            tdAmount.classList = "text-muted";
+        
+        let trBody = document.createElement("tr");
+        
+        trBody.appendChild(tdCheckbox);
+        trBody.appendChild(tdItemName);
+        trBody.appendChild(tdAmount);
+
+        tbody.appendChild(trBody);
+    }
+}
+
+
+function refresh(opt) {
     fetch("http://localhost:8080/stock-group/" + urlParam.get("id"))
     .then((response) => {
         if (!response.ok) {
@@ -262,8 +216,36 @@ function refresh(opt,data) {
         return response.json();
     })
     .then((data) => {
-        
+        constructLateralBarAndHeader(data);
+        if(opt === "all") {
+            constructTableItems(data.items)
+        } else if (opt === "available") {
+            constructTableItems(workItems("available", data.items));
+        } else if (opt === "missing") {
+            constructTableItems(workItems("missing", data.items));        
+        }
     })
+}
+
+function workItems(opt, arr) {
+    let returnArr = [];
+    if(opt === "available") {
+        for (let i = 0; i < arr.length; i++) {
+            let item = arr[i];
+            if(item.amount >= 1) {
+                returnArr.push(item);
+            }            
+        }
+    } else if(opt === "missing") {
+        for (let i = 0; i < arr.length; i++) {
+            let item = arr[i];
+            if(item.amount < 1) {
+                returnArr.push(item);
+            }            
+        }
+    }
+
+    return returnArr;
 }
 
 function searchByName(string) {
@@ -277,12 +259,24 @@ function searchByName(string) {
                 return response.json();
             })
             .then((data) => {
-
+                if(all.classList.contains("select")) {
+                    constructTableItems(data);
+                } else if(available.classList.contains("select")) {
+                    constructTableItems(workItems("available", data));
+                } else if(missing.classList.contains("select")) {
+                    constructTableItems(workItems("missing", data));
+                }
             })
             .catch((error) => {
                 console.error('Erro ao fazer a solicitação:', error);
             });
     } else {
-
+        if(all.classList.contains("select")) {
+            refresh("all");
+        } else if(available.classList.contains("select")) {
+            refresh("available");
+        } else if(missing.classList.contains("select")) {
+            refresh("missing");
+        }
     }
 }
