@@ -3,9 +3,7 @@ package br.gov.es.conceicaodocastelo.stock.controllers;
 import br.gov.es.conceicaodocastelo.stock.controllers.generic.GenericControllerImp;
 import br.gov.es.conceicaodocastelo.stock.controllers.interfaces.ItemInterface;
 import br.gov.es.conceicaodocastelo.stock.models.Item;
-import br.gov.es.conceicaodocastelo.stock.models.StockGroup;
 import br.gov.es.conceicaodocastelo.stock.servicies.ItemService;
-import br.gov.es.conceicaodocastelo.stock.servicies.StockGroupService;
 
 import java.util.List;
 
@@ -22,9 +20,6 @@ public class ItemController extends GenericControllerImp<Item> implements ItemIn
 
     @Autowired
     private ItemService itemService;
-
-    @Autowired
-    private StockGroupService stockGroupService;
 
     // GETER'S
     @GetMapping(path = "/find/byName")
@@ -68,5 +63,6 @@ public class ItemController extends GenericControllerImp<Item> implements ItemIn
         }
     }
 
+    
 
 }

@@ -4,34 +4,79 @@ const tbody = document.getElementById("tbody");
 const trashBtn = document.getElementById("trashBtn");
 const actionBtn = document.getElementById("actionBtn");
 const all = document.getElementById("all"); //TODO: implementar click do mouse select un
-const high = document.getElementById("high"); //TODO: implementar click do mouse select un
-const low = document.getElementById("low"); //TODO: implementar click do mouse select un
+const available = document.getElementById("available"); //TODO: implementar click do mouse select un
+const missing = document.getElementById("missing"); //TODO: implementar click do mouse select un
 const register = document.getElementById("register");
 const urlParam = new URLSearchParams(window.location.search);
 const deleteConfirm = document.getElementById("deleteConfirm");
 const myModal = new bootstrap.Modal(document.getElementById('myModal'));
 const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+const searchByNameField = document.getElementById("searchByNameField");
 
 
-
+searchByNameField.addEventListener("input", function() {
+    searchByName(searchByNameField.value);
+})
 
 all.addEventListener("click", function () {
-    select(all, high, low);
-    refresh();
+    select(all, available, missing);
+    refresh("al");
 });
 
-high.addEventListener("click", function () {
-    select(high, all, low);
-    refresh();
+available.addEventListener("click", function () {
+    select(available, all, missing);
+    refresh("av");
 });
 
-low.addEventListener("click", function () {
-    select(low, high, all)
-    refresh();
+missing.addEventListener("click", function () {
+    select(missing, available, all)
+    refresh("m");
 });
 
 document.addEventListener("DOMContentLoaded", function() {
-    refresh();
+    fetch("http://localhost:8080/stock-group/" + urlParam.get("id"))
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error("Erro na resposta: " + response.status);
+        }
+        return response.json();
+    })
+    .then((object) => {
+        trashBtn.classList.add("disabled");
+        trashBtn.classList.remove("btn-danger");
+        trashBtn.classList.remove("text-white");
+        actionBtn.classList.remove("disabled");
+    
+        while (tbody.firstChild) {
+            tbody.removeChild(tbody.firstChild);
+        }
+        
+        
+        stockName.textContent = object.name;
+        let trHeader = document.createElement("tr");
+        let td1 = document.createElement("td");
+        td1.textContent = "Selecionar";
+        td1.classList = "text-muted";
+        td1.style.fontSize = "14px";
+        
+        let td2 = document.createElement("td");
+        td2.textContent = "Nome";
+        td2.classList = "text-muted";
+        td2.style.fontSize = "14px";
+    
+        let td3 = document.createElement("td");
+        td3.textContent = "Quantidade";
+        td3.classList = "text-muted";
+        td3.style.fontSize = "14px";
+        
+        trHeader.classList = "text-center";
+        trHeader.appendChild(td1);
+        trHeader.appendChild(td2);
+        trHeader.appendChild(td3);
+        tbody.appendChild(trHeader)
+        
+    });
+    refresh("al");
 });
 
 trashBtn.addEventListener("click", function() {
@@ -133,45 +178,16 @@ function constructLateralBar(object) {
     
 }
 
-function constructorAll(object) {
+function constructPage(object) {
     trashBtn.classList.add("disabled");
     trashBtn.classList.remove("btn-danger");
     trashBtn.classList.remove("text-white");
     actionBtn.classList.remove("disabled");
 
-    while (tbody.firstChild) {
-        tbody.removeChild(tbody.firstChild);
-    }
     
-    
-    stockName.textContent = object.name;
-    let trHeader = document.createElement("tr");
-    let td1 = document.createElement("td");
-    td1.textContent = "Selecionar";
-    td1.classList = "text-muted";
-    td1.style.fontSize = "14px";
-    
-    let td2 = document.createElement("td");
-    td2.textContent = "Nome";
-    td2.classList = "text-muted";
-    td2.style.fontSize = "14px";
-
-    let td3 = document.createElement("td");
-    td3.textContent = "Quantidade";
-    td3.classList = "text-muted";
-    td3.style.fontSize = "14px";
-    
-    trHeader.classList = "text-center";
-    trHeader.appendChild(td1);
-    trHeader.appendChild(td2);
-    trHeader.appendChild(td3);
-    tbody.appendChild(trHeader)
-    
-
-    
-    for (let i = 0; i < object.items.length; i++) {
+    for (let i = 0; i < object.length; i++) {
         
-        let data = object.items[i];
+        let data = object[i];
 
         let td1 = document.createElement("td");
         td1.classList.add("text-center");
@@ -232,7 +248,11 @@ function constructorAll(object) {
 }
 
 
-function refresh() {
+function refresh(opt,data) {
+    while (tbody.firstChild) {
+        tbody.removeChild(tbody.firstChild);
+    }
+
     fetch("http://localhost:8080/stock-group/" + urlParam.get("id"))
     .then((response) => {
         if (!response.ok) {
@@ -241,36 +261,27 @@ function refresh() {
         return response.json();
     })
     .then((data) => {
-        constructLateralBar(data);
-        if (high.classList.contains("select")) {
-            console.log(data)
-
-            for(let i = 0; i < data.items.length; i++) {
-                let item = data.items[i];
-                if(item.amount <= 0) {
-                    data.items.pop(i,1);
-                }
-            }
-            constructorAll(data);
-
-        } else if (low.classList.contains("select")) {
-
-            for(let i = 0; i < data.items.length; i++) {
-                let item = data.items[i];
-                console.log(item.amount > 0)
-                console.log(item)
-                if(item.amount > 0) {
-                    console.log("entrou no " + i)
-                    data.items.splice(i,1);
-                }
-            }
-            constructorAll(data);
-            var capeta = []
-            capeta.pop()
-        } else {
-
-            constructorAll(data);
-        }
         
     })
+}
+
+function searchByName(string) {
+
+    if (string.trim() !== "") {
+        fetch("http://localhost:8080/item/i/" + string)
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error("Erro na resposta: " + response.status);
+                }
+                return response.json();
+            })
+            .then((data) => {
+
+            })
+            .catch((error) => {
+                console.error('Erro ao fazer a solicitação:', error);
+            });
+    } else {
+
+    }
 }
