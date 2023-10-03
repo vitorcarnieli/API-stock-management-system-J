@@ -13,6 +13,7 @@ const myModal = new bootstrap.Modal(document.getElementById('myModal'));
 const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
 const searchByNameField = document.getElementById("searchByNameField");
 
+//TODO: IMPLEMENTAR BUSCAS E CRIAÇÃO DA PAGINA;
 
 searchByNameField.addEventListener("input", function() {
     searchByName(searchByNameField.value);
