@@ -16,8 +16,11 @@ const searchByNameField = document.getElementById("searchByNameField");
 /* 
 
 TODO: Implementar modal ao clickar no item;
+TODO: ;
+
 
 */
+
 
 searchByNameField.addEventListener("input", function() {
     searchByName(searchByNameField.value);
@@ -47,7 +50,35 @@ trashBtn.addEventListener("click", function() {
 });
 
 deleteConfirm.addEventListener("click", function() {
-    fet
+    let checkboxes = document.querySelectorAll("input[type='checkbox']")
+    checkboxes.forEach(function(checkbox) {
+        if(checkbox.checked) {
+
+            
+                fetch("http://localhost:8080/item/" + checkbox.value, {
+                    method: 'DELETE',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        alert("Erro ao deletar, por favor, tente novamente. (Caso o erro persista, entre em contato com o suporte)");
+                        throw new Error('Erro na solicitação DELETE');
+                    }
+                    refreshReturn();
+                    trashBtn.classList.add("disabled");
+                    trashBtn.classList.remove("btn-danger");
+                    trashBtn.classList.remove("text-white");
+                    deleteModal.hide();
+                })
+                .catch(error => {
+                    console.error('Erro na solicitação DELETE:', error);
+                });
+
+        }        
+    });
 })
 
 register.addEventListener("click", function() {
@@ -74,13 +105,7 @@ register.addEventListener("click", function() {
         myModal.hide()
 
 
-        if(all.classList.contains("select")) {
-            refresh("all");
-        } else if(available.classList.contains("select")) {
-            refresh("available");
-        } else if(missing.classList.contains("select")) {
-            refresh("missing");
-        }        
+        refreshReturn();        
     })
     .catch(function (res) { console.log(res) })
 
@@ -121,12 +146,12 @@ function constructLateralBarAndHeader(object) {
     stockName.textContent = object.name;
     
     let d = document.createElement("div");
-    d.classList = "text-center";
-    let i = document.createElement("i");
-    i.classList = "bi bi-collection text-white fs-4 mx-3";
+    d.classList = "text-center p-3 ";
+    let i = document.createElement("i");//bi bi-inbox
+    i.classList = "bi bi-database text-white fs-3 p-0 m-0";
     let text = document.createElement("span");
-    text.textContent = "Itens";
-    text.classList = "text-white h2 mb-5 mt-3 text-center"
+    text.textContent = " Itens";
+    text.classList = "text-white h1 fw-light p-0 m-0"
     d.appendChild(i)
     d.appendChild(text)
     ul.appendChild(d);
@@ -134,11 +159,15 @@ function constructLateralBarAndHeader(object) {
     for (let i = 0; i < object.items.length; i++) {
         
         let li = document.createElement("li");
-        li.classList = "p-1 ms-3 my-3 entitys d-block";
+        li.classList = "p-1 mb-1 text-center entitys";
         let aa = document.createElement("a");
         aa.href = "";
-        aa.textContent = object.items[i].name;
-        aa.classList = "link-light fst-italic d-block";
+        aa.textContent = " " + object.items[i].name;
+        aa.classList = "link-light link-underline-opacity-0 fs-6";
+        let i2 = document.createElement("i");
+        i2.classList = "bi bi-inbox text-white p-0 m-0";
+        i2.style.fontSize = "13px";
+        li.appendChild(i2);
         li.appendChild(aa);
         ul.appendChild(li);
     }
@@ -170,8 +199,27 @@ function constructTableItems(itemsArr) {
     trHeader.appendChild(td1);
     trHeader.appendChild(td2);
     trHeader.appendChild(td3);
+    trHeader.classList = "border-bottom border-secondary";
     tbody.appendChild(trHeader);       
     
+    if(itemsArr.length === 0) {
+        let noneItem = document.createElement("tr");
+        let td1 = document.createElement("td");
+        
+        let td2 = document.createElement("td");
+        td2.textContent = "Nenhum item encontrado";
+        td2.classList = "text-danger";
+        td2.classList.add("fs-5");
+        
+        let td3 = document.createElement("td");
+        
+        noneItem.classList = "text-center";
+        noneItem.appendChild(td1);
+        noneItem.appendChild(td2);
+        noneItem.appendChild(td3);
+        tbody.appendChild(noneItem); 
+    }
+
     for (let i = 0; i < itemsArr.length; i++) {
         let item = itemsArr[i];
         
@@ -291,12 +339,16 @@ function searchByName(string) {
                 console.error('Erro ao fazer a solicitação:', error);
             });
     } else {
-        if(all.classList.contains("select")) {
-            refresh("all");
-        } else if(available.classList.contains("select")) {
-            refresh("available");
-        } else if(missing.classList.contains("select")) {
-            refresh("missing");
-        }
+        refreshReturn();
+    }
+}
+
+function refreshReturn() {
+    if(all.classList.contains("select")) {
+        refresh("all");
+    } else if(available.classList.contains("select")) {
+        refresh("available");
+    } else if(missing.classList.contains("select")) {
+        refresh("missing");
     }
 }
