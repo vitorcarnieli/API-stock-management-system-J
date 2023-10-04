@@ -56,6 +56,8 @@ instituitions.addEventListener("click", function () {
     refresh();
 });
 
+
+
 actionBtn.addEventListener("click", function() {
     if(stockGroup.classList.contains("select")) {
         modal.show();
@@ -251,14 +253,25 @@ function constructorStockGroups(object) {
 
         tbody.appendChild(tr);
     }
-
+    /*
     let i = document.createElement("i");
-    i.classList = "bi bi-buildings text-white fs-4 mx-3";
+    i.classList = "bi bi-buildings text-white fs-3 p-0 m-0";
     let text = document.createElement("span");
     text.textContent = "Instituições";
-    text.classList = "text-white h3 mb-5 mt-3 text-center"
+    text.classList = "text-white h2 fw-light p-0 m-0"
     ul.appendChild(i)
     ul.appendChild(text)
+    */
+    let d = document.createElement("div");
+    d.classList = "text-center p-3 ";
+    let i = document.createElement("i");//bi bi-inbox
+    i.classList = "bi bi-buildings text-white fs-3 p-0 m-0";
+    let text = document.createElement("span");
+    text.textContent = " Instituições";
+    text.classList = "text-white h3 fw-light p-0 m-0";
+    d.appendChild(i);
+    d.appendChild(text);
+    ul.appendChild(d);
 
     actionBtn.textContent = "NOVO ESTOQUE";
     trashBtn.classList.remove("d-none");
@@ -267,13 +280,16 @@ function constructorStockGroups(object) {
     for (let i = 0; i < object[1].length; i++) {
         let data = object[1][i];
         let li = document.createElement("li");
-        li.classList = "p-1 ms-3 my-3 entitys d-block";
-        let a = document.createElement("a");
-        a.href = "";
-        a.textContent = data.name;
-        a.classList = "link-light fst-italic d-block";
-        li.appendChild(a);
-
+        li.classList = "p-2 mb-2 text-center entitys";
+        let aa = document.createElement("a");
+        aa.href = "";
+        aa.textContent = " " + data.name;
+        aa.classList = "link-light link-underline-opacity-0 fs-6";
+        let i2 = document.createElement("i");
+        i2.classList = "bi bi-building text-white p-0 m-0";
+        i2.style.fontSize = "13px";
+        li.appendChild(i2);
+        li.appendChild(aa);
         ul.appendChild(li);
     }
     var checkboxes = document.querySelectorAll('input[type="checkbox"]');
@@ -340,13 +356,17 @@ function constructorInstituitions(object) {
         tbody.appendChild(tr);
     }
 
-    let i = document.createElement("i");
-    i.classList = "bi bi-box-seam text-white fs-4 mx-3";
+
+    let d = document.createElement("div");
+    d.classList = "text-center p-3 ";
+    let i = document.createElement("i");//bi bi-inbox
+    i.classList = "bi bi-buildings text-white fs-3 p-0 m-0";
     let text = document.createElement("span");
-    text.textContent = "Estoques";
-    text.classList = "text-white h2 mb-5 mt-3 text-center"
-    ul.appendChild(i)
-    ul.appendChild(text)
+    text.textContent = " Estoques";
+    text.classList = "text-white h3 fw-light p-0 m-0";
+    d.appendChild(i);
+    d.appendChild(text);
+    ul.appendChild(d);
 
     actionBtn.textContent = "VISÃO GERAL";
     actionBtn.classList.add("disabled");
@@ -354,16 +374,22 @@ function constructorInstituitions(object) {
 
 
     for (let i = 0; i < object[0].length; i++) {
+
         let data = object[0][i];
         let li = document.createElement("li");
-        li.classList = "p-1 ms-3 my-3 entitys d-block";
-        let a = document.createElement("a");
-        a.href = "";
-        a.textContent = data.name;
-        a.classList = "link-light fst-italic d-block";
-        li.appendChild(a);
-
+        li.classList = "p-2 mb-2 text-center entitys";
+        let aa = document.createElement("a");
+        aa.href = "";
+        aa.textContent = " " + data.name;
+        aa.classList = "link-light link-underline-opacity-0 fs-6";
+        let i2 = document.createElement("i");
+        i2.classList = "bi bi-inboxes text-white p-0 m-0";
+        i2.style.fontSize = "13px";
+        li.appendChild(i2);
+        li.appendChild(aa);
         ul.appendChild(li);
+
+        
     }
 
     var checkboxes = document.querySelectorAll('input[type="checkbox"]');

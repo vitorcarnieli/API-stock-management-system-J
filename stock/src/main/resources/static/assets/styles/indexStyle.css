@@ -19,3 +19,13 @@
     background-color: #019CDB;
 
 }
+
+.entitys-items {
+    background-color: #F2F2F2;
+    transition: background-color 0.3s ease; 
+}
+
+.entitys-items:hover {
+    background-color: #F2F2F2;
+
+}

@@ -12,7 +12,8 @@ const deleteConfirm = document.getElementById("deleteConfirm");
 const myModal = new bootstrap.Modal(document.getElementById('myModal'));
 const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
 const searchByNameField = document.getElementById("searchByNameField");
-
+const itemModal = new bootstrap.Modal(document.getElementById('itemModal'));
+const tbodyModal = document.getElementById("tbodyModal");
 /* 
 
 TODO: Implementar modal ao clickar no item;
@@ -151,15 +152,17 @@ function constructLateralBarAndHeader(object) {
     i.classList = "bi bi-database text-white fs-3 p-0 m-0";
     let text = document.createElement("span");
     text.textContent = " Itens";
-    text.classList = "text-white h1 fw-light p-0 m-0"
-    d.appendChild(i)
-    d.appendChild(text)
+    text.classList = "text-white h1 fw-light p-0 m-0";
+    d.appendChild(i);
+    d.appendChild(text);
     ul.appendChild(d);
 
     for (let i = 0; i < object.items.length; i++) {
         
+
+
         let li = document.createElement("li");
-        li.classList = "p-1 mb-1 text-center entitys";
+        li.classList = "p-2 mb-2 text-center entitys";
         let aa = document.createElement("a");
         aa.href = "";
         aa.textContent = " " + object.items[i].name;
@@ -232,10 +235,11 @@ function constructTableItems(itemsArr) {
         
         
         let tdItemName = document.createElement("td");
-            tdItemName.classList.add("fs-5");
-            let a = document.createElement("a");
+            tdItemName.classList = "fs-5 entitys-items item";
+            tdItemName.id = item.id;
+            let a = document.createElement("span");
             a.textContent = item.name;
-            a.href = "";
+            a.classList = "text-primary"
             tdItemName.appendChild(a);
         
         
@@ -270,6 +274,14 @@ function constructTableItems(itemsArr) {
                 trashBtn.classList.remove("btn-danger");
                 trashBtn.classList.remove("text-white");
             }
+        });
+    });
+
+    let items = document.querySelectorAll(".item")
+    items.forEach(function(item) {
+        item.addEventListener('click', function() {
+            constructTbodyModal(item.id);
+            itemModal.show();
         });
     });
 }
@@ -351,4 +363,121 @@ function refreshReturn() {
     } else if(missing.classList.contains("select")) {
         refresh("missing");
     }
+}
+
+function constructTbodyModal(id, trueToAltSortC) {
+    let name = document.getElementById("nameItem");
+    let description = document.getElementById("descriptionItem");
+    let unitType = document.getElementById("unitTypeItem");
+    let amount = document.getElementById("amountItem");
+    let tbodyModal = document.getElementById("tbodyModal");
+    while (tbodyModal.firstChild) {
+        tbodyModal.removeChild(tbodyModal.firstChild);
+    }
+
+    name.value = "";
+    description.value = "";
+    unitType.value = "";
+    amount.value = "";
+
+    fetch("http://localhost:8080/item/" + id)
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error("Erro na resposta: " + response.status);
+        }
+        return response.json();
+    })
+    .then((data) => {
+        console.log(data);
+        
+        name.value = data.name;
+        description.value = data.description;
+        unitType.value = data.unitType;
+        amount.value = data.amount;
+        
+        name.disabled = true;
+        description.disabled = true;
+        unitType.disabled = true;
+
+        var rowArray = [];
+
+        for (let i = 0; i < data.changes.length; i++) {
+            var rowArray = [];
+
+            for (let i = 0; i < data.changes.length; i++) {
+                let change = data.changes[i];
+                let tr = document.createElement("tr");
+                tr.className = "text-center";
+        
+                let tdChange = document.createElement("td");
+                let valuesChanges = change.amount;
+                let dateHour = change.date.split(" T ");
+        
+                if (valuesChanges.includes(",")) {
+                    let arrInstitution = valuesChanges.split(",")
+                    tdChange.textContent = "Retirado " + arrInstitution[1] + " para " + arrInstitution[0];
+                    tdChange.className = "text-info";
+                }
+                else if (valuesChanges[0] == "c") {
+                    tdChange.textContent = "Criou com " + valuesChanges.replace("c", "");
+                    tdChange.className = "text-primary";
+                } else if (parseInt(valuesChanges) > 0) {
+                    valuesChanges = "Adicionou +" + valuesChanges;
+                    tdChange.textContent = valuesChanges;
+                    tdChange.className = "text-success";
+                } else {
+                    valuesChanges = "Retirou " + valuesChanges;
+                    tdChange.textContent = valuesChanges;
+                    tdChange.className = "text-danger";
+                }
+        
+                var row = {
+                    textContent: tdChange,
+                    date: dateHour[0]
+                };
+                rowArray.push(row);
+            }
+        
+            if (trueToAltSortC) {
+                rowArray.sort(function (a, b) {
+                    var dateA = a.date;
+                    var dateB = b.date;
+                    return dateA.localeCompare(dateB);
+                });
+            } else {
+                rowArray.sort(function (a, b) {
+                    var dateA = a.date;
+                    var dateB = b.date;
+                    return dateB.localeCompare(dateA);
+                });
+            }
+        
+            for (let i = 0; i < rowArray.length; i++) {
+                let row = rowArray[i];
+                let dateTime = row.date.split("T");
+        
+                let date = dateTime[0];
+                date = date.replace(/-/g, "/");
+                let time = dateTime[1];
+        
+                let tdDate = document.createElement("td");
+                let tdHour = document.createElement("td");
+        
+                tdDate.textContent = date;
+                tdHour.textContent = time
+        
+                let tr = document.createElement("tr");
+                tr.appendChild(row.textContent);
+                tr.appendChild(tdDate);
+                tr.appendChild(tdHour);
+        
+                tbodyModal.appendChild(tr);
+            }
+        }
+
+
+    })
+    .catch((error) => {
+        console.error('Erro ao fazer a solicitação:', error);
+    });
 }
