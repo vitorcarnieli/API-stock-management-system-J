@@ -48,13 +48,14 @@ saveChanges.addEventListener("click", function () {
     let amountItem = document.getElementById("amountItem");
     let id = saveChanges.value;
     if (amountItem.value != dataAmount) {
-        let value;
         if (amount.value < dataAmount) {
             saveChange(id, -(dataAmount - amount.value));
         } else {
             saveChange(id, amount.value - dataAmount);
+
         }
     }
+
     console.log("passou")
 })
 
@@ -401,7 +402,7 @@ function refreshReturn() {
     }
 }
 
-function constructTbodyModal(id, trueToAltSortC, opt) {
+function constructTbodyModal(id, trueToAltSortC) {
     let name = document.getElementById("nameItem");
     let description = document.getElementById("descriptionItem");
     let unitType = document.getElementById("unitTypeItem");
@@ -427,8 +428,11 @@ function constructTbodyModal(id, trueToAltSortC, opt) {
             saveChanges.disabled = true;
             dataAmount = data.amount;
             name.value = data.name;
+            name.disabled = true;
             description.value = data.description;
+            description.disabled = true;
             unitType.value = data.unitType;
+            unitType.disabled = true;
             amount.value = data.amount;
             saveChanges.value = data.id
 
@@ -525,6 +529,7 @@ function saveChange(id, change) {
         })
         .then(function (res) {
             refreshReturn();
+            constructTbodyModal(id);
         })
         .catch(function (res) {
         })

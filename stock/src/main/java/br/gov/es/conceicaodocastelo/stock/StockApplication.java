@@ -18,7 +18,9 @@ public class StockApplication {
 
 	@GetMapping(path = "/")
 	public String helloWord() {
-		return "Hello Word!";
+        String s = "a";
+        int score = 0;
+        return "Hello Word!";
 	}
 
 }
