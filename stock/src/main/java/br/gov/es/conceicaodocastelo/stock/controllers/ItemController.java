@@ -46,20 +46,22 @@ public class ItemController extends GenericControllerImp<Item> implements ItemIn
         }
     }
 
-    @PostMapping(path = "/add/changes")
+    @PostMapping(path = "/add-changes")
     @ResponseBody
-    public ResponseEntity<Object> addChanges(@RequestParam(value = "idItem") String idItem,
-            @RequestParam(value = "change") Integer change) {
-        if (idItem != null && change != null) {
-            Item item = itemService.addChanges(Long.parseLong(idItem), change);
-            Integer size = item.getChanges().size();
-            if (size != item.getChanges().size()) {
-                return ResponseEntity.status(HttpStatus.OK).body(null);
+    public ResponseEntity<Object> addChanges(@RequestParam(value = "id") Long id, @RequestParam(value = "c") Integer change) {
+        ResponseEntity<Object> query = this.findById(id);
+        if(query.getStatusCode().is2xxSuccessful()) {
+            Item item = (Item) query.getBody();
+            boolean ok = item.increaseOrDecreaseAmount(change);
+            if(ok) {
+                this.save(item);
+                return ResponseEntity.status(HttpStatus.OK).body("OK");
             } else {
-                throw new RuntimeException("erro de inserção");
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("ERRO DURANTE INSERCAO");
+
             }
         } else {
-            throw new NullPointerException("null");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("ITEM NOT FOUND BY ID");
         }
     }
 

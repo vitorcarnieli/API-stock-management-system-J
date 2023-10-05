@@ -91,7 +91,7 @@ public class Item extends BaseEntity {
         }
     }
 
-    public void increaseOrDecreaseAmount(Integer valueToIncreaseOrDecrease) {
+    public boolean increaseOrDecreaseAmount(Integer valueToIncreaseOrDecrease) {
         // para incrementar mande um numero positivo, para decrementar mande um negativo
         if (valueToIncreaseOrDecrease != null) {
             if (valueToIncreaseOrDecrease >= 0) {
@@ -99,13 +99,13 @@ public class Item extends BaseEntity {
             } else {
                 this.setAmount(this.getAmount() - (valueToIncreaseOrDecrease * -1));
             }
-            addChanges(valueToIncreaseOrDecrease.toString());
+            return addChanges(valueToIncreaseOrDecrease.toString());
         } else {
             throw new NullPointerException("valueToIncreaseOrDecrease == null");
         }
     }
 
-    public void increaseOrDecreaseAmountInstitution(Integer valueToIncreaseOrDecrease, String institutionName) {
+    public boolean increaseOrDecreaseAmountInstitution(Integer valueToIncreaseOrDecrease, String institutionName) {
         // para incrementar mande um numero positivo, para decrementar mande um negativo
         if (valueToIncreaseOrDecrease != null) {
             if (valueToIncreaseOrDecrease >= 0) {
@@ -114,6 +114,7 @@ public class Item extends BaseEntity {
                 this.setAmount(this.getAmount() - (valueToIncreaseOrDecrease * -1));
             }
             addChanges(institutionName + "," + valueToIncreaseOrDecrease.toString());
+            return true;
         } else {
             throw new NullPointerException("valueToIncreaseOrDecrease == null");
         }
@@ -135,7 +136,7 @@ public class Item extends BaseEntity {
         this.changes = changes;
     }
 
-    public void addChanges(String changedValue) {
+    public boolean addChanges(String changedValue) {
         Records record = new Records(this);
         if (amount == null) {
             record.setAmount("c" + changedValue);
@@ -146,6 +147,7 @@ public class Item extends BaseEntity {
             record.setAmount(changedValue.toString());
             this.changes.add(0, record);
         }
+        return true;
     }
 
 }

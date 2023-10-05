@@ -9,6 +9,9 @@ const nome = document.getElementById("newName");
 const description = document.getElementById("newDescription");
 const modal = new bootstrap.Modal(document.getElementById('modalForm'));
 const modalInstituition = new bootstrap.Modal(document.getElementById('modalInstituition'));
+const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+const deleteConfirm = document.getElementById("deleteConfirm");
+
 
 //TODO: Implementar modal ao clickar em visao geral
 
@@ -19,28 +22,44 @@ document.addEventListener("DOMContentLoaded", function () {
 })
 
 trashBtn.addEventListener("click", function () {
+    deleteModal.show()
+});
 
-    let checkboxes = document.querySelectorAll('input[type="checkbox"]');
-    for (var i = 0; i < checkboxes.length; i++) {
-        if (checkboxes[i].checked) {
+deleteConfirm.addEventListener("click", function () {
+    let checkboxes = document.querySelectorAll("input[type='checkbox']")
+    checkboxes.forEach(function (checkbox) {
+        if (checkbox.checked) {
 
-            fetch("http://localhost:8080/stock-group/delete?idGroup=" + checkboxes[i].value)
-                .then((response) => {
 
-                })
-                .then((data) => {
+            fetch("http://localhost:8080/stock-group/" + checkbox.value, {
+                method: 'DELETE',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        alert("Erro ao deletar, por favor, tente novamente. (Caso o erro persista, entre em contato com o suporte)");
+                        throw new Error('Erro na solicitação DELETE');
+                    }
                     refresh();
+                    trashBtn.classList.add("disabled");
+                    trashBtn.classList.remove("btn-danger");
+                    trashBtn.classList.remove("text-white");
+                    deleteModal.hide();
                 })
-                .catch((error) => {
+                .catch(error => {
+                    console.error('Erro na solicitação DELETE:', error);
                 });
 
         }
-    }
-
+    });
 })
 
-nome.addEventListener("input", function() {
-    if(nome.value != "") {
+
+nome.addEventListener("input", function () {
+    if (nome.value != "") {
         createStock.classList.remove("disabled");
     } else {
         createStock.classList.add("disabled");
@@ -58,15 +77,15 @@ instituitions.addEventListener("click", function () {
 
 
 
-actionBtn.addEventListener("click", function() {
-    if(stockGroup.classList.contains("select")) {
+actionBtn.addEventListener("click", function () {
+    if (stockGroup.classList.contains("select")) {
         modal.show();
     } else {
         let checkboxes = document.querySelectorAll('input[type="checkbox"]');
         for (var i = 0; i < checkboxes.length; i++) {
             if (checkboxes[i].checked) {
-                console.log("http://127.0.0.1:8080/institution/" + checkboxes[i].value)
-                fetch("http://127.0.0.1:8080/institution/" + checkboxes[i].value)
+                console.log("http://localhost/institution/" + checkboxes[i].value)
+                fetch("http://localhost/institution/" + checkboxes[i].value)
                     .then((response) => {
                         return response.json();
                     })
@@ -85,7 +104,7 @@ actionBtn.addEventListener("click", function() {
 
                         let divResponsible = document.createElement("div");
                         divResponsible.classList = "form-floating mb-3";
-                        
+
                         let inputResponsibleName = document.createElement("input");
                         inputResponsibleName.type = "text";
                         inputResponsibleName.classList = "form-control";
@@ -103,7 +122,7 @@ actionBtn.addEventListener("click", function() {
 
                         let divEmail = document.createElement("div");
                         divEmail.classList = "form-floating mb-3";
-                        
+
                         let inputEmail = document.createElement("input");
                         inputEmail.type = "email";
                         inputEmail.classList = "form-control";
@@ -121,7 +140,7 @@ actionBtn.addEventListener("click", function() {
 
                         let divPhone = document.createElement("div");
                         divPhone.classList = "form-floating mb-3";
-                        
+
                         let inputPhone = document.createElement("input");
                         inputPhone.type = "text";
                         inputPhone.classList = "form-control";
@@ -139,7 +158,7 @@ actionBtn.addEventListener("click", function() {
 
                         let divAdress = document.createElement("div");
                         divAdress.classList = "form-floating mb-3";
-                        
+
                         let inputAdress = document.createElement("input");
                         inputAdress.type = "text";
                         inputAdress.classList = "form-control";
@@ -172,10 +191,10 @@ actionBtn.addEventListener("click", function() {
     }
 })
 
-createStock.addEventListener("click", function() {
+createStock.addEventListener("click", function () {
     let name = document.getElementById("newName");
     let description = document.getElementById("newDescription");
-    if(name.value != "") {
+    if (name.value != "") {
         fetch("http://localhost:8080/stock-group",
             {
                 headers: {
@@ -194,7 +213,7 @@ createStock.addEventListener("click", function() {
                 createStock.classList.add("disabled");
 
                 refresh();
-                
+
             })
             .catch(function (res) { console.log(res) })
     }
@@ -243,7 +262,7 @@ function constructorStockGroups(object) {
         td2.classList.add("fs-5");
         let a = document.createElement("a");
         a.textContent = data.name;
-        a.href = "http://127.0.0.1:8080/pages/stockPage.html?id=" + data.id;
+        a.href = "http://localhost:8080/pages/stockPage.html?id=" + data.id;
         td2.appendChild(a);
 
         let tr = document.createElement("tr");
@@ -253,18 +272,9 @@ function constructorStockGroups(object) {
 
         tbody.appendChild(tr);
     }
-    /*
-    let i = document.createElement("i");
-    i.classList = "bi bi-buildings text-white fs-3 p-0 m-0";
-    let text = document.createElement("span");
-    text.textContent = "Instituições";
-    text.classList = "text-white h2 fw-light p-0 m-0"
-    ul.appendChild(i)
-    ul.appendChild(text)
-    */
     let d = document.createElement("div");
     d.classList = "text-center p-3 ";
-    let i = document.createElement("i");//bi bi-inbox
+    let i = document.createElement("i");
     i.classList = "bi bi-buildings text-white fs-3 p-0 m-0";
     let text = document.createElement("span");
     text.textContent = " Instituições";
@@ -294,15 +304,15 @@ function constructorStockGroups(object) {
     }
     var checkboxes = document.querySelectorAll('input[type="checkbox"]');
 
-    checkboxes.forEach(function(checkbox) {
-        checkbox.addEventListener('change', function() {
+    checkboxes.forEach(function (checkbox) {
+        checkbox.addEventListener('change', function () {
             // Verifique se o checkbox atual está marcado
             if (this.checked) {
                 trashBtn.classList.remove("disabled");
                 trashBtn.classList.add("btn-danger");
                 trashBtn.classList.add("text-white");
 
-                checkboxes.forEach(function(otherCheckbox) {
+                checkboxes.forEach(function (otherCheckbox) {
                     if (otherCheckbox !== checkbox) {
                         otherCheckbox.checked = false;
                     }
@@ -360,7 +370,7 @@ function constructorInstituitions(object) {
     let d = document.createElement("div");
     d.classList = "text-center p-3 ";
     let i = document.createElement("i");//bi bi-inbox
-    i.classList = "bi bi-buildings text-white fs-3 p-0 m-0";
+    i.classList = "bi bi-box-seam text-white fs-3 p-0 m-0";
     let text = document.createElement("span");
     text.textContent = " Estoques";
     text.classList = "text-white h3 fw-light p-0 m-0";
@@ -389,16 +399,16 @@ function constructorInstituitions(object) {
         li.appendChild(aa);
         ul.appendChild(li);
 
-        
+
     }
 
     var checkboxes = document.querySelectorAll('input[type="checkbox"]');
 
-    checkboxes.forEach(function(checkbox) {
-        checkbox.addEventListener('change', function() {
+    checkboxes.forEach(function (checkbox) {
+        checkbox.addEventListener('change', function () {
             if (this.checked) {
                 actionBtn.classList.remove("disabled");
-                checkboxes.forEach(function(otherCheckbox) {
+                checkboxes.forEach(function (otherCheckbox) {
                     if (otherCheckbox !== checkbox) {
                         otherCheckbox.checked = false;
                     }
@@ -423,7 +433,7 @@ function refresh() {
         })
         .then((data) => {
             datas.push(data);
-    
+
             return fetch("http://localhost:8080/institution/find/all");
         })
         .then((response) => {
@@ -434,7 +444,7 @@ function refresh() {
         })
         .then((data) => {
             datas.push(data);
-            if(stockGroup.classList.contains("select")) {
+            if (stockGroup.classList.contains("select")) {
                 constructorStockGroups(datas)
             } else {
                 constructorInstituitions(datas)

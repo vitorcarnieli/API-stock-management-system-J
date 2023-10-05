@@ -24,6 +24,18 @@
 
     <!-- STYLE -->
     <link rel="stylesheet" href="../assets/styles/indexStyle.css">
+    <style>
+        .table-container {
+            max-height: 250px;
+            overflow-y: auto;
+        }
+    
+        #tbodyModal {
+            max-height: 250px;
+            overflow-y: auto;
+        }
+    
+    </style>
     <!-- STYLE -->
 
 </head>
@@ -31,7 +43,7 @@
 <body>
     <header class="fixed-top" style="height: 10vh;">
         <nav class="navbar navbar-expand-lg navbar-light p-2" style="background-color: #EBEAE9;">
-            <a class="navbar-brand" href="http://127.0.0.1:8080/pages/index.html">
+            <a class="navbar-brand" href="http://localhost:8080/pages/index.html">
                 <img src="../assets/img/logoHeader.png" width="" height="70" alt="">
             </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown"
@@ -126,7 +138,7 @@
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h4 class="modal-title" id="itemName"></h4>
+                            <h4 class="modal-title" id="itemName">Painel de item</h4>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                         </div>
                         <div class="modal-body">
@@ -162,24 +174,26 @@
                                 </div>
                             </div>
                             <div class="my-3"></div>
+                            <div class="table-container table-responsive">
 
-                            <table class="table table-bordered">
-                                <thead class="text-center ">
-                                    <tr>
-                                        <th class="col-9 text-muted">Alterações</th>
-                                        <th class="col-2 text-muted">Data</th>
-                                        <th class="col-1 text-muted">Hora</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="tbodyModal">
-
-                                </tbody>
-                            </table>
+                                <table class="table table-bordered">
+                                    <thead class="text-center ">
+                                        <tr>
+                                            <th class="col-9 text-muted">Alterações</th>
+                                            <th class="col-2 text-muted">Data</th>
+                                            <th class="col-1 text-muted">Hora</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbodyModal">
+    
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
 
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-                            <button type="button" class="btn btn-primary" id="register">Salvar alterações</button>
+                            <button type="button" class="btn btn-primary" id="saveChanges">Salvar alterações</button>
                         </div>
                     </div>
                 </div>
