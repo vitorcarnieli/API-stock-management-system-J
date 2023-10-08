@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,18 +28,7 @@ public class InstitutionController extends GenericControllerImp<Institution>{
     public InstitutionController(InstitutionService institutionService) {
         this.institutionService = institutionService;
     }
-    /*
-    @PostMapping(path = "/set")
-    public ResponseEntity<String> createInstitution(@RequestBody InstitutionRecordDto institutionDTO) {
-        institutionDTO.names().forEach(n -> {
-            Institution s = new Institution();
-            s.setName(n);
-            institutionService.save(s);
-        });
-        return ResponseEntity.status(HttpStatus.OK)
-                .body("ESCOLA : \n" + institutionDTO.names() + "\n salva com sucesso");
-    }
-    */
+
     @PostMapping(path = "/set")
     public ResponseEntity<String> addData(@RequestBody List<Institution> institution) {
     	if(institution != null) {
@@ -53,13 +43,19 @@ public class InstitutionController extends GenericControllerImp<Institution>{
     	}
     }
 
-    @PostMapping(path = "/set/order")
-    public ResponseEntity<Object> createOrder(@RequestBody Institution institution, @RequestBody Order order) {
+    @PostMapping(path = "/set-order/{institutionId}")
+    public ResponseEntity<Object> createOrder(@PathVariable("institutionId") Long institutionId, @RequestBody Order order) {
         try {
-            institution.addOrders(order);
-            return ResponseEntity.status(HttpStatus.OK).body(institutionService.save(institution));
+            ResponseEntity<Object> q = this.findById(institutionId);
+            if(q.getStatusCode().is2xxSuccessful()) {
+                Institution i = (Institution) q.getBody();
+                i.addOrders(order);
+                return ResponseEntity.status(HttpStatus.OK).body(institutionService.save(i));
+            } else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("ERROR: " + q.getBody().toString());
+            }
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body("ERROR: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("ERROR: " + e.getMessage());
         }
     }
 

@@ -17,6 +17,8 @@
 
 .entitys:hover {
     background-color: #019CDB;
+    cursor: pointer;
+
 
 }
 
@@ -27,5 +29,6 @@
 
 .entitys-items:hover {
     background-color: #F2F2F2;
+    cursor: pointer;
 
 }

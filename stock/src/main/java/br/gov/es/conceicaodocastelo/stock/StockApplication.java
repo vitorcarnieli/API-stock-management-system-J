@@ -18,8 +18,6 @@ public class StockApplication {
 
 	@GetMapping(path = "/")
 	public String helloWord() {
-        String s = "a";
-        int score = 0;
         return "Hello Word!";
 	}
 

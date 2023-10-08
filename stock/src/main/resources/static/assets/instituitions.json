@@ -1,0 +1,86 @@
+[
+    {
+        "name":"UMEI Hans Ludvig Lorentzen",
+        "responsible":"Patrícia Leitão",
+        "email":"umeilorentzen@gmail.com",
+        "adress": "R. Adalto F. da Mota, 140 - Centro",
+        "contatcPhone":"(28) 99982-1078"
+    },
+    {
+        "name":"UMEI Vovó Clara",
+        "responsible":"Janete",
+        "email":"umeivovoclara@hotmail.com",
+        "adress": "RUA ANTONIO BELISARIO, SN NICOLAU DE VARGAS E SILVA.",
+        "contatcPhone":"(28) 99904-1270"
+    },
+    {
+        "name":"UMEI Vovó Natalina Padoani",
+        "responsible":"Ludimila",
+        "email":"emefantoniopadoani@gmail.com",
+        "adress": "Br 262, Km 115, Indaia, DNR",
+        "contatcPhone":"(28) 99979-2125"
+    },
+    {
+        "name":"UMEI Brás Lacerda Amigo",
+        "responsible":"Patricia Mota",
+        "email":"umeibraslacerda@gmail.com",
+        "adress": "RUA MANOEL SILVESTRE DA SILVA, 197 CENTRO",
+        "contatcPhone":"(28) 99919-8894"
+    },
+    {
+        "name":"UMEF Alto Monforte",
+        "responsible":"Fernanda",
+        "email":"monforteescola@gmail.com",
+        "adress": "MONFORTE FRIO, SN ZONA RURAL",
+        "contatcPhone":"(28) 99978-1514"
+    },
+    {
+        "name":"UMEF Antônio Padoani",
+        "responsible":"Ludimila",
+        "email":"emefantoniopadoani@gmail.com",
+        "adress": "Br 262, Km 115, Indaia, DNR",
+        "contatcPhone":"(28) 99979-2125"
+    },
+    {
+        "name":"UMEF José Feriani",
+        "responsible":"Queles",
+        "email":"emefantoniopadoani@gmail.com",
+        "adress": "Angá, Zona Rural",
+        "contatcPhone":"(28) 99901-3527"
+    },
+    {
+        "name":"UMEF Mata Fria",
+        "responsible":"Eliane",
+        "email":"umefmatafria@gmail.com",
+        "adress": "Mata Fria, Zona Rural",
+        "contatcPhone":"(28) 99916-0926"
+    },
+    {
+        "name":"UMEF Prof. Édson Altoé",
+        "responsible":"Renata",
+        "email":"secretariaedsonaltoe@hotmail.com",
+        "adress": "Avenida Harvey de Vargas Grilo Boa Esperanca",
+        "contatcPhone":"(28) 99912-0158"
+    },
+    {
+        "name":"UMEF Antônio Azeredo Coutinho",
+        "responsible":"Lucidete",
+        "email":"umefazeredocoutinho@gmail.com",
+        "adress": "Avenida Harvey de Vargas Grilo Boa Esperanca",
+        "contatcPhone":"(28) 99994-7058"
+    },
+    {
+        "name":"UMEF Santa Luzia",
+        "responsible":"Edilenes",
+        "email":"umefsantaluzia@gmail.com",
+        "adress": "Rodovia Es 472, Francisco Vieira de Melo, Km 06, Santa Luzia",
+        "contatcPhone":"(28) 99884-0763"
+    },
+    {
+        "name": "Secretaria de Educação",
+        "responsible":"Cleumar",
+        "email":"educacao@conceicaodocastelo.es.gov.br",
+        "adress": "Av. José Grilo, nº 426, Centro ",
+        "contatcPhone":"(28) 3547- 2025"
+    }
+]

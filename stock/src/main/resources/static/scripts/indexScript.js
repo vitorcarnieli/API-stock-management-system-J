@@ -249,29 +249,38 @@ function constructorStockGroups(object) {
     for (let i = 0; i < object[0].length; i++) {
         let data = object[0][i];
 
-        let td1 = document.createElement("td");
-        td1.classList.add("text-center");
 
+        let tdCheckbox = document.createElement("td");
+        tdCheckbox.classList.add("text-center");
         let inp = document.createElement("input");
         inp.value = data.id;
         inp.type = "checkbox";
+        tdCheckbox.appendChild(inp);
 
-        td1.appendChild(inp);
 
-        let td2 = document.createElement("td");
-        td2.classList.add("fs-5");
-        let a = document.createElement("a");
+        let tdItemName = document.createElement("td");
+        tdItemName.classList = "fs-5 entitys-items item";
+        tdItemName.id = data.id;
+        let a = document.createElement("span");
         a.textContent = data.name;
-        a.href = "http://localhost:8080/pages/stockPage.html?id=" + data.id;
-        td2.appendChild(a);
+        a.classList = "text-primary"
+        tdItemName.appendChild(a);
 
-        let tr = document.createElement("tr");
+        let trBody = document.createElement("tr");
 
-        tr.appendChild(td1);
-        tr.appendChild(td2);
+        trBody.appendChild(tdCheckbox);
+        trBody.appendChild(tdItemName);
 
-        tbody.appendChild(tr);
+        tbody.appendChild(trBody);
     }
+    let items = document.querySelectorAll(".item")
+    items.forEach(function (item) {
+        item.addEventListener('click', function () {
+            let a = document.createElement("a");
+            a.href = "http://localhost:8080/pages/stock.html?id=" + item.id;
+            a.click();
+        });
+    });
     let d = document.createElement("div");
     d.classList = "text-center p-3 ";
     let i = document.createElement("i");

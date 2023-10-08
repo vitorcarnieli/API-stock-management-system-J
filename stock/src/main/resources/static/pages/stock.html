@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página Inicial</title>
+    <!-- BOOTSTRAP -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+    <!-- BOOTSTRAP -->
+
+    <!-- BOOTSTRAP ICONS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- BOOTSTRAP ICONS -->
+
+    <!-- SCRIPT -->
+    <script src="../scripts/stockScript.js" defer></script>
+    <!-- SCRIPT -->
+
+
+    <!-- STYLE -->
+    <link rel="stylesheet" href="../assets/styles/indexStyle.css">
+    <style>
+        .table-container {
+            max-height: 250px;
+            overflow-y: auto;
+        }
+    
+        #tbodyModal {
+            max-height: 250px;
+            overflow-y: auto;
+        }
+    
+    </style>
+    <!-- STYLE -->
+
+</head>
+
+<body>
+    <header class="fixed-top" style="height: 10vh;">
+        <nav class="navbar navbar-expand-lg navbar-light p-2" style="background-color: #EBEAE9;">
+            <a class="navbar-brand" href="http://localhost:8080/pages/index.html">
+                <img src="../assets/img/logoHeader.png" width="" height="70" alt="">
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown"
+                aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                <ul class="navbar-nav">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#"><i class="bi bi-box-seam"></i> Estoques</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"><i class="bi bi-buildings"></i> Instituições</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"><i class="bi bi-file-earmark-bar-graph"></i> Relatórios</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <section class="">
+        
+        <div class="container-fluid" style="margin-top: 13vh;">
+            <div class="modal" tabindex="-1" id="deleteModal">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Tem certeza que deseja apagar este item?</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>O item será apagado permanentemente tornando impossível sua recuperação após concluir a ação. Se realmente deseja apagar este item, aperte no botão "Apagar" abaixo.</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-danger" id="deleteConfirm">Apagar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal fade" id="myModal">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Registrando novo item</h4>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-12 my-2">
+                                    <div class="form-group">
+                                        <label for="name">Nome: </label>
+                                        <input type="text" class="form-control" id="name" required
+                                        placeholder="Obrigatório">
+                                    </div>
+                                </div>
+                                <div class="col-12 my-2">
+                                    <div class="form-group">
+                                        <label for="description">Descrição: </label>
+                                        <input type="text" class="form-control" id="description">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-8 my-2">
+                                    <div class="form-group">
+                                        <label for="unitType">Tipo de unidade: </label>
+                                        <input type="text" class="form-control" id="unitType"
+                                        placeholder="Padrão: Unidade">
+                                    </div>
+                                </div>
+                                <div class="col-4 my-2">
+                                    <div class="form-group">
+                                        <label for="amount">Quantidade: </label>
+                                        <input type="number" class="form-control" id="amount" min="0"
+                                        placeholder="Mínimo: 0">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                            <button type="button" class="btn btn-primary" id="register">Registrar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="itemModal">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title" id="itemName">Painel de item</h4>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-12 my-2">
+                                    <div class="form-group">
+                                        <label for="name">Nome: </label>
+                                        <input type="text" class="form-control" id="nameItem"
+                                        placeholder="Obrigatório">
+                                    </div>
+                                </div>
+                                <div class="col-12 my-2">
+                                    <div class="form-group">
+                                        <label for="description">Descrição: </label>
+                                        <input type="text" class="form-control" id="descriptionItem">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-8 my-2">
+                                    <div class="form-group">
+                                        <label for="unitType">Tipo de unidade: </label>
+                                        <input type="text" class="form-control" id="unitTypeItem"
+                                        placeholder="Padrão: Unidade">
+                                    </div>
+                                </div>
+                                <div class="col-4 my-2">
+                                    <div class="form-group">
+                                        <label for="amount">Quantidade: </label>
+                                        <input type="number" class="form-control" id="amountItem" min="0"
+                                        placeholder="Mínimo: 0">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="my-3"></div>
+                            <div class="table-container table-responsive">
+
+                                <table class="table table-bordered">
+                                    <thead class="text-center ">
+                                        <tr>
+                                            <th class="col-9 text-muted">Alterações</th>
+                                            <th class="col-2 text-muted">Data</th>
+                                            <th class="col-1 text-muted">Hora</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbodyModal">
+    
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                            <button type="button" class="btn btn-primary" id="saveChanges">Salvar alterações</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            
+            <div class="row vh-100">
+                <div class="col-2" style="background-color: #007BCD;">
+                    <ul class="p-2 list-unstyled " id="ul">
+                        
+                        
+                    </ul>
+                </div>
+
+                <div class="col-10 container-fluid" style="background-color: #EBEAE9;">
+                    <div class="row">
+                        <div class="col-12 p-4" style="background-color: #019CDB;">
+                            <p class="text-white h1 fw-light" id="stockName"></p>
+                        </div>
+                        <div class="col-12 p-3"></div>
+                        <div class="col-12 container">
+                            <div class="row p-4">
+                                
+                                <div class="col-2 me-3 p-3 text-center select" style="user-select: none;" id="all">
+                                    <p class="p-0 m-0 text-white fs-5" style="user-select: none;"><i
+                                        class="bi bi-collection"></i> TODOS</p>
+                                    </div>
+                                    <div class="col-2 me-3 p-3 text-center unselect" style="user-select: none;" id="available">
+                                        <p class="p-0 m-0 text-white fs-5" style="user-select: none;"><i
+                                            class="bi bi-thermometer-high"></i> DISPONÍVEIS</p>
+                                        </div>
+                                        <div class="col-2 p-3 text-center unselect" style="user-select: none;" id="missing">
+                                            <p class="p-0 m-0 text-white fs-5" style="user-select: none;"><i
+                                                class="bi bi-thermometer"></i> EM FALTA</p>
+                                            </div>
+                                            <div class="col-12" style="border: 1px solid #FF89C3;"></div>
+                                            <table class="table table-striped col-12">
+                                    <thead>
+                                        <tr>
+                                            <th class="col-1">
+                                                
+                                            </th>
+                                            <th class="">
+                                                <button class="btn rounded-0 text-white fw-bold me-3"
+                                                style="background-color: #FF89C3;" id="actionBtn">Registrar novo
+                                                item</button>
+                                                <div class="btn rounded-0 text-white fw-bold me-3">
+                                                    <input type="text" class="input-group-text rounded-0"
+                                                        placeholder="Pesquisar item por nome" id="searchByNameField"
+                                                        style="border: 1px solid #FF89C3;">
+                                                </div>
+                                                <button class="disabled btn border rounded-0 text-secondary fw-bold"
+                                                    id="trashBtn"><i class="bi bi-trash3"></i></button>
+                                            </th>
+                                            <th class="col-2">
+
+                                            </th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbody" class="text-center">
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+
+</html>
