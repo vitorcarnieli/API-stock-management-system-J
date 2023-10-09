@@ -15,11 +15,18 @@ const tbodyModal = document.getElementById("tbodyModal");
 const addItemInOrder = document.getElementById("add");
 const addBtn = document.getElementById("add");
 const amountItem = document.getElementById("amountItem");
+const deleteModalBtn = document.getElementById("deleteModalBtn");
+const observation = document.getElementById("observation");
+const saveChanges = document.getElementById("saveChanges")
 //modal de criar order
 
 /*
 TODO: NAO DEIXAR ADD MAIS DO QUE TEM DE QUANTIDADE;
 */
+
+saveChanges.addEventListener("click", function() {
+    createOrder();
+})
 
 amountItem.addEventListener("input", function() {
     if(parseInt(amountItem.value) > parseInt(amountItem.max)) {
@@ -45,7 +52,15 @@ addBtn.addEventListener("click", function() {
     for (let i = 0; i < children.length; i++) {
         let child = children[i];
         if(itemSelect.value.split("*")[1] == child.id) {
-            console.log(child.children[1])
+            if(parseInt(child.children[1].textContent) + parseInt(amountItem.value) > parseInt(amountItem.max)) {
+                child.children[1].textContent = amountItem.max;
+                itemSelect.value = "";
+                amountItem.value = "";
+                amountItem.placeholder = "";
+                addBtn.classList.add("disabled");
+                amountItem.disabled = true;
+                return;
+            }
             child.children[1].textContent = parseInt(child.children[1].textContent) + parseInt(amountItem.value);
             itemSelect.value = "";
             amountItem.value = "";
@@ -67,7 +82,25 @@ addBtn.addEventListener("click", function() {
 
     let tdDeleteItem = document.createElement("td");
         let btndel = document.createElement("button");
+        btndel.addEventListener("click", function() {
+            let father = btndel.closest("tr"); 
+            console.log(father)
+            let children = tbodyModal.children;
+            for(let i = 0; i < children.length; i++) {
+                let child = children[i];
+                if (child.id == father.id) {
+                    tbodyModal.removeChild(child);
+                    for(let i = 0; i < itemSelect.children.length; i++) {
+                        let child2 = itemSelect.children[i];
+                        if(child2.id == father.id) {
+                            child2.disabled = false;
+                        }
+                    }
+                }
+            }
+        })
         btndel.classList = "btn btn-danger"
+        btndel.id = "deleteModalBtn";
         let i = document.createElement("i");
         i.classList = "bi bi-trash3";
         btndel.appendChild(i);
@@ -301,4 +334,17 @@ function constructMainTable(object) {
             itemModal.show();
         });
     });
+}
+
+function createOrder() {
+    let object = {
+        name: nameOrderModal.value,
+        observation: observation.value,
+        requests: []
+    }
+    for (let i = 0; i < tbodyModal.children.length; i++) {
+        let child = tbodyModal.children[i];
+        object.requests.push([child.id, child.children[1]]);
+    }
+    console.log(object);
 }
