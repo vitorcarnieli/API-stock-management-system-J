@@ -51,12 +51,11 @@
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title">Tem certeza que deseja apagar este item?</h5>
+                            <h5 class="modal-title">Tem certeza que deseja apagar este pedido?</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <p>O item será apagado permanentemente tornando impossível sua recuperação após concluir a
-                                ação. Se realmente deseja apagar este item, aperte no botão "Apagar" abaixo.</p>
+                            <p>O pedido, quando apagado, será impossível de ser recuperado e não estará mais presente nos futuros relatórios. Para concluir a exclusão, clique no botão "Apagar".</p>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
@@ -71,7 +70,7 @@
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h4 class="modal-title">Registrando novo item</h4>
+                            <h4 class="modal-title">Criar novo pedidos</h4>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                         </div>
                         <div class="modal-body">
@@ -85,7 +84,7 @@
                                 </div>
                                 <div class="col-12 my-2">
                                     <div class="form-group">
-                                        <label for="description">Descrição: </label>
+                                        <label for="description">Observações: </label>
                                         <input type="text" class="form-control" id="description">
                                     </div>
                                 </div>
@@ -93,8 +92,8 @@
                             <div class="row">
                                 <div class="col-8 my-2">
                                     <div class="form-group">
-                                        <label for="unitType">Tipo de unidade: </label>
-                                        <input type="text" class="form-control" id="unitType"
+                                        <label for="unitType">Instituição: </label>
+                                        <input type="text" class="form-control" id="instituition"
                                             placeholder="Padrão: Unidade">
                                     </div>
                                 </div>
@@ -114,11 +113,11 @@
                     </div>
                 </div>
             </div>
-            <div class="modal fade" id="itemModal">
+            <div class="modal fade" id="createOrderModal">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h4 class="modal-title" id="itemName">Painel de item</h4>
+                            <h4 class="modal-title" id="orderPainel">Painel de pedido</h4>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                         </div>
                         <div class="modal-body">
@@ -131,24 +130,30 @@
                                 </div>
                                 <div class="col-12 my-2">
                                     <div class="form-group">
-                                        <label for="description">Descrição: </label>
+                                        <label for="description">Observações: </label>
                                         <input type="text" class="form-control" id="descriptionItem">
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-8 my-2">
+                                <div class="col-6 my-2">
                                     <div class="form-group">
-                                        <label for="unitType">Tipo de unidade: </label>
-                                        <input type="text" class="form-control" id="unitTypeItem"
-                                            placeholder="Padrão: Unidade">
+                                        <label for="items" class="form-label">Escolher itens:</label>
+                                        <select class="form-select form-control" id="items" name="items" style="max-height: 200px; overflow-y: auto;" required>
+                                            <option value="" selected disabled>Selecionar Item</option>
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="col-4 my-2">
                                     <div class="form-group">
-                                        <label for="amount">Quantidade: </label>
-                                        <input type="number" class="form-control" id="amountItem" min="0"
-                                            placeholder="Mínimo: 0">
+                                        <label for="amountItem" class="form-label">Quantidade: </label>
+                                        <input type="number" class="form-control" disabled id="amountItem">
+                                    </div>
+                                </div>
+                                <div class="col-2 my-2">
+                                    <div class="form-group">
+                                        <label for="add" class="form-label">&#8205</label>
+                                        <span class="btn btn-primary form-control disabled" id="add"><i class="bi bi-plus-circle"></i></span>
                                     </div>
                                 </div>
                             </div>
@@ -158,9 +163,9 @@
                                 <table class="table table-bordered">
                                     <thead class="text-center ">
                                         <tr>
-                                            <th class="col-9 text-muted">Alterações</th>
-                                            <th class="col-2 text-muted">Data</th>
-                                            <th class="col-1 text-muted">Hora</th>
+                                            <th class="col-9 text-muted">Item</th>
+                                            <th class="col-2 text-muted">Quantidade</th>
+                                            <th class="col-1 text-muted">Apagar</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tbodyModal">

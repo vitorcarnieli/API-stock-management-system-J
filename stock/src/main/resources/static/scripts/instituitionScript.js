@@ -1,9 +1,139 @@
+const urlParam = new URLSearchParams(window.location.search);
+
+// criação de página
 const instituitionName = document.getElementById("instituitionName");
 const ul = document.getElementById("ul");
-const urlParam = new URLSearchParams(window.location.search);
+// criação de página
+
+//modal de criar order
+const createOrderModal = new bootstrap.Modal(document.getElementById("createOrderModal"));
+const nameOrderModal = document.getElementById("nameItem");
+const descriptionOrderModal = document.getElementById("descriptionItem");
+const actionBtn = document.getElementById("actionBtn");
+const itemSelect = document.getElementById("items");
+const tbodyModal = document.getElementById("tbodyModal");
+const addItemInOrder = document.getElementById("add");
+const addBtn = document.getElementById("add");
+const amountItem = document.getElementById("amountItem");
+//modal de criar order
+
+/*
+TODO: NAO DEIXAR ADD MAIS DO QUE TEM DE QUANTIDADE;
+*/
+
+amountItem.addEventListener("input", function() {
+    if(parseInt(amountItem.value) > parseInt(amountItem.max)) {
+        amountItem.value = amountItem.max;
+    }
+    if(amountItem.value == "" || parseInt(amountItem.value) < 1) {
+        addBtn.classList.add("disabled");
+        return;
+    } else {
+        addBtn.classList.remove("disabled");
+        return;
+    }
+})
 
 document.addEventListener("DOMContentLoaded", refresh());
 
+itemSelect.addEventListener("change", function() {
+    amountItem.disabled = false;
+})
+
+addBtn.addEventListener("click", function() {
+    let children = tbodyModal.children;
+    for (let i = 0; i < children.length; i++) {
+        let child = children[i];
+        if(itemSelect.value.split("*")[1] == child.id) {
+            console.log(child.children[1])
+            child.children[1].textContent = parseInt(child.children[1].textContent) + parseInt(amountItem.value);
+            itemSelect.value = "";
+            amountItem.value = "";
+            amountItem.placeholder = "";
+            addBtn.classList.add("disabled");
+            amountItem.disabled = true;
+            return;
+        }
+    }
+    let tr = document.createElement("tr");
+    tr.id = itemSelect.value.split("*")[1];
+    tr.classList = "text-center";
+
+    let tdNameItem = document.createElement("td");
+        tdNameItem.textContent = itemSelect.value.split("*")[0];
+
+    let tdAmountItem = document.createElement("td");
+        tdAmountItem.textContent = amountItem.value;
+
+    let tdDeleteItem = document.createElement("td");
+        let btndel = document.createElement("button");
+        btndel.classList = "btn btn-danger"
+        let i = document.createElement("i");
+        i.classList = "bi bi-trash3";
+        btndel.appendChild(i);
+        tdDeleteItem.appendChild(btndel);
+
+        let e = document.getElementById(itemSelect.value.split("*")[1]);
+        let maxMinusNowValue = parseInt(amountItem.max) - parseInt(amountItem.value);
+        console.log(maxMinusNowValue)
+        console.log 
+        if(maxMinusNowValue <= 0) {
+            e.disabled = true;
+            e.alt = "maxima quantidade requerida"
+        } else {
+            e.disabled = false;
+        }
+        tr.appendChild(tdNameItem);
+        tr.appendChild(tdAmountItem);
+        tr.appendChild(tdDeleteItem);
+        tbodyModal.appendChild(tr);
+    itemSelect.value = "";
+    amountItem.value = "";
+    amountItem.placeholder = "";
+    addBtn.classList.add("disabled");
+    amountItem.disabled = true;
+
+})
+
+actionBtn.addEventListener("click", function() {
+    fetch("http://localhost:8080/stock-group")
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error("Erro na resposta: " + response.status);
+        }
+        return response.json();
+    })
+    .then((data) => {
+        amountItem.ariaPlaceholder = "";
+        addBtn.classList.add("disabled");
+        for (let i = 0; i < data.length; i++) { 
+            let s = data[i];           
+            let stockNameOpt = document.createElement("option");
+            stockNameOpt.classList = "bg-secondary text-light bg-opacity-50";
+            stockNameOpt.disabled = true;
+            stockNameOpt.textContent = "Estoque: " + s.name;
+            itemSelect.appendChild(stockNameOpt);
+            for (let j = 0; j < data[i].items.length; j++) {
+                const item = data[i].items[j];
+                let itemOpt = document.createElement("option");
+                itemOpt.textContent = item.name;
+                itemOpt.value = item.name + "*" + item.id;
+                itemOpt.id = item.id;
+                itemOpt.addEventListener("click", function() {
+                    let max = item.amount;
+                    amountItem.placeholder = "Máx: " + max;
+                    amountItem.min = 1;
+                    amountItem.max = max;
+                })
+                itemSelect.appendChild(itemOpt);
+            }
+
+
+        }
+
+    })
+    createOrderModal.show();
+});
 
 function refresh() {
     fetch("http://localhost:8080/institution/" + urlParam.get("id"))
