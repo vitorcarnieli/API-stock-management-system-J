@@ -198,7 +198,7 @@ function constructLateralBarAndHeader(object) {
         let item = object.items[i];
 
         let li = document.createElement("li");
-        li.classList = "p-2 mb-2 text-center entitys item";
+        li.classList = "p-2 mb-2 text-center entitys";
         li.id = item.id
         let aa = document.createElement("p");
         aa.textContent = " " + item.name;
