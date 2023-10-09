@@ -1,6 +1,7 @@
 package br.gov.es.conceicaodocastelo.stock.models;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -22,7 +23,7 @@ public class Order extends BaseEntity {
     @OneToMany(mappedBy = "order")
     @JsonManagedReference("order-request")
     @Cascade(value = org.hibernate.annotations.CascadeType.ALL)
-    private List<Request> requests;
+    private List<Request> requests = new ArrayList<>();
 
     @ManyToOne
     @JsonBackReference("institution-order")
@@ -57,7 +58,6 @@ public class Order extends BaseEntity {
     }
 
     public void addRequests(Request request) {
-        request.setOrder(this);
         this.requests.add(request);
     }
 

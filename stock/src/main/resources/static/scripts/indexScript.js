@@ -255,7 +255,7 @@ function constructorStockGroups(object) {
         let inp = document.createElement("input");
         inp.value = data.id;
         inp.type = "checkbox";
-        tdCheckbox.appendChild(inp);
+       tdCheckbox.appendChild(inp);
 
 
         let tdItemName = document.createElement("td");
@@ -339,41 +339,50 @@ function constructorStockGroups(object) {
 
 }
 
-
+console.log("aaa");
 function constructorInstituitions(object) {
+    console.log("aaa");
     while (tbody.firstChild) {
         tbody.removeChild(tbody.firstChild);
     }
     while (ul.firstChild) {
         ul.removeChild(ul.firstChild);
     }
-
+    console.log(object)
     for (let i = 0; i < object[1].length; i++) {
         let data = object[1][i];
 
-        let td1 = document.createElement("td");
-        td1.classList.add("text-center");
-
+        let tdCheckbox = document.createElement("td");
+        tdCheckbox.classList.add("text-center");
         let inp = document.createElement("input");
         inp.value = data.id;
         inp.type = "checkbox";
+        tdCheckbox.appendChild(inp);
 
-        td1.appendChild(inp);
-
-        let td2 = document.createElement("td");
-        td2.classList.add("fs-5");
-        let a = document.createElement("a");
+        let tdItemName = document.createElement("td");
+        tdItemName.classList = "fs-5 entitys-items item";
+        tdItemName.id = data.id;
+        let a = document.createElement("span");
         a.textContent = data.name;
-        a.href = "";
-        td2.appendChild(a);
+        a.classList = "text-primary"
+        tdItemName.appendChild(a);
 
-        let tr = document.createElement("tr");
+        let trBody = document.createElement("tr");
 
-        tr.appendChild(td1);
-        tr.appendChild(td2);
+        trBody.appendChild(tdCheckbox);
+        trBody.appendChild(tdItemName);
 
-        tbody.appendChild(tr);
+        tbody.appendChild(trBody);
+
     }
+    let items = document.querySelectorAll(".item")
+    items.forEach(function (item) {
+        item.addEventListener('click', function () {
+            let a = document.createElement("a");
+            a.href = "http://localhost:8080/pages/instituition.html?id=" + item.id;
+            a.click();
+        });
+    });
 
 
     let d = document.createElement("div");
@@ -454,8 +463,11 @@ function refresh() {
         .then((data) => {
             datas.push(data);
             if (stockGroup.classList.contains("select")) {
+                console.log(datas)
+
                 constructorStockGroups(datas)
             } else {
+                console.log(datas)
                 constructorInstituitions(datas)
             }
         })

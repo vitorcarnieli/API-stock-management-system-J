@@ -32,9 +32,15 @@ public class Request extends BaseEntity {
     public Request() {
     }
 
+    public Request(Order order,Item item, Integer amount) {
+        this.setOrder(order);
+        this.setRequiredAmount(amount);
+        this.setItem(item);
+        this.setDate();
+    }
+
     public void setOrder(Order order) {
         this.order = order;
-        order.addRequests(this);
     }
 
     public Order getOrder() {
@@ -59,7 +65,6 @@ public class Request extends BaseEntity {
     }
 
     public void setRequiredAmount(Integer requiredAmount) {
-        this.setDate();
         this.requiredAmount = requiredAmount;
     }
 
