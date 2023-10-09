@@ -132,6 +132,9 @@ function constructMainTable(object) {
         tdDate.textContent = item.dateDefault;
         tdDate.classList = "text-muted";
 
+
+        
+
         let trBody = document.createElement("tr");
 
         trBody.appendChild(tdCheckbox);
