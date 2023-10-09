@@ -1,79 +1,41 @@
 package br.gov.es.conceicaodocastelo.stock.controllers;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.gov.es.conceicaodocastelo.stock.dto.OrderRecordDto;
+import br.gov.es.conceicaodocastelo.stock.controllers.generic.GenericControllerImp;
+import br.gov.es.conceicaodocastelo.stock.controllers.interfaces.OrderInterface;
+import br.gov.es.conceicaodocastelo.stock.dto.OrderCreateRequest;
+import br.gov.es.conceicaodocastelo.stock.models.Institution;
 import br.gov.es.conceicaodocastelo.stock.models.Item;
 import br.gov.es.conceicaodocastelo.stock.models.Order;
-import br.gov.es.conceicaodocastelo.stock.models.Institution;
 import br.gov.es.conceicaodocastelo.stock.servicies.OrderService;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
+
+
 
 @RestController
 @CrossOrigin("*")
 @RequestMapping("/order")
-public class OrderController {
-    OrderService orderService;
+public class OrderController extends GenericControllerImp<Order> implements OrderInterface{
+    
+    @Autowired
+    private OrderService orderService;
 
-    public OrderController(OrderService orderService) {
-        this.orderService = orderService;
-    }
-
-    @GetMapping(path = "/find/all")
-    public ResponseEntity<Object> findAll() {
+    @PostMapping(value="/create")
+    public ResponseEntity<Object> createOrder(@RequestBody OrderCreateRequest request) {
         try {
-            List<Order> allOrders = orderService.findAll();
-            return ResponseEntity.status(HttpStatus.OK).body(allOrders);
+            return ResponseEntity.status(200).body(orderService.createOrder(request.getInstitutionId(), request.getNameOorder(), request.getObservationsOrder(), request.getItemsId(), request.getAmounts()));
         } catch (Exception e) {
-            System.out.println("Error: " + e);
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ERROR: " + e.getMessage());
-
+            return ResponseEntity.status(404).body(e);
         }
     }
-
-    @GetMapping(path = "/find/by/id")
-    public ResponseEntity<Object> findById(@RequestParam(name = "id") String id) {
-        try {
-            Order order = orderService.findById(Long.parseLong(id));
-            order.getRequests().forEach(r -> System.out.println(r.getItem()));
-            return ResponseEntity.status(HttpStatus.OK).body(order);
-        } catch (Exception e) {
-            System.out.println("Error: " + e);
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("ERROR: " + e.getMessage());
-
-        }
-    }
-
-    @PostMapping(path = "/create")
-    public ResponseEntity<Object> createOrder(@RequestBody OrderRecordDto orderRecordDto) {
-        orderService.create(orderRecordDto);
-        return ResponseEntity.status(HttpStatus.OK).body("criado");
-
-    }
-
-    @GetMapping(path = "/create-table")
-    public ResponseEntity<List<Item>> createTable(@RequestParam(name = "id") String id) {
-        Order order = orderService.findById(Long.parseLong(id));
-        List<Item> items = new ArrayList<>();
-        order.getRequests().forEach(r -> items.add(r.getItem()));
-        return ResponseEntity.status(HttpStatus.OK).body(items);
-    }
-
-    @DeleteMapping(path = "/delete")
-    public ResponseEntity<Institution> delete(@RequestParam(name = "id") String id) {
-        Order order = orderService.findById(Long.parseLong(id));
-        orderService.delete(order);
-        return ResponseEntity.status(HttpStatus.OK).body(order.getInstitution());
-    }
+    
 }

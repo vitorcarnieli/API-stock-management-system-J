@@ -34,6 +34,7 @@ public class Request extends BaseEntity {
 
     public void setOrder(Order order) {
         this.order = order;
+        order.addRequests(this);
     }
 
     public Order getOrder() {
@@ -66,9 +67,9 @@ public class Request extends BaseEntity {
         return item;
     }
 
-    public void setItem(Item item) {
+    public void setItem(Item item) throws RuntimeException{
         if (item.getAmount() - this.getRequiredAmount() < 0) {
-            throw new RuntimeException("limit out range");
+            throw new RuntimeException("Erro em public void setItem(Item item), a quantidade requerida é maior que a disponível");
         }
         item.increaseOrDecreaseAmountInstitution(-this.getRequiredAmount(), order.getInstitution().getName());
         this.item = item;

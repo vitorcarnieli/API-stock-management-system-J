@@ -8,7 +8,7 @@ const ul = document.getElementById("ul");
 //modal de criar order
 const createOrderModal = new bootstrap.Modal(document.getElementById("createOrderModal"));
 const nameOrderModal = document.getElementById("nameItem");
-const descriptionOrderModal = document.getElementById("descriptionItem");
+const descriptionOrderModal = document.getElementById("observation");
 const actionBtn = document.getElementById("actionBtn");
 const itemSelect = document.getElementById("items");
 const tbodyModal = document.getElementById("tbodyModal");
@@ -337,14 +337,19 @@ function constructMainTable(object) {
 }
 
 function createOrder() {
-    let object = {
-        name: nameOrderModal.value,
-        observation: observation.value,
-        requests: []
-    }
-    for (let i = 0; i < tbodyModal.children.length; i++) {
-        let child = tbodyModal.children[i];
-        object.requests.push([child.id, child.children[1]]);
-    }
-    console.log(object);
+
+        let object = {
+            institutionId: parseInt(urlParam.get("id")),
+            nameOrder: nameOrderModal.value,
+            observationsOrder: descriptionOrderModal.value,
+            itemsId: [],
+            amounts: []
+        }
+        for (let i = 0; i < tbodyModal.children.length; i++) {
+            object.itemsId.push(parseInt(tbodyModal.children[i].id));
+            object.amounts.push(parseInt(tbodyModal.children[i].children[1].textContent));
+            
+        }
+        console.log(object);
+
 }

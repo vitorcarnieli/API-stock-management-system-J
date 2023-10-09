@@ -6,7 +6,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,8 +13,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.gov.es.conceicaodocastelo.stock.controllers.generic.GenericControllerImp;
+import br.gov.es.conceicaodocastelo.stock.dto.OrderRecordDto;
 import br.gov.es.conceicaodocastelo.stock.models.Order;
+import br.gov.es.conceicaodocastelo.stock.models.Request;
 import br.gov.es.conceicaodocastelo.stock.models.Institution;
+import br.gov.es.conceicaodocastelo.stock.models.Item;
 import br.gov.es.conceicaodocastelo.stock.servicies.InstitutionService;
 
 @RestController
@@ -43,19 +45,25 @@ public class InstitutionController extends GenericControllerImp<Institution>{
     	}
     }
 
-    @PostMapping(path = "/set-order/{institutionId}")
-    public ResponseEntity<Object> createOrder(@PathVariable("institutionId") Long institutionId, @RequestBody Order order) {
+    @PostMapping(path = "/set-order")
+    public ResponseEntity<Object> createOrder(@RequestBody Institution institution, @RequestBody OrderRecordDto orderRecordDto ) {
         try {
-            ResponseEntity<Object> q = this.findById(institutionId);
-            if(q.getStatusCode().is2xxSuccessful()) {
-                Institution i = (Institution) q.getBody();
-                i.addOrders(order);
-                return ResponseEntity.status(HttpStatus.OK).body(institutionService.save(i));
-            } else {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("ERROR: " + q.getBody().toString());
-            }
+            
+            Order order = new Order();
+            order.setName(orderRecordDto.name());
+            order.setObservation(orderRecordDto.observations());
+            orderRecordDto.requests().forEach(r -> {
+                Request request = new Request();
+                Item i = (Item) r.get(0);
+                Integer a = (Integer) r.get(1);
+                request.setItem(i);
+                request.setRequiredAmount(a);
+                order.addRequests(request);
+            });
+            institution.addOrders(order);
+            return ResponseEntity.status(HttpStatus.OK).body(this.save(institution));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("ERROR: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e);
         }
     }
 

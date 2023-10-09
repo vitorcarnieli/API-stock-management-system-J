@@ -2,113 +2,55 @@ package br.gov.es.conceicaodocastelo.stock.servicies;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import br.gov.es.conceicaodocastelo.stock.dto.OrderRecordDto;
+import br.gov.es.conceicaodocastelo.stock.models.Institution;
 import br.gov.es.conceicaodocastelo.stock.models.Item;
 import br.gov.es.conceicaodocastelo.stock.models.Order;
 import br.gov.es.conceicaodocastelo.stock.models.Request;
-import br.gov.es.conceicaodocastelo.stock.repositories.OrderRepository;
+import br.gov.es.conceicaodocastelo.stock.servicies.generic.GenericServiceImp;
+import br.gov.es.conceicaodocastelo.stock.servicies.interfaces.OrderInterface;
 
 @Service
-public class OrderService {
+public class OrderService extends GenericServiceImp<Order> implements OrderInterface{
 
-    private OrderRepository orderRepository;
     @Autowired
-    private ItemService itemService;
+    InstitutionService institutionService;
+
     @Autowired
-    private InstitutionService institutionService;
-    @Autowired
-    private RequestServicie requestServicie;
+    ItemService itemService;
 
-    public OrderService(OrderRepository orderRepository) {
-        this.orderRepository = orderRepository;
-    }
-
-    public Order save(Order order) {
-        return orderRepository.save(order);
-    }
-
-    public void create(OrderRecordDto orderRecordDto) {
-        Order order = new Order();
-        order.setName(orderRecordDto.name());
-        order.setObservation(orderRecordDto.observations());
+    public Order createOrder(Long institutionId, String nameOrder, String descriptionOrder, List<Long> itemsId, List<Integer> amounts) throws RuntimeException{
         try {
-            order.setInstitution(institutionService.findById(Long.parseLong(orderRecordDto.institution())));
+            Order order = new Order();
+            order.setName(nameOrder);
+            order.setObservation(descriptionOrder);
+            Institution institution = institutionService.findById(institutionId);
+            List<Item> items = new ArrayList<>();
+            itemsId.forEach(id -> {
+                try {
+                    items.add(itemService.findById(id));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+            for (int i = 0; i < items.size(); i++) {
+                Request request = new Request();
+                request.setOrder(order);
+                request.setRequiredAmount(amounts.get(i));
+                request.setItem(items.get(i));
+                System.out.println(order.getRequests().toString());
+            }
+            institution.addOrders(order);
+            return this.save(order);
+
         } catch (Exception e) {
             e.printStackTrace();
+            return null;
         }
-        Item item = null;
-        Integer amount;
-        List<Request> requests = new ArrayList<>();
-
-        List<List<String>> requestsFromList = orderRecordDto.requests();
-        for (List<String> list : requestsFromList) {
-            for (int i = 0; i < list.size(); i++) {
-                System.out.println(list.get(i));
-                if (i == 0) {
-                    try {
-                        item = itemService.findById(Long.parseLong(list.get(i)));
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    continue;
-                } else {
-                    System.out.println(item);
-                    amount = Integer.parseInt(list.get(i));
-                    Request request = new Request();
-                    request.setOrder(order);
-                    request.setRequiredAmount(amount);
-                    request.setItem(item);
-                    requests.add(request);
-                    requestServicie.save(request);
-                    orderRepository.save(order);
-                }
-            }
-        }
-    }
-
-    public List<Order> findAll() {
-        List<Order> orders = orderRepository.findAll();
-        if (orders.isEmpty()) {
-            throw new RuntimeException("orders not found");
-        }
-        return orders;
-    }
-
-    public Order findById(Long orderId) {
-        Optional<Order> order = orderRepository.findById(orderId);
-        if (order.isEmpty()) {
-            throw new RuntimeException("order id not founded");
-        }
-        return order.get();
-    }
-
-    public boolean delete(Order order) {
-        try {
-            orderRepository.delete(order);
-            return true;
-        } catch (Exception e) {
-            System.out.println(e);
-            return false;
-        }
-    }
-
-    public boolean deleteById(String id) {
-        try {
-            orderRepository.deleteById(Long.parseLong(id));
-            return true;
-        } catch (Exception e) {
-            System.out.println(e);
-            return false;
-        }
-    }
-
-    public List<Request> findAllRequests(Order order) {
-        return order.getRequests();
+        
     }
 
 }
