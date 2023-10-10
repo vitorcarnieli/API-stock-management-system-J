@@ -36,16 +36,6 @@ public class ItemController extends GenericControllerImp<Item> implements ItemIn
         }
     }
 
-    @GetMapping(path = "/find/byId")
-    @ResponseBody
-    public ResponseEntity<Object> findById(@RequestParam(value = "id") String id) {
-        try {
-            return ResponseEntity.status(HttpStatus.OK).body(itemService.findById(Long.parseLong(id)));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("ID NOT FOUND");
-        }
-    }
-
     @PostMapping(path = "/add-changes")
     @ResponseBody
     public ResponseEntity<Object> addChanges(@RequestParam(value = "id") Long id, @RequestParam(value = "c") Integer change) {

@@ -20,6 +20,7 @@ public class Request extends BaseEntity {
 
     @ManyToOne
     @JsonBackReference("item-request")
+    @Cascade(value = org.hibernate.annotations.CascadeType.ALL)
     private Item item;
 
     @ManyToOne

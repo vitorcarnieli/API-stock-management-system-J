@@ -27,6 +27,7 @@ public class Order extends BaseEntity {
 
     @ManyToOne
     @JsonBackReference("institution-order")
+    @Cascade(value = org.hibernate.annotations.CascadeType.ALL)
     private Institution institution;
 
     private String observation;
