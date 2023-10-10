@@ -65,7 +65,4 @@ public class StockGroup extends BaseEntity {
     public void deleteItems() {
         this.items.clear();
     }
-
-    
-    
 }

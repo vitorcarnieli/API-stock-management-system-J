@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.*;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -39,9 +41,10 @@ public class StockGroupController extends GenericControllerImp<StockGroup> imple
             @RequestBody @Valid ItemRecordDto itemRecordDto) {
         try {
             Item item = new Item();
+            
 
             BeanUtils.copyProperties(itemRecordDto, item);
-
+            item.setName(item.getName().substring(0, 1).toUpperCase().concat(item.getName().substring(1)));
             ResponseEntity<Object> stockO = this.findById(idGroup);
             if (stockO.getStatusCode().is2xxSuccessful()) {
                 StockGroup stockM = (StockGroup) stockO.getBody();
@@ -66,6 +69,43 @@ public class StockGroupController extends GenericControllerImp<StockGroup> imple
         }
 
     }
+
+    @PostMapping(value = "/addItems/{idGroup}")
+    public ResponseEntity<Object> addItemsToStockGroup(@PathVariable(value = "idGroup") Long idGroup,
+            @RequestBody @Valid List<ItemRecordDto> itemRecordDtos) {
+        try {
+            List<Item> items = new ArrayList<>();
+            itemRecordDtos.forEach(dto -> {
+                Item item = new Item();
+                BeanUtils.copyProperties(dto, item);
+                items.add(item);
+            });
+
+            ResponseEntity<Object> stockO = this.findById(idGroup);
+            if (stockO.getStatusCode().is2xxSuccessful()) {
+                StockGroup stockM = (StockGroup) stockO.getBody();
+
+                stockM.addItems(items);
+
+                stockM.getItems().forEach(i -> {
+                    if (i.getUnitType() == null || i.getUnitType() == "") {
+                        i.setUnitType("Unidade");
+                    }
+                    if (i.getAmount() == null || i.getAmount() < 0) {
+                        i.setAmount(0);
+                    }
+                });
+                return ResponseEntity.status(HttpStatus.OK).body(this.save(stockM));
+            } else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error");
+            }
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error");
+        }
+
+    }
+
 
     // GETER'S
     @GetMapping(path = "/find/byName")
@@ -103,8 +143,10 @@ public class StockGroupController extends GenericControllerImp<StockGroup> imple
                 List<StockGroup> queryList = query.getBody();
                     
                     List<StockGroup> lista = queryList;
+                    Collections.sort(lista, (s1, s2) -> s1.getName().compareTo(s2.getName()));
+
                     Document document = new Document();
-                    String url = "C:\\Users\\usuario\\workspace\\stock-management-system-J-SpringBoot\\stock\\src\\main\\resources\\static\\assets\\reports\\";
+                    String url = "/home/vitor/Desktop/reports/";
                     String fileName = "report" + new Date().getTime() + ".pdf";
                     PdfWriter.getInstance(document, new FileOutputStream(url + fileName));
                     document.open();
@@ -116,6 +158,8 @@ public class StockGroupController extends GenericControllerImp<StockGroup> imple
                     document.add(title);
 
                     for (StockGroup stock : lista) {
+                        Collections.sort(stock.getItems(), (i1, i2) -> i1.getName().compareTo(i2.getName()));
+
                         PdfPTable table = new PdfPTable(3);
                         table.setWidthPercentage(100);
 
@@ -132,9 +176,18 @@ public class StockGroupController extends GenericControllerImp<StockGroup> imple
                         table.addCell(new PdfPCell(amount));
 
                         for (Item item : stock.getItems()) {
-                            table.addCell(new PdfPCell(new Paragraph(item.getName())));
-                            table.addCell(new PdfPCell(new Paragraph(item.getUnitType())));
-                            table.addCell(new PdfPCell(new Paragraph(item.getAmount().toString())));
+                            if(item.getAmount() <= 0) {
+                                Font red =  new Font(Font.FontFamily.HELVETICA, 12, Font.NORMAL, BaseColor.RED);
+                                table.addCell(new PdfPCell(new Paragraph(item.getName() + " - INDISPONÍVEL", red)));
+                                table.addCell(new PdfPCell(new Paragraph(item.getUnitType() + " - INDISPONÍVEL",red)));
+                                table.addCell(new PdfPCell(new Paragraph(item.getAmount().toString() + " - INDISPONÍVEL", red)));
+
+                            } else {
+                                table.addCell(new PdfPCell(new Paragraph(item.getName())));
+                                table.addCell(new PdfPCell(new Paragraph(item.getUnitType())));
+                                table.addCell(new PdfPCell(new Paragraph(item.getAmount().toString())));
+
+                            }
 
                         }
 
@@ -158,7 +211,6 @@ public class StockGroupController extends GenericControllerImp<StockGroup> imple
                     String data = formatoData.format(new Date());
                     document.add(new Paragraph("\n\nRelatório gerado no dia " + data));
                     document.close();
-                    System.out.println("criado");
                     boolean whilecondition = true;
                     while (whilecondition) {
                         File file = new File(url + fileName);
@@ -166,7 +218,6 @@ public class StockGroupController extends GenericControllerImp<StockGroup> imple
                             whilecondition = false;
                             continue;
                         }
-                        System.out.println("\n\nnao existe ainda");
                     }
                     return ResponseEntity.status(HttpStatus.OK).body(List.of(url, fileName));
             } else {

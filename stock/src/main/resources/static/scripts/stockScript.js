@@ -193,12 +193,15 @@ function constructLateralBarAndHeader(object) {
     d.appendChild(text);
     ul.appendChild(d);
 
+    object.items.sort(function(a,b) {
+        return a.name < b.name ? -1 : a.name > b.name ? 1 : 0;
+    });
     for (let i = 0; i < object.items.length; i++) {
-
         let item = object.items[i];
 
         let li = document.createElement("li");
-        li.classList = "p-2 mb-2 text-center entitys";
+    
+        li.classList = " mb-2 text-center justify-content-center align-content-center entitys";
         li.id = item.id
         let aa = document.createElement("p");
         aa.textContent = " " + item.name;
@@ -208,7 +211,12 @@ function constructLateralBarAndHeader(object) {
         i2.style.fontSize = "13px";
         li.appendChild(i2);
         li.appendChild(aa);
+        li.addEventListener("click", function() {
+            constructTbodyModal(li.id);
+            itemModal.show();
+        })
         ul.appendChild(li);
+        ul.classList.add ="d-flex"
     }
 
 }
@@ -258,7 +266,9 @@ function constructTableItems(itemsArr) {
         noneItem.appendChild(td3);
         tbody.appendChild(noneItem);
     }
-
+    itemsArr.sort(function(a,b) {
+        return a.name < b.name ? -1 : a.name > b.name ? 1 : 0;
+    });
     for (let i = 0; i < itemsArr.length; i++) {
         let item = itemsArr[i];
 
@@ -447,12 +457,16 @@ function constructTbodyModal(id, trueToAltSortC) {
                 let valuesChanges = change.amount;
                 let dateHour = change.date.split(" T ");
 
-                if (valuesChanges.includes(",")) {
+                console.log(valuesChanges)
+                if (valuesChanges.includes(",") && valuesChanges.includes("%")) {
+                    let arrSchool = valuesChanges.replace("%","").split(",")
+                    tdChange.textContent = "Retornado " + arrSchool[1] + " de " + arrSchool[0];
+                    tdChange.className = "text-info";
+                } else if (valuesChanges.includes(",")) {
                     let arrSchool = valuesChanges.split(",")
                     tdChange.textContent = "Retirado " + arrSchool[1] + " para " + arrSchool[0];
-                    tdChange.className = "text-info";
-                }
-                else if (valuesChanges[0] == "c") {
+                    tdChange.className = "text-success";
+                } else if (valuesChanges[0] == "c") {
                     tdChange.textContent = "Criou com " + valuesChanges.replace("c", "");
                     tdChange.className = "text-primary";
                 } else if (parseInt(valuesChanges) > 0) {

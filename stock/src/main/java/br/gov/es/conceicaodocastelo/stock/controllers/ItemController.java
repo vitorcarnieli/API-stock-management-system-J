@@ -2,7 +2,9 @@ package br.gov.es.conceicaodocastelo.stock.controllers;
 
 import br.gov.es.conceicaodocastelo.stock.controllers.generic.GenericControllerImp;
 import br.gov.es.conceicaodocastelo.stock.controllers.interfaces.ItemInterface;
+import br.gov.es.conceicaodocastelo.stock.models.Institution;
 import br.gov.es.conceicaodocastelo.stock.models.Item;
+import br.gov.es.conceicaodocastelo.stock.servicies.InstitutionService;
 import br.gov.es.conceicaodocastelo.stock.servicies.ItemService;
 
 import java.util.List;
@@ -20,6 +22,9 @@ public class ItemController extends GenericControllerImp<Item> implements ItemIn
 
     @Autowired
     private ItemService itemService;
+
+    @Autowired
+    private InstitutionService institutionService;
 
     // GETER'S
     @GetMapping(path = "/find/byName")
@@ -55,6 +60,31 @@ public class ItemController extends GenericControllerImp<Item> implements ItemIn
         }
     }
 
+    @PostMapping(path = "/back-changes")
+    @ResponseBody
+    public ResponseEntity<Object> backChanges(@RequestParam(value = "idIt") Long id,@RequestParam(value = "idIn") Long idI, @RequestParam(value = "c") Integer change) {
+        ResponseEntity<Object> query = this.findById(id);
+        if(query.getStatusCode().is2xxSuccessful()) {
+            Item item = (Item) query.getBody();
+            Institution institution;
+            try {
+                institution = institutionService.findById(idI);
+                boolean ok = item.increaseOrDecreaseAmountInstitution(change, "%" + institution.getName());
+                if(ok) {
+                    this.save(item);
+                    return ResponseEntity.status(HttpStatus.OK).body("OK");
+                } else {
+                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("ERRO DURANTE INSERCAO");
+    
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e);
+            }
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("ITEM NOT FOUND BY ID");
+        }
+    }
     
 
 }

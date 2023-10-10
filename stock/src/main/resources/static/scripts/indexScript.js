@@ -294,6 +294,7 @@ function constructorStockGroups(object) {
 
     actionBtn.textContent = "NOVO ESTOQUE";
     trashBtn.classList.remove("d-none");
+    actionBtn.classList.remove("d-none");
 
 
     for (let i = 0; i < object[1].length; i++) {
@@ -301,7 +302,7 @@ function constructorStockGroups(object) {
         let li = document.createElement("li");
         li.classList = "p-2 mb-2 text-center entitys";
         let aa = document.createElement("a");
-        aa.href = "";
+        aa.href = "http://localhost:8080/pages/instituition.html?id=" + data.id;
         aa.textContent = " " + data.name;
         aa.classList = "link-light link-underline-opacity-0 fs-6";
         let i2 = document.createElement("i");
@@ -309,6 +310,9 @@ function constructorStockGroups(object) {
         i2.style.fontSize = "13px";
         li.appendChild(i2);
         li.appendChild(aa);
+        li.addEventListener("click", function() {
+            aa.click();
+        })
         ul.appendChild(li);
     }
     var checkboxes = document.querySelectorAll('input[type="checkbox"]');
@@ -354,10 +358,7 @@ function constructorInstituitions(object) {
 
         let tdCheckbox = document.createElement("td");
         tdCheckbox.classList.add("text-center");
-        let inp = document.createElement("input");
-        inp.value = data.id;
-        inp.type = "checkbox";
-        tdCheckbox.appendChild(inp);
+
 
         let tdItemName = document.createElement("td");
         tdItemName.classList = "fs-5 entitys-items item";
@@ -397,7 +398,7 @@ function constructorInstituitions(object) {
     ul.appendChild(d);
 
     actionBtn.textContent = "VISÃO GERAL";
-    actionBtn.classList.add("disabled");
+    actionBtn.classList = "disabled d-none btn rounded-0 text-white fw-bold mx-3";
     trashBtn.classList.add("d-none");
 
 
@@ -407,7 +408,7 @@ function constructorInstituitions(object) {
         let li = document.createElement("li");
         li.classList = "p-2 mb-2 text-center entitys";
         let aa = document.createElement("a");
-        aa.href = "";
+        aa.href = "http://localhost:8080/pages/stock.html?id=" + data.id;
         aa.textContent = " " + data.name;
         aa.classList = "link-light link-underline-opacity-0 fs-6";
         let i2 = document.createElement("i");
@@ -415,6 +416,9 @@ function constructorInstituitions(object) {
         i2.style.fontSize = "13px";
         li.appendChild(i2);
         li.appendChild(aa);
+        li.addEventListener("click", function() {
+            aa.click()
+        })
         ul.appendChild(li);
 
 

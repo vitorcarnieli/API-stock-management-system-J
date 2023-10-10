@@ -29,6 +29,19 @@ const saveChanges = document.getElementById("saveChanges")
 TODO: NAO DEIXAR ADD MAIS DO QUE TEM DE QUANTIDADE;
 */
 
+nameOrderModal.addEventListener("input", function() {
+    disabledSalveChanges();
+})
+
+function disabledSalveChanges() {
+    console.log(nameOrderModal.value.trim())
+    if(nameOrderModal.value.trim() != "" && tbodyModal.children.length != 0) {
+        saveChanges.disabled = false;
+    } else {
+        saveChanges.disabled = false;
+    }
+}
+
 trashBtn.addEventListener("click", function() {
     deleteModal.show();
 })
@@ -43,22 +56,7 @@ deleteConfirm.addEventListener("click", function () {
     checkboxes.forEach(function (checkbox) {
         if (checkbox.checked) {
 
-            fetch("http://localhost:8080/item/add-changes?id=" + id + "&c=" + change,
-            {
-                
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                    method: "POST",
-            
-            })
-            .then(function (res) {
-
-            })
-            .catch(function (res) {
-            })
-
+            let requests = [];
             fetch("http://localhost:8080/order/" + checkbox.value)
             .then((response) => {
                 if (!response.ok) {
@@ -68,36 +66,59 @@ deleteConfirm.addEventListener("click", function () {
             })
             .then((data) => {
                 for (let i = 0; i < data.requests.length; i++) {
-
-                    let request = data.request[i];
-
+                    let request = data.requests[i];
+                    requests.push(request);
                 }
              
-        
                 
-            })
+                for (let i = 0; i < data.requests.length; i++) {  
+                    console.log(requests)
+                    let request = data.requests[i];
 
-            fetch("http://localhost:8080/order/" + checkbox.value, {
-                method: 'DELETE',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        alert("Erro ao deletar, por favor, tente novamente. (Caso o erro persista, entre em contato com o suporte)");
-                        throw new Error('Erro na solicitação DELETE');
-                    }
-                    refresh();
-                    trashBtn.classList.add("disabled");
-                    trashBtn.classList.remove("btn-danger");
-                    trashBtn.classList.remove("text-white");
-                    deleteModal.hide();
+                    let id = request.itemId;
+                    let change = request.requiredAmount; 
+                    let instituitionId = data.institutionId
+                    console.log("http://localhost:8080/item/back-changes?idIt=" + parseInt(id) + "&idIn=" + parseInt(instituitionId) + "&c=" + parseInt(change))
+                    fetch("http://localhost:8080/item/back-changes?idIt=" + parseInt(id) + "&idIn=" + parseInt(instituitionId) + "&c=" + parseInt(change),
+                    {
+                            headers: {
+                                'Accept': 'application/json',
+                                'Content-Type': 'application/json'
+                            },
+                            method: "POST",
+                    
+                    })
+                    .then(function (res) {
+        
+                    })
+                    .catch(function (res) {
+                    })
+                }
+    
+    
+                fetch("http://localhost:8080/order/" + checkbox.value, {
+                    method: 'DELETE',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
                 })
-                .catch(error => {
-                    console.error('Erro na solicitação DELETE:', error);
-                });
+                    .then(response => {
+                        if (!response.ok) {
+                            alert("Erro ao deletar, por favor, tente novamente. (Caso o erro persista, entre em contato com o suporte)");
+                            throw new Error('Erro na solicitação DELETE');
+                        }
+                        refresh();
+                        trashBtn.classList.add("disabled");
+                        trashBtn.classList.remove("btn-danger");
+                        trashBtn.classList.remove("text-white");
+                        deleteModal.hide();
+                    })
+                    .catch(error => {
+                        console.error('Erro na solicitação DELETE:', error);
+                    });
+            })
+            console.log("aaaa" + requests)
 
         }
     });
@@ -181,7 +202,7 @@ addBtn.addEventListener("click", function() {
         i.classList = "bi bi-trash3";
         btndel.appendChild(i);
         tdDeleteItem.appendChild(btndel);
-
+        
         let e = document.getElementById(itemSelect.value.split("*")[1]);
         let maxMinusNowValue = parseInt(amountItem.max) - parseInt(amountItem.value);
         console.log(maxMinusNowValue)
@@ -196,15 +217,17 @@ addBtn.addEventListener("click", function() {
         tr.appendChild(tdAmountItem);
         tr.appendChild(tdDeleteItem);
         tbodyModal.appendChild(tr);
-    itemSelect.value = "";
+        itemSelect.value = "";
     amountItem.value = "";
     amountItem.placeholder = "";
     addBtn.classList.add("disabled");
     amountItem.disabled = true;
-
+    disabledSalveChanges()
+    
 })
 
 actionBtn.addEventListener("click", function() {
+    disabledSalveChanges()
     fetch("http://localhost:8080/stock-group")
     .then((response) => {
         if (!response.ok) {
@@ -218,7 +241,8 @@ actionBtn.addEventListener("click", function() {
         for (let i = 0; i < data.length; i++) { 
             let s = data[i];           
             let stockNameOpt = document.createElement("option");
-            stockNameOpt.classList = "bg-secondary text-light bg-opacity-50";
+            stockNameOpt.classList = "bg-black text-light";
+            stockNameOpt.style.backgroundColor = "black";
             stockNameOpt.disabled = true;
             stockNameOpt.textContent = "Estoque: " + s.name;
             itemSelect.appendChild(stockNameOpt);
@@ -285,13 +309,15 @@ function constructLateralBarAndHeader(object) {
     d.appendChild(i);
     d.appendChild(text);
     ul.appendChild(d);
-    
+    object.orders.sort(function(a,b) {
+        return a.name < b.name ? -1 : a.name > b.name ? 1 : 0;
+    });
     for (let i = 0; i < object.orders.length; i++) {
         
         let item = object.orders[i];
         
         let li = document.createElement("li");
-        li.classList = "p-2 mb-2 text-center entitys item";
+        li.classList = " mb-2 text-center entitys item";
         li.id = item.id
         let aa = document.createElement("p");
         aa.textContent = " " + item.name;
@@ -352,7 +378,7 @@ function constructMainTable(object) {
         noneItem.appendChild(td3);
         tbody.appendChild(noneItem);
     }
-    
+    object.orders.sort();
     for (let i = 0; i < object.orders.length; i++) {
         let item = object.orders[i];
         
@@ -425,7 +451,7 @@ function createOrder() {
 
         let object = {
             institutionId: parseInt(urlParam.get("id")),
-            nameOrder: nameOrderModal.value,
+            nameOrder: nameOrderModal.value == "" ? null : nameOrderModal.value,
             descriptionOrder: descriptionOrderModal.value,
             itemsId: [],
             amounts: []

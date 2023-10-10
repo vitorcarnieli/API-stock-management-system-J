@@ -25,8 +25,15 @@ public class OrderService extends GenericServiceImp<Order> implements OrderInter
 //Long institutionId, String nameOrder, String descriptionOrder, List<Long> itemsId, List<Integer> amounts
     public Order createOrder(OrderCreateRequestDto dto) throws Exception{
         Order order = new Order();
-        order.setName(dto.nameOrder());
-        order.setObservation(dto.descriptionOrder());
+        this.save(order);
+        if(dto.nameOrder() == null) {
+            order.setName("Pedido " + order.getId());
+        } else {
+
+            order.setName(dto.nameOrder());
+            order.setName(order.getName().substring(0, 1).toUpperCase().concat(order.getName().substring(1)));
+            order.setObservation(dto.descriptionOrder());
+        }
 
         Institution institution = institutionService.findById(Long.parseLong(dto.institutionId()));
         institution.addOrders(order);
@@ -51,6 +58,16 @@ public class OrderService extends GenericServiceImp<Order> implements OrderInter
         
         return this.save(order);
         
+    }
+
+    public List<Order> findByName(String name) {
+        if (name != null) {
+            List<Order> orders = this.findByNameO(name);
+            return orders;
+        } else {
+            throw new NullPointerException(
+                    "ResponseEntity<List<ItemModel>> findByName(@RequestParam(value = \"name\") String name  == null)");
+        }
     }
 
 }

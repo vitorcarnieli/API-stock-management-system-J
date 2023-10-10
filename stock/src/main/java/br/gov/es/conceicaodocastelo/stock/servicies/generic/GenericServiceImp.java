@@ -8,6 +8,7 @@ import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.stereotype.Service;
 
 import br.gov.es.conceicaodocastelo.stock.models.Item;
+import br.gov.es.conceicaodocastelo.stock.models.Order;
 import br.gov.es.conceicaodocastelo.stock.models.StockGroup;
 import br.gov.es.conceicaodocastelo.stock.models.generic.BaseEntity;
 import br.gov.es.conceicaodocastelo.stock.repositories.generic.GenericRepository;
@@ -102,6 +103,14 @@ public class GenericServiceImp<T extends BaseEntity> implements GenericService<T
     public List<StockGroup> findByNameS(String name) {
         try {
             return genericRepository.findByNameS(name);
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+        public List<Order> findByNameO(String name) {
+        try {
+            return genericRepository.findByNameO(name);
         } catch (Exception e) {
             throw e;
         }

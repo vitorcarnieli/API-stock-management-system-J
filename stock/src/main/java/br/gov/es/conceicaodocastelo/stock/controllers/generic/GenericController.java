@@ -10,6 +10,8 @@ import br.gov.es.conceicaodocastelo.stock.models.generic.BaseEntity;
 
 public interface GenericController<T extends BaseEntity> {
     ResponseEntity<Object> save(@RequestBody T entity);
+    ResponseEntity<String> saveAll(@RequestBody List<T> entitys);
+
 
     ResponseEntity<List<T>> findAll() throws Exception;
 
@@ -24,5 +26,7 @@ public interface GenericController<T extends BaseEntity> {
     ResponseEntity<Object> findByNameS(@PathVariable String name);
 
     ResponseEntity<Object> findByNameI(@PathVariable String name);
+
+    ResponseEntity<Object> findByNameO(@PathVariable("name") String name);
 
 }

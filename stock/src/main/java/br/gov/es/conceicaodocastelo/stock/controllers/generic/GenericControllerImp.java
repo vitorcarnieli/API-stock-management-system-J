@@ -29,6 +29,18 @@ public class GenericControllerImp<T extends BaseEntity> implements GenericContro
     }
 
     @Override
+    @PostMapping(path = "/saveAll")
+    public ResponseEntity<String> saveAll(List<T> entitys) {
+        try {
+            genericService.saveAll(entitys);
+            return ResponseEntity.status(HttpStatus.OK).body("ok");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("ERROR: save(T entity)");
+        }
+    }
+
+    @Override
     @GetMapping
     public ResponseEntity<List<T>> findAll() throws Exception {
         try {
@@ -103,6 +115,16 @@ public class GenericControllerImp<T extends BaseEntity> implements GenericContro
     public ResponseEntity<Object> findByNameI(@PathVariable("name") String name) {
         try {
             return ResponseEntity.status(HttpStatus.OK).body(genericService.findByNameI(name));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("not found be like");
+        }
+    }
+
+    @Override
+    @GetMapping("/o/{name}")
+    public ResponseEntity<Object> findByNameO(@PathVariable("name") String name) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(genericService.findByNameO(name));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("not found be like");
         }

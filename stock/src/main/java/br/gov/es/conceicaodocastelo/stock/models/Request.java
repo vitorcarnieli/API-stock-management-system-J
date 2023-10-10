@@ -81,6 +81,11 @@ public class Request extends BaseEntity {
         return this.getItem().getName();
     }
 
+
+    public Long getItemId() {
+        return this.getItem().getId();
+    }
+
     public String getStockGroupItemName() {
         return this.getItem().getStockGroup().getName();
     }

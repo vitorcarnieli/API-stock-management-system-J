@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -35,9 +34,7 @@ public class InstitutionController extends GenericControllerImp<Institution>{
     @PostMapping(path = "/set")
     public ResponseEntity<String> addData(@RequestBody List<Institution> institution) {
     	if(institution != null) {
-            institution.forEach(i -> {
-                institutionService.save(i);
-            });
+            this.saveAll(institution);
             return ResponseEntity.status(HttpStatus.OK).body("ok");
 
     	} else {
