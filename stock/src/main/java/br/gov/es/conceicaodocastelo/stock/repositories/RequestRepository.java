@@ -1,9 +1,9 @@
 package br.gov.es.conceicaodocastelo.stock.repositories;
 
-import org.springframework.data.jpa.repository.JpaRepository;
 
 import br.gov.es.conceicaodocastelo.stock.models.Request;
+import br.gov.es.conceicaodocastelo.stock.repositories.generic.GenericRepository;
 
-public interface RequestRepository extends JpaRepository<Request, Long> {
+public interface RequestRepository extends GenericRepository<Request> {
 
 }

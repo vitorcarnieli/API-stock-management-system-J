@@ -3,8 +3,6 @@ package br.gov.es.conceicaodocastelo.stock.models;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.hibernate.annotations.Cascade;
-
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import br.gov.es.conceicaodocastelo.stock.models.generic.BaseEntity;
@@ -20,12 +18,10 @@ public class Request extends BaseEntity {
 
     @ManyToOne
     @JsonBackReference("item-request")
-    @Cascade(value = org.hibernate.annotations.CascadeType.ALL)
     private Item item;
 
     @ManyToOne
     @JsonBackReference("order-request")
-    @Cascade(value = org.hibernate.annotations.CascadeType.ALL)
     private Order order;
 
     private Date date;

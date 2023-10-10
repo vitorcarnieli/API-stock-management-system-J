@@ -27,7 +27,6 @@ public class Order extends BaseEntity {
 
     @ManyToOne
     @JsonBackReference("institution-order")
-    @Cascade(value = org.hibernate.annotations.CascadeType.ALL)
     private Institution institution;
 
     private String observation;
@@ -39,6 +38,9 @@ public class Order extends BaseEntity {
     }
 
     public void setInstitution(Institution institution) {
+        if (date == null) {
+            this.setDate();
+        }
         this.institution = institution;
     }
 
@@ -54,15 +56,24 @@ public class Order extends BaseEntity {
     }
 
     public void setRequests(List<Request> request) {
+        if (date == null) {
+            this.setDate();
+        }
         request.forEach(r -> r.setOrder(this));
         this.requests = request;
     }
 
     public void addRequests(Request request) {
+        if (date == null) {
+            this.setDate();
+        }
         this.requests.add(request);
     }
 
     public void addRequests(List<Request> request) {
+        if (date == null) {
+            this.setDate();
+        }
         request.forEach(r -> r.setOrder(this));
         this.requests.addAll(request);
     }
@@ -72,6 +83,9 @@ public class Order extends BaseEntity {
     }
 
     public void setObservation(String observation) {
+        if (date == null) {
+            this.setDate();
+        }
         this.observation = observation;
     }
 
