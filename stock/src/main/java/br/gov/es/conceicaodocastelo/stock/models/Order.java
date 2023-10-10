@@ -49,6 +49,7 @@ public class Order extends BaseEntity {
     }
 
     public Order() {
+        this.setDate();
     }
 
     public List<Request> getRequests() {

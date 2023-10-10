@@ -3,6 +3,11 @@ const urlParam = new URLSearchParams(window.location.search);
 // criação de página
 const instituitionName = document.getElementById("instituitionName");
 const ul = document.getElementById("ul");
+const tbody = document.getElementById("tbody")
+const deleteConfirm = document.getElementById("deleteConfirm");
+const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+const trashBtn = document.getElementById("trashBtn");
+
 // criação de página
 
 //modal de criar order
@@ -24,9 +29,80 @@ const saveChanges = document.getElementById("saveChanges")
 TODO: NAO DEIXAR ADD MAIS DO QUE TEM DE QUANTIDADE;
 */
 
+trashBtn.addEventListener("click", function() {
+    deleteModal.show();
+})
+
 saveChanges.addEventListener("click", function() {
     createOrder();
 })
+
+
+deleteConfirm.addEventListener("click", function () {
+    let checkboxes = document.querySelectorAll("input[type='checkbox']")
+    checkboxes.forEach(function (checkbox) {
+        if (checkbox.checked) {
+
+            fetch("http://localhost:8080/item/add-changes?id=" + id + "&c=" + change,
+            {
+                
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    method: "POST",
+            
+            })
+            .then(function (res) {
+
+            })
+            .catch(function (res) {
+            })
+
+            fetch("http://localhost:8080/order/" + checkbox.value)
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error("Erro na resposta: " + response.status);
+                }
+                return response.json();
+            })
+            .then((data) => {
+                for (let i = 0; i < data.requests.length; i++) {
+
+                    let request = data.request[i];
+
+                }
+             
+        
+                
+            })
+
+            fetch("http://localhost:8080/order/" + checkbox.value, {
+                method: 'DELETE',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        alert("Erro ao deletar, por favor, tente novamente. (Caso o erro persista, entre em contato com o suporte)");
+                        throw new Error('Erro na solicitação DELETE');
+                    }
+                    refresh();
+                    trashBtn.classList.add("disabled");
+                    trashBtn.classList.remove("btn-danger");
+                    trashBtn.classList.remove("text-white");
+                    deleteModal.hide();
+                })
+                .catch(error => {
+                    console.error('Erro na solicitação DELETE:', error);
+                });
+
+        }
+    });
+})
+
 
 amountItem.addEventListener("input", function() {
     if(parseInt(amountItem.value) > parseInt(amountItem.max)) {
@@ -182,17 +258,23 @@ function refresh() {
 }
 
 function constructPage(data) {
-    constructLateralBarAndHeader(data);
-    constructMainTable(data);
+    
+        constructLateralBarAndHeader(data);
+        constructMainTable(data);
+    
+    while (tbodyModal.firstChild) {
+        tbodyModal.removeChild(tbodyModal.firstChild);
+    }
+    nameOrderModal.value = "";
+    observation.value = "";    
 }
 
 function constructLateralBarAndHeader(object) {
     while (ul.firstChild) {
         ul.removeChild(ul.firstChild);
     }
-
     instituitionName.textContent = object.name;
-
+    
     let d = document.createElement("div");
     d.classList = "text-center p-3 ";
     let i = document.createElement("i");//bi bi-inbox
@@ -203,11 +285,11 @@ function constructLateralBarAndHeader(object) {
     d.appendChild(i);
     d.appendChild(text);
     ul.appendChild(d);
-
+    
     for (let i = 0; i < object.orders.length; i++) {
-
+        
         let item = object.orders[i];
-
+        
         let li = document.createElement("li");
         li.classList = "p-2 mb-2 text-center entitys item";
         li.id = item.id
@@ -221,29 +303,30 @@ function constructLateralBarAndHeader(object) {
         li.appendChild(aa);
         ul.appendChild(li);
     }
-
+    
 }
 
 function constructMainTable(object) {
+    console.log(tbody)
     while (tbody.firstChild) {
         tbody.removeChild(tbody.firstChild);
     }
-
+    
     let td1 = document.createElement("td");
     td1.textContent = "Selecionar";
     td1.classList = "text-muted";
     td1.style.fontSize = "14px";
-
+    
     let td2 = document.createElement("td");
     td2.textContent = "Nome";
     td2.classList = "text-muted";
     td2.style.fontSize = "14px";
-
+    
     let td3 = document.createElement("td");
     td3.textContent = "Data / Hora";
     td3.classList = "text-muted";
     td3.style.fontSize = "14px";
-
+    
     let trHeader = document.createElement("tr");
     trHeader.classList = "text-center";
     trHeader.appendChild(td1);
@@ -251,36 +334,36 @@ function constructMainTable(object) {
     trHeader.appendChild(td3);
     trHeader.classList = "border-bottom border-secondary";
     tbody.appendChild(trHeader);
-
+    
     if (object.orders.length === 0) {
         let noneItem = document.createElement("tr");
         let td1 = document.createElement("td");
-
+        
         let td2 = document.createElement("td");
         td2.textContent = "Nenhum pedido encontrado";
         td2.classList = "text-danger";
         td2.classList.add("fs-5");
-
+        
         let td3 = document.createElement("td");
-
+        
         noneItem.classList = "text-center";
         noneItem.appendChild(td1);
         noneItem.appendChild(td2);
         noneItem.appendChild(td3);
         tbody.appendChild(noneItem);
     }
-
+    
     for (let i = 0; i < object.orders.length; i++) {
         let item = object.orders[i];
-
+        
         let tdCheckbox = document.createElement("td");
         tdCheckbox.classList.add("text-center");
         let inp = document.createElement("input");
         inp.value = item.id;
         inp.type = "checkbox";
         tdCheckbox.appendChild(inp);
-
-
+        
+        
         let tdItemName = document.createElement("td");
         tdItemName.classList = "fs-5 entitys-items item";
         tdItemName.id = item.id;
@@ -288,23 +371,25 @@ function constructMainTable(object) {
         a.textContent = item.name;
         a.classList = "text-primary"
         tdItemName.appendChild(a);
-
+        
 
         let tdDate = document.createElement("td");
         tdDate.classList.add("fs-5");
-        tdDate.textContent = item.dateDefault;
+        tdDate.textContent = item.dateFormated.replace("T", " ").replace(/-/g,"/");
         tdDate.classList = "text-muted";
-
+        
 
         
 
         let trBody = document.createElement("tr");
-
+        
         trBody.appendChild(tdCheckbox);
         trBody.appendChild(tdItemName);
         trBody.appendChild(tdDate);
-
+        console.log("aaaaaaaaaaa")
+        
         tbody.appendChild(trBody);
+        console.log(tbody)
     }
     let checkboxes = document.querySelectorAll("input[type='checkbox']")
     checkboxes.forEach(function (checkbox) {
@@ -313,7 +398,7 @@ function constructMainTable(object) {
                 trashBtn.classList.remove("disabled");
                 trashBtn.classList.add("btn-danger");
                 trashBtn.classList.add("text-white");
-
+                
                 checkboxes.forEach(function (otherCheckbox) {
                     if (otherCheckbox !== checkbox) {
                         otherCheckbox.checked = false;
@@ -330,8 +415,8 @@ function constructMainTable(object) {
     let items = document.querySelectorAll(".item")
     items.forEach(function (item) {
         item.addEventListener('click', function () {
-            constructTbodyModal(item.id);
-            itemModal.show();
+            constructOrderModal(item.id);
+            console.log('chegou')
         });
     });
 }
@@ -341,7 +426,7 @@ function createOrder() {
         let object = {
             institutionId: parseInt(urlParam.get("id")),
             nameOrder: nameOrderModal.value,
-            observationsOrder: descriptionOrderModal.value,
+            descriptionOrder: descriptionOrderModal.value,
             itemsId: [],
             amounts: []
         }
@@ -350,6 +435,65 @@ function createOrder() {
             object.amounts.push(parseInt(tbodyModal.children[i].children[1].textContent));
             
         }
-        console.log(object);
+        fetch("http://localhost:8080/order/create",
+        {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            method: "POST",
+            body: JSON.stringify(object)
+        })
+        .then(function (res) {
+            createOrderModal.hide();
+            refresh();
+        })
+        .catch(function (res) { console.log(res) })
+}
 
+function constructOrderModal(id) {
+    fetch("http://localhost:8080/order/" + id)
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error("Erro na resposta: " + response.status);
+        }
+        return response.json();
+    })
+    .then((data) => {
+        console.log(data)
+        let tbodyOrder = document.getElementById("tbodyOrder");
+        while (tbodyOrder.firstChild) {
+            tbodyOrder.removeChild(tbodyOrder.firstChild);
+        }
+        let name = document.getElementById("nameOrder");
+        let orderModal = new bootstrap.Modal(document.getElementById("orderModal"));
+        let observationOrder = document.getElementById("observationOrder");
+        name.value = data.name;
+        name.disabled = true;
+        observationOrder.value = data.observation;
+        observationOrder.disabled = true;
+
+        for(let i = 0; i < data.requests.length; i++) {
+            let request = data.requests[i];
+
+            let tr = document.createElement("tr");
+
+            let tdS = document.createElement("td");
+            tdS.textContent = request.stockGroupItemName;
+
+            let tdN = document.createElement("td");
+            tdN.textContent = request.itemName;
+
+            let tdA = document.createElement("td");
+            tdA.textContent = request.requiredAmount;
+
+            tr.appendChild(tdS);
+            tr.appendChild(tdN);
+            tr.appendChild(tdA);
+
+            tbodyOrder.appendChild(tr);
+
+        }
+        orderModal.show();
+    })
 }
