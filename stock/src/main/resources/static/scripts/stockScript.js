@@ -34,7 +34,7 @@ TODO: ;
 amount.addEventListener("input", function () {
     saveChanges.disabled = true;
     console.log(amount.value);
-    if(parseInt(amount.value) < 0 || amount.value[0] == "-") {
+    if (parseInt(amount.value) < 0 || amount.value[0] == "-") {
         return;
     }
     if (dataAmount != amount.value) {
@@ -92,7 +92,7 @@ deleteConfirm.addEventListener("click", function () {
         if (checkbox.checked) {
 
 
-            fetch("http://localhost:8080/item/" + checkbox.value, {
+            fetch("http://192.168.0.157:8080/item/" + checkbox.value, {
                 method: 'DELETE',
                 headers: {
                     'Accept': 'application/json',
@@ -129,7 +129,7 @@ register.addEventListener("click", function () {
         unitType: c3.value,
         amount: c4.value
     }
-    fetch("http://localhost:8080/stock-group/addItem/" + urlParam.get("id"),
+    fetch("http://192.168.0.157:8080/stock-group/addItem/" + urlParam.get("id"),
         {
             headers: {
                 'Accept': 'application/json',
@@ -193,14 +193,14 @@ function constructLateralBarAndHeader(object) {
     d.appendChild(text);
     ul.appendChild(d);
 
-    object.items.sort(function(a,b) {
+    object.items.sort(function (a, b) {
         return a.name < b.name ? -1 : a.name > b.name ? 1 : 0;
     });
     for (let i = 0; i < object.items.length; i++) {
         let item = object.items[i];
 
         let li = document.createElement("li");
-    
+
         li.classList = " mb-2 text-center justify-content-center align-content-center entitys";
         li.id = item.id
         let aa = document.createElement("p");
@@ -211,12 +211,12 @@ function constructLateralBarAndHeader(object) {
         i2.style.fontSize = "13px";
         li.appendChild(i2);
         li.appendChild(aa);
-        li.addEventListener("click", function() {
+        li.addEventListener("click", function () {
             constructTbodyModal(li.id);
             itemModal.show();
         })
         ul.appendChild(li);
-        ul.classList.add ="d-flex"
+        ul.classList.add = "d-flex"
     }
 
 }
@@ -266,7 +266,7 @@ function constructTableItems(itemsArr) {
         noneItem.appendChild(td3);
         tbody.appendChild(noneItem);
     }
-    itemsArr.sort(function(a,b) {
+    itemsArr.sort(function (a, b) {
         return a.name < b.name ? -1 : a.name > b.name ? 1 : 0;
     });
     for (let i = 0; i < itemsArr.length; i++) {
@@ -334,7 +334,7 @@ function constructTableItems(itemsArr) {
 
 
 function refresh(opt) {
-    fetch("http://localhost:8080/stock-group/" + urlParam.get("id"))
+    fetch("http://192.168.0.157:8080/stock-group/" + urlParam.get("id"))
         .then((response) => {
             if (!response.ok) {
                 throw new Error("Erro na resposta: " + response.status);
@@ -378,7 +378,7 @@ function workItems(opt, arr) {
 function searchByName(string) {
 
     if (string.trim() !== "") {
-        fetch("http://localhost:8080/item/i/" + string)
+        fetch("http://192.168.0.157:8080/item/i/" + string)
             .then((response) => {
                 if (!response.ok) {
                     throw new Error("Erro na resposta: " + response.status);
@@ -427,7 +427,7 @@ function constructTbodyModal(id, trueToAltSortC) {
     unitType.value = "";
     amount.value = "";
 
-    fetch("http://localhost:8080/item/" + id)
+    fetch("http://192.168.0.157:8080/item/" + id)
         .then((response) => {
             if (!response.ok) {
                 throw new Error("Erro na resposta: " + response.status);
@@ -459,7 +459,7 @@ function constructTbodyModal(id, trueToAltSortC) {
 
                 console.log(valuesChanges)
                 if (valuesChanges.includes(",") && valuesChanges.includes("%")) {
-                    let arrSchool = valuesChanges.replace("%","").split(",")
+                    let arrSchool = valuesChanges.replace("%", "").split(",")
                     tdChange.textContent = "Retornado " + arrSchool[1] + " de " + arrSchool[0];
                     tdChange.className = "text-info";
                 } else if (valuesChanges.includes(",")) {
@@ -531,15 +531,15 @@ function constructTbodyModal(id, trueToAltSortC) {
 }
 
 function saveChange(id, change) {
-    fetch("http://localhost:8080/item/add-changes?id=" + id + "&c=" + change,
+    fetch("http://192.168.0.157:8080/item/add-changes?id=" + id + "&c=" + change,
         {
-            
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                method: "POST",
-        
+
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            method: "POST",
+
         })
         .then(function (res) {
             refreshReturn();
