@@ -92,7 +92,7 @@ deleteConfirm.addEventListener("click", function () {
         if (checkbox.checked) {
 
 
-            fetch("http://192.168.0.157:8080/item/" + checkbox.value, {
+            fetch("http://localhost:8080/item/" + checkbox.value, {
                 method: 'DELETE',
                 headers: {
                     'Accept': 'application/json',
@@ -129,7 +129,7 @@ register.addEventListener("click", function () {
         unitType: c3.value,
         amount: c4.value
     }
-    fetch("http://192.168.0.157:8080/stock-group/addItem/" + urlParam.get("id"),
+    fetch("http://localhost:8080/stock-group/addItem/" + urlParam.get("id"),
         {
             headers: {
                 'Accept': 'application/json',
@@ -334,7 +334,7 @@ function constructTableItems(itemsArr) {
 
 
 function refresh(opt) {
-    fetch("http://192.168.0.157:8080/stock-group/" + urlParam.get("id"))
+    fetch("http://localhost:8080/stock-group/" + urlParam.get("id"))
         .then((response) => {
             if (!response.ok) {
                 throw new Error("Erro na resposta: " + response.status);
@@ -378,7 +378,7 @@ function workItems(opt, arr) {
 function searchByName(string) {
 
     if (string.trim() !== "") {
-        fetch("http://192.168.0.157:8080/item/i/" + string)
+        fetch("http://localhost:8080/item/i/" + string)
             .then((response) => {
                 if (!response.ok) {
                     throw new Error("Erro na resposta: " + response.status);
@@ -427,7 +427,7 @@ function constructTbodyModal(id, trueToAltSortC) {
     unitType.value = "";
     amount.value = "";
 
-    fetch("http://192.168.0.157:8080/item/" + id)
+    fetch("http://localhost:8080/item/" + id)
         .then((response) => {
             if (!response.ok) {
                 throw new Error("Erro na resposta: " + response.status);
@@ -531,7 +531,7 @@ function constructTbodyModal(id, trueToAltSortC) {
 }
 
 function saveChange(id, change) {
-    fetch("http://192.168.0.157:8080/item/add-changes?id=" + id + "&c=" + change,
+    fetch("http://localhost:8080/item/add-changes?id=" + id + "&c=" + change,
         {
 
             headers: {

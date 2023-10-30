@@ -26,7 +26,7 @@ const saveChanges = document.getElementById("saveChanges")
 //modal de criar order
 
 /*
-TODO: NAO DEIXAR ADD MAIS DO QUE TEM DE QUANTIDADE;
+
 */
 
 nameOrderModal.addEventListener("input", function () {
@@ -57,7 +57,7 @@ deleteConfirm.addEventListener("click", function () {
         if (checkbox.checked) {
 
             let requests = [];
-            fetch("http://192.168.0.157:8080/order/" + checkbox.value)
+            fetch("http://localhost:8080/order/" + checkbox.value)
                 .then((response) => {
                     if (!response.ok) {
                         throw new Error("Erro na resposta: " + response.status);
@@ -78,8 +78,8 @@ deleteConfirm.addEventListener("click", function () {
                         let id = request.itemId;
                         let change = request.requiredAmount;
                         let instituitionId = data.institutionId
-                        console.log("http://192.168.0.157:8080/item/back-changes?idIt=" + parseInt(id) + "&idIn=" + parseInt(instituitionId) + "&c=" + parseInt(change))
-                        fetch("http://192.168.0.157:8080/item/back-changes?idIt=" + parseInt(id) + "&idIn=" + parseInt(instituitionId) + "&c=" + parseInt(change),
+                        console.log("http://localhost:8080/item/back-changes?idIt=" + parseInt(id) + "&idIn=" + parseInt(instituitionId) + "&c=" + parseInt(change))
+                        fetch("http://localhost:8080/item/back-changes?idIt=" + parseInt(id) + "&idIn=" + parseInt(instituitionId) + "&c=" + parseInt(change),
                             {
                                 headers: {
                                     'Accept': 'application/json',
@@ -96,7 +96,7 @@ deleteConfirm.addEventListener("click", function () {
                     }
 
 
-                    fetch("http://192.168.0.157:8080/order/" + checkbox.value, {
+                    fetch("http://localhost:8080/order/" + checkbox.value, {
                         method: 'DELETE',
                         headers: {
                             'Accept': 'application/json',
@@ -228,7 +228,7 @@ addBtn.addEventListener("click", function () {
 
 actionBtn.addEventListener("click", function () {
     disabledSalveChanges()
-    fetch("http://192.168.0.157:8080/stock-group")
+    fetch("http://localhost:8080/stock-group")
         .then((response) => {
             if (!response.ok) {
                 throw new Error("Erro na resposta: " + response.status);
@@ -269,7 +269,7 @@ actionBtn.addEventListener("click", function () {
 });
 
 function refresh() {
-    fetch("http://192.168.0.157:8080/institution/" + urlParam.get("id"))
+    fetch("http://localhost:8080/institution/" + urlParam.get("id"))
         .then((response) => {
             if (!response.ok) {
                 throw new Error("Erro na resposta: " + response.status);
@@ -461,7 +461,7 @@ function createOrder() {
         object.amounts.push(parseInt(tbodyModal.children[i].children[1].textContent));
 
     }
-    fetch("http://192.168.0.157:8080/order/create",
+    fetch("http://localhost:8080/order/create",
         {
             headers: {
                 'Accept': 'application/json',
@@ -478,7 +478,7 @@ function createOrder() {
 }
 
 function constructOrderModal(id) {
-    fetch("http://192.168.0.157:8080/order/" + id)
+    fetch("http://localhost:8080/order/" + id)
         .then((response) => {
             if (!response.ok) {
                 throw new Error("Erro na resposta: " + response.status);

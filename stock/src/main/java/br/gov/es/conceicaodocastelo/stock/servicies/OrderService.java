@@ -69,5 +69,9 @@ public class OrderService extends GenericServiceImp<Order> implements OrderInter
                     "ResponseEntity<List<ItemModel>> findByName(@RequestParam(value = \"name\") String name  == null)");
         }
     }
+    
+    public void issueProofDelivery(Order order) {
+    	
+    }
 
 }

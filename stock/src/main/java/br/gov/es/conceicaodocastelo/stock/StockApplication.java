@@ -16,9 +16,4 @@ public class StockApplication {
 		SpringApplication.run(StockApplication.class, args);
 	}
 
-	@GetMapping(path = "/")
-	public String helloWord() {
-        return "Hello Word!";
-	}
-
 }
