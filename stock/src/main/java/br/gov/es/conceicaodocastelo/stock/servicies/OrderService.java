@@ -100,7 +100,7 @@ public class OrderService extends GenericServiceImp<Order> implements OrderInter
 			try {
 				//criando documento
 				Document document = new Document();
-				String url = "C:\\Users\\vitor\\Desktop\\comprovantes\\";
+				String url = "/server/public/receipts/";
 				String fileName = "proofDelivery" + new Date().getTime() + ".pdf";
 				PdfWriter.getInstance(document, new FileOutputStream(url + fileName));
 				
@@ -136,8 +136,8 @@ public class OrderService extends GenericServiceImp<Order> implements OrderInter
 				
 				document.add(table);
 				
-				document.add(new Paragraph("\n\n\n\n\n\n\n_________________________________ \n Gestor do Almoxarifado \n\n\n\n"));
-				document.add(new Paragraph("_________________________________ \n Responsável pela instituição (" + order.getInstitution().getResponsible() + ")\n\n\n\n"));
+				document.add(new Paragraph("\n\n\n\n_________________________________ \n Gestor do Almoxarifado \n\n\n\n"));
+				document.add(new Paragraph("_________________________________ \n Responsável pela instituição \n (" + order.getInstitution().getResponsible() + ")\n\n\n\n"));
 				document.add(new Paragraph("_________________________________ \n Secretário Municipal de Educação\n\n\n"));
 				document.add(new Paragraph("Documento gerado em " + date));
 				

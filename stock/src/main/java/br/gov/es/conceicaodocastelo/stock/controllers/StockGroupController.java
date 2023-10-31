@@ -146,8 +146,9 @@ public class StockGroupController extends GenericControllerImp<StockGroup> imple
                     Collections.sort(lista, (s1, s2) -> s1.getName().compareTo(s2.getName()));
 
                     Document document = new Document();
-                    String url = "/home/vitor/Desktop/reports/";
+                    String url = "/server/public/general_reports/";
                     String fileName = "report" + new Date().getTime() + ".pdf";
+                    System.out.println(url + fileName);
                     PdfWriter.getInstance(document, new FileOutputStream(url + fileName));
                     document.open();
                     document.setPageSize(PageSize.A4);

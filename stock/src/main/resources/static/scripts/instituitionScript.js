@@ -228,6 +228,13 @@ addBtn.addEventListener("click", function() {
 
 actionBtn.addEventListener("click", function() {
 	disabledSalveChanges()
+	
+	while (items.firstChild) {
+		
+		items.removeChild(items.firstChild);
+	}
+	
+	
 	fetch("http://localhost:8080/stock-group")
 		.then((response) => {
 			if (!response.ok) {
@@ -238,6 +245,11 @@ actionBtn.addEventListener("click", function() {
 		.then((data) => {
 			amountItem.ariaPlaceholder = "";
 			addBtn.classList.add("disabled");
+			let selectItem = document.createElement("option");
+			selectItem.textContent = "Selecione um item";
+			selectItem.selected = true;
+			selectItem.disabled = true;
+			itemSelect.appendChild(selectItem)
 			for (let i = 0; i < data.length; i++) {
 				let s = data[i];
 				let stockNameOpt = document.createElement("option");
@@ -471,24 +483,10 @@ function createOrder() {
 			body: JSON.stringify(object)
 		})
 		.then(function(res) {
+			let id = "";
 			createOrderModal.hide();
 			refresh();
-		})
-		.catch(function(res) { console.log(res) })
-
-	let id = "";
-
-	fetch("http://localhost:8080/institution/find/orders/" + urlParam.get("id"))
-		.then((response) => {
-			if (!response.ok) {
-				throw new Error("Erro na resposta: " + response.status);
-			}
-			return response.json();
-		})
-		.then((data) => {
-			let len = data.length;
-			id = data[len - 1].id;
-			fetch("http://localhost:8080/order/proof/" + id)
+			fetch("http://localhost:8080/institution/find/orders/" + urlParam.get("id"))
 				.then((response) => {
 					if (!response.ok) {
 						throw new Error("Erro na resposta: " + response.status);
@@ -496,9 +494,25 @@ function createOrder() {
 					return response.json();
 				})
 				.then((data) => {
-					console.log("deu");
+					console.log(data)
+					let len = data.length;
+					id = data[len - 1].id;
+					fetch("http://localhost:8080/order/proof/" + id)
+						.then((response) => {
+							if (!response.ok) {
+								throw new Error("Erro na resposta: " + response.status);
+							}
+							return response.json();
+						})
+						.then((data) => {
+							console.log("deu");
+						})
 				})
 		})
+		.catch(function(res) { console.log(res) })
+
+
+
 
 }
 
