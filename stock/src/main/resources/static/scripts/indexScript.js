@@ -31,7 +31,7 @@ deleteConfirm.addEventListener("click", function () {
         if (checkbox.checked) {
 
 
-            fetch("http://localhost:8080/stock-group/" + checkbox.value, {
+            fetch("http://192.168.0.157:8080/stock-group/" + checkbox.value, {
                 method: 'DELETE',
                 headers: {
                     'Accept': 'application/json',
@@ -84,8 +84,8 @@ actionBtn.addEventListener("click", function () {
         let checkboxes = document.querySelectorAll('input[type="checkbox"]');
         for (var i = 0; i < checkboxes.length; i++) {
             if (checkboxes[i].checked) {
-                console.log("http://localhost/institution/" + checkboxes[i].value)
-                fetch("http://localhost/institution/" + checkboxes[i].value)
+                console.log("http://192.168.0.157/institution/" + checkboxes[i].value)
+                fetch("http://192.168.0.157/institution/" + checkboxes[i].value)
                     .then((response) => {
                         return response.json();
                     })
@@ -195,7 +195,7 @@ createStock.addEventListener("click", function () {
     let name = document.getElementById("newName");
     let description = document.getElementById("newDescription");
     if (name.value != "") {
-        fetch("http://localhost:8080/stock-group",
+        fetch("http://192.168.0.157:8080/stock-group",
             {
                 headers: {
                     'Accept': 'application/json',
@@ -277,7 +277,7 @@ function constructorStockGroups(object) {
     items.forEach(function (item) {
         item.addEventListener('click', function () {
             let a = document.createElement("a");
-            a.href = "http://localhost:8080/pages/stock.html?id=" + item.id;
+            a.href = "http://192.168.0.157:8080/pages/stock.html?id=" + item.id;
             a.click();
         });
     });
@@ -302,7 +302,7 @@ function constructorStockGroups(object) {
         let li = document.createElement("li");
         li.classList = "p-2 mb-2 text-center entitys";
         let aa = document.createElement("a");
-        aa.href = "http://localhost:8080/pages/instituition.html?id=" + data.id;
+        aa.href = "http://192.168.0.157:8080/pages/instituition.html?id=" + data.id;
         aa.textContent = " " + data.name;
         aa.classList = "link-light link-underline-opacity-0 fs-6";
         let i2 = document.createElement("i");
@@ -380,7 +380,7 @@ function constructorInstituitions(object) {
     items.forEach(function (item) {
         item.addEventListener('click', function () {
             let a = document.createElement("a");
-            a.href = "http://localhost:8080/pages/instituition.html?id=" + item.id;
+            a.href = "http://192.168.0.157:8080/pages/instituition.html?id=" + item.id;
             a.click();
         });
     });
@@ -408,7 +408,7 @@ function constructorInstituitions(object) {
         let li = document.createElement("li");
         li.classList = "p-2 mb-2 text-center entitys";
         let aa = document.createElement("a");
-        aa.href = "http://localhost:8080/pages/stock.html?id=" + data.id;
+        aa.href = "http://192.168.0.157:8080/pages/stock.html?id=" + data.id;
         aa.textContent = " " + data.name;
         aa.classList = "link-light link-underline-opacity-0 fs-6";
         let i2 = document.createElement("i");
@@ -446,7 +446,7 @@ function constructorInstituitions(object) {
 function refresh() {
     let datas = [];
 
-    fetch("http://localhost:8080/stock-group")
+    fetch("http://192.168.0.157:8080/stock-group")
         .then((response) => {
             if (!response.ok) {
                 throw new Error("Erro na resposta: " + response.status);
@@ -456,7 +456,7 @@ function refresh() {
         .then((data) => {
             datas.push(data);
 
-            return fetch("http://localhost:8080/institution/find/all");
+            return fetch("http://192.168.0.157:8080/institution/find/all");
         })
         .then((response) => {
             if (!response.ok) {
